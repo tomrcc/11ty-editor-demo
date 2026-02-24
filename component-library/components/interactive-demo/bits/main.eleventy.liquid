@@ -1,0 +1,56 @@
+<div class="relative z-10 h-full col-span-8 pb-8 overflow-y-auto text-center" :style="{ backgroundColor: backgroundColor }">
+  <div class="min-h-[50px]">
+    <img
+      decoding="async"
+      loading="lazy"
+      :src="navbarImage"
+      alt="Navigation Bar"
+      class="w-full h-[50px]">
+  </div>
+  <div id="panel-main" class="flex flex-col h-auto min-h-[calc(100%-160px)] p-4 space-y-4 pt-9 pb-0">
+    <template x-for="block in blocks" :key="block.contentId">
+      <div :style="{ order: block.order }" :id="block.contentId">
+        <template x-if="block.type === 'text-block'">
+          <div class="mb-2">
+            <h2
+              class="mb-2 text-2xl font-bold uppercase"
+              :id="block.headingId"
+              x-text="block.heading"></h2>
+            <p
+              :id="block.contentId"
+              style="white-space: pre-line;"
+              x-text="block.content"></p>
+          </div>
+        </template>
+        <template x-if="block.type === 'image-block'">
+          <div class="mb-2">
+            <img
+              decoding="async"
+              loading="lazy"
+              class="object-contain w-full rounded-md h-60"
+              :src="block.image"
+              :data-input="block.previewImageId"
+              alt="Placeholder">
+          </div>
+        </template>
+        <template x-if="block.type === 'button-block'">
+          <div class="mb-2">
+            <button
+              :id="block.previewButtonId"
+              class="px-4 py-2 mt-4 font-bold text-white rounded hover:bg-opacity-75"
+              :style="{ backgroundColor: block.buttonColor }"
+              x-text="block.buttonText"></button>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+  <div class="min-h-[82px] pt-4 px-4">
+    <img
+      decoding="async"
+      loading="lazy"
+      :src="footerImage"
+      alt="Footer"
+      class="w-full h-[82px]">
+  </div>
+</div>
