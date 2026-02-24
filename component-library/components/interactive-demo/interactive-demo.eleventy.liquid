@@ -1,5 +1,4 @@
 <section>
-
   <div
     id="interaction-demo-window"
     x-data="contentManager({})"
@@ -15,241 +14,218 @@
   </div>
 
   <script>
-      document.addEventListener('alpine:init', () => {
-    Alpine.data('contentManager', () => ({
-      blocks: [
-        {
-          id: 'block-1',
-          type: 'text-block',
-          title: '{{ content.text_component.name | escapeQuotes }}',
-          label: '{{ content.text_component.label | escapeQuotes }}',
-          heading: '{{ content.text_component.text_heading | escapeQuotes }}',
-          content: '{{ content.text_component.content | escapeQuotes }}',
-          labelId: 'text-block-label',
-          headingId: 'preview-title',
-          contentId: 'preview-content',
-          menuId: 'block-1-menu',
-          panelId: 'panel-1',
-          previewButtonId: 'preview-button',
-          order: 0
-        },
-        {
-          id: 'block-2',
-          type: 'image-block',
-          title: '{{ content.image_component.name | escapeQuotes }}',
-          label: '{{ content.image_component.label | escapeQuotes }}',
-          image: '{{ content.image_component.image | escapeQuotes }}',
-          labelId: 'image-block-label',
-          previewImageId: 'preview-image',
-          menuId: 'block-2-menu',
-          panelId: 'panel-2',
-          order: 1
-        }
-      ],
-      blockCounter: 3,
-      blockTypes: [
-        { type: 'text-block', name: '{{ content.text_component.name | escapeQuotes }}' },
-        { type: 'image-block', name: '{{ content.image_component.name | escapeQuotes }}' },
-        { type: 'button-block', name: '{{ content.button_component.name | escapeQuotes }}' }
-      ],
-      availableBackgroundColors: {{ style.available_background_colors | json }},
-      availableButtonColors: {{ style.available_button_colors | json }},
-      backgroundColor: (() => {
-        const colors = {{ style.available_background_colors | json }};
-        const defaultColor = colors.find(color => color.default_background) || { color_value: '{{ style.default_preview_background_color }}' };
-        return defaultColor.color_value;
-      })(),
-      navbarImage: '{{ content.navigation.header_image }}',
-      footerImage: '{{ content.navigation.footer_image }}',
-      draggedBlockId: null,
-      contentAdded: false,
-      
-      openPanel(panelId) {
-        const panel = document.getElementById(panelId);
-        const sidebar = document.getElementById('sidebar');
-        const sidebarScrollTop = sidebar.scrollTop;
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('contentManager', () => ({
+        blocks: [
+          {
+            id: 'block-1',
+            type: 'text-block',
+            title: '{{ content.text_component.name | escapeQuotes }}',
+            label: '{{ content.text_component.label | escapeQuotes }}',
+            heading: '{{ content.text_component.text_heading | escapeQuotes }}',
+            content: '{{ content.text_component.content | escapeQuotes }}',
+            labelId: 'text-block-label',
+            headingId: 'preview-title',
+            contentId: 'preview-content',
+            menuId: 'block-1-menu',
+            panelId: 'panel-1',
+            previewButtonId: 'preview-button',
+            order: 0
+          },
+          {
+            id: 'block-2',
+            type: 'image-block',
+            title: '{{ content.image_component.name | escapeQuotes }}',
+            label: '{{ content.image_component.label | escapeQuotes }}',
+            image: '{{ content.image_component.image | escapeQuotes }}',
+            labelId: 'image-block-label',
+            previewImageId: 'preview-image',
+            menuId: 'block-2-menu',
+            panelId: 'panel-2',
+            order: 1
+          }
+        ],
+        blockCounter: 3,
+        blockTypes: [
+          { type: 'text-block', name: '{{ content.text_component.name | escapeQuotes }}' },
+          { type: 'image-block', name: '{{ content.image_component.name | escapeQuotes }}' },
+          { type: 'button-block', name: '{{ content.button_component.name | escapeQuotes }}' }
+        ],
+        availableBackgroundColors: {{ style.available_background_colors | json }},
+        availableButtonColors: {{ style.available_button_colors | json }},
+        backgroundColor: (() => {
+          const colors = {{ style.available_background_colors | json }};
+          const defaultColor = colors.find(color => color.default_background) || { color_value: '{{ style.default_preview_background_color }}' };
+          return defaultColor.color_value;
+        })(),
+        navbarImage: '{{ content.navigation.header_image }}',
+        footerImage: '{{ content.navigation.footer_image }}',
+        draggedBlockId: null,
+        contentAdded: false,
         
-        panel.classList.remove('hidden');
-        sidebar.style.overflow = 'hidden'; 
-        panel.style.top = `${sidebarScrollTop}px`; 
-        panel.style.height = '100%'; 
-      
-        setTimeout(() => {
-            panel.classList.remove('translate-x-full');
-            panel.classList.add('translate-x-0');
-        }, 10);
-      },
-      
-      closePanel() {
-        document.querySelectorAll('.component-panel').forEach(panel => {
-          panel.classList.remove('translate-x-0');
-          panel.classList.add('translate-x-full');
-          panel.style.height = '';
-          setTimeout(() => panel.classList.add('hidden'), 400);
-        });
-        const sidebar = document.getElementById('sidebar');
-        sidebar.style.overflow = 'auto';
-      },
-      
-      updatePreview(event) {
-        const blockId = event.target.closest('.component-panel').id.replace('panel-', '');
-        const block = this.blocks.find(b => b.id === blockId);
-        if (block) {
-          const targetId = event.target.getAttribute('data-input');
-          const targetElement = document.getElementById(targetId);
-          if (targetElement) {
-            targetElement.textContent = event.target.value;
-            if (targetId === block.headingId) {
-              block.heading = event.target.value;
-            } else if (targetId === block.contentId) {
-              block.content = event.target.value;
+        openPanel(panelId) {
+          const panel = document.getElementById(panelId);
+          const sidebar = document.getElementById('sidebar');
+          const sidebarScrollTop = sidebar.scrollTop;
+          
+          panel.classList.remove('hidden');
+          sidebar.style.overflow = 'hidden'; 
+          panel.style.top = `${sidebarScrollTop}px`; 
+          panel.style.height = '100%'; 
+        
+          setTimeout(() => {
+              panel.classList.remove('translate-x-full');
+              panel.classList.add('translate-x-0');
+          }, 10);
+        },
+        
+        closePanel() {
+          document.querySelectorAll('.component-panel').forEach(panel => {
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('translate-x-full');
+            panel.style.height = '';
+            setTimeout(() => panel.classList.add('hidden'), 400);
+          });
+          const sidebar = document.getElementById('sidebar');
+          sidebar.style.overflow = 'auto';
+        },
+        
+        updateLabel(event, blockId) {
+          const block = this.blocks.find(b => b.id === blockId);
+          if (block) block.label = event.target.value;
+        },
+        
+        handleImageInputClick(event, blockId) {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const block = this.blocks.find(b => b.id === blockId);
+              if (block) block.image = URL.createObjectURL(file);
+            }
+          };
+          fileInput.click();
+        },
+        
+        updateButtonColor(event, color, blockId) {
+          const block = this.blocks.find(b => b.id === blockId);
+          if (block) block.buttonColor = color;
+        },
+        
+        updateBackgroundColor(color) {
+          this.backgroundColor = color;
+        },
+        
+        toggleAddContentMenu() {
+          document.getElementById('add-content-menu').classList.toggle('hidden');
+        },
+        
+        closeAddContentMenu() {
+          document.getElementById('add-content-menu').classList.add('hidden');
+        },
+        
+        addContentBlock(blockType) {
+          const newBlock = {
+            id: `block-${this.blockCounter}`,
+            type: blockType.type,
+            title: this.getBlockTitle(blockType.type),
+            label: this.getBlockLabel(blockType.type),
+            heading: blockType.type === 'text-block' ? '{{ content.text_component.text_heading | escapeQuotes }}' : '',
+            content: blockType.type === 'text-block' ? '{{ content.text_component.content | escapeQuotes }}' : '',
+            image: blockType.type === 'image-block' ? '{{ content.image_component.image }}' : '',
+            buttonText: blockType.type === 'button-block' ? '{{ content.button_component.text | escapeQuotes }}' : '',
+            buttonColor: blockType.type === 'button-block' ? '{{ content.button_component.color }}' : '',
+            labelId: `block-${this.blockCounter}-label`,
+            headingId: `block-${this.blockCounter}-heading`,
+            contentId: `block-${this.blockCounter}-content`,
+            menuId: `block-${this.blockCounter}-menu`,
+            panelId: `panel-${this.blockCounter}`,
+            previewButtonId: `preview-button-${this.blockCounter}`,
+            previewImageId: `preview-image-${this.blockCounter}`,
+            order: this.blockCounter
+          };
+          this.blocks.push(newBlock);
+          this.blockCounter++;
+          this.closeAddContentMenu();
+        },
+        
+        getBlockTitle(type) {
+          if (type === 'text-block') return '{{ content.text_component.name | escapeQuotes }}';
+          if (type === 'image-block') return '{{ content.image_component.name | escapeQuotes }}';
+          return '{{ content.button_component.name | escapeQuotes }}';
+        },
+        
+        getBlockLabel(type) {
+          if (type === 'text-block') return '{{ content.text_component.label | escapeQuotes }}';
+          if (type === 'button-block') return '{{ content.button_component.label | escapeQuotes }}';
+          return '{{ content.image_component.label | escapeQuotes }}';
+        },
+        
+        toggleBlockMenu(blockId) {
+          const menu = document.getElementById(`${blockId}-menu`);
+          this.closeAllMenus();
+          menu.classList.toggle('hidden');
+        },
+        
+        closeBlockMenu(blockId) {
+          document.getElementById(`${blockId}-menu`).classList.add('hidden');
+        },
+        
+        closeAllMenus() {
+          document.querySelectorAll('[id^="block-"][id$="-menu"]').forEach(menu => {
+            menu.classList.add('hidden');
+          });
+        },
+        
+        moveBlock(blockId, direction) {
+          const blockIndex = this.blocks.findIndex(b => b.id === blockId);
+          if (blockIndex !== -1) {
+            const targetIndex = direction === 'up' ? blockIndex - 1 : blockIndex + 1;
+            if (targetIndex >= 0 && targetIndex < this.blocks.length) {
+              [this.blocks[blockIndex], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[blockIndex]];
+              this.updateOrder();
             }
           }
-        }
-      },
-      
-      updateLabel(event, blockId) {
-        const block = this.blocks.find(b => b.id === blockId);
-        if (block) block.label = event.target.value;
-      },
-      
-      handleImageInputClick(event, blockId) {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.onchange = (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const block = this.blocks.find(b => b.id === blockId);
-            if (block) block.image = URL.createObjectURL(file);
-          }
-        };
-        fileInput.click();
-      },
-      
-      updateButtonPreview(event) {
-        const targetId = event.target.getAttribute('data-input');
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) targetElement.textContent = event.target.value;
-      },
-      
-      updateButtonColor(event, color, blockId) {
-        const block = this.blocks.find(b => b.id === blockId);
-        if (block) block.buttonColor = color;
-      },
-      
-      updateBackgroundColor(color) {
-        this.backgroundColor = color;
-      },
-      
-      toggleAddContentMenu() {
-        document.getElementById('add-content-menu').classList.toggle('hidden');
-      },
-      
-      closeAddContentMenu() {
-        document.getElementById('add-content-menu').classList.add('hidden');
-      },
-      
-      addContentBlock(blockType) {
-        const newBlock = {
-          id: `block-${this.blockCounter}`,
-          type: blockType.type,
-          title: this.getBlockTitle(blockType.type),
-          label: this.getBlockLabel(blockType.type),
-          heading: blockType.type === 'text-block' ? '{{ content.text_component.text_heading | escapeQuotes }}' : '',
-          content: blockType.type === 'text-block' ? '{{ content.text_component.content | escapeQuotes }}' : '',
-          image: blockType.type === 'image-block' ? '{{ content.image_component.image }}' : '',
-          buttonText: blockType.type === 'button-block' ? '{{ content.button_component.text | escapeQuotes }}' : '',
-          buttonColor: blockType.type === 'button-block' ? '{{ content.button_component.color }}' : '',
-          labelId: `block-${this.blockCounter}-label`,
-          headingId: `block-${this.blockCounter}-heading`,
-          contentId: `block-${this.blockCounter}-content`,
-          menuId: `block-${this.blockCounter}-menu`,
-          panelId: `panel-${this.blockCounter}`,
-          previewButtonId: `preview-button-${this.blockCounter}`,
-          previewImageId: `preview-image-${this.blockCounter}`,
-          order: this.blockCounter
-        };
-        this.blocks.push(newBlock);
-        this.blockCounter++;
-        this.closeAddContentMenu();
-      },
-      
-      getBlockTitle(type) {
-        if (type === 'text-block') return '{{ content.text_component.name | escapeQuotes }}';
-        if (type === 'image-block') return '{{ content.image_component.name | escapeQuotes }}';
-        return '{{ content.button_component.name | escapeQuotes }}';
-      },
-      
-      getBlockLabel(type) {
-        if (type === 'text-block') return '{{ content.text_component.label | escapeQuotes }}';
-        if (type === 'button-block') return '{{ content.button_component.label | escapeQuotes }}';
-        return '{{ content.image_component.label | escapeQuotes }}';
-      },
-      
-      toggleBlockMenu(blockId) {
-        const menu = document.getElementById(`${blockId}-menu`);
-        this.closeAllMenus();
-        menu.classList.toggle('hidden');
-      },
-      
-      closeBlockMenu(blockId) {
-        document.getElementById(`${blockId}-menu`).classList.add('hidden');
-      },
-      
-      closeAllMenus() {
-        document.querySelectorAll('[id^="block-"][id$="-menu"]').forEach(menu => {
-          menu.classList.add('hidden');
-        });
-      },
-      
-      moveBlock(blockId, direction) {
-        const blockIndex = this.blocks.findIndex(b => b.id === blockId);
-        if (blockIndex !== -1) {
-          const targetIndex = direction === 'up' ? blockIndex - 1 : blockIndex + 1;
-          if (targetIndex >= 0 && targetIndex < this.blocks.length) {
-            [this.blocks[blockIndex], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[blockIndex]];
+        },
+        
+        deleteBlock(blockId, event) {
+          event.stopPropagation();
+          this.blocks = this.blocks.filter(b => b.id !== blockId);
+          this.updateOrder();
+        },
+        
+        startDragging(event, blockId) {
+          this.draggedBlockId = blockId;
+          event.target.style.cursor = 'grabbing';
+        },
+        
+        endDragging() {
+          this.draggedBlockId = null;
+          event.target.style.cursor = 'grab';
+        },
+        
+        reorderBlocks(event) {
+          const targetBlockId = event.target.closest('.content-block').id;
+          const draggedBlockIndex = this.blocks.findIndex(b => b.id === this.draggedBlockId);
+          const targetBlockIndex = this.blocks.findIndex(b => b.id === targetBlockId);
+        
+          if (draggedBlockIndex !== -1 && targetBlockIndex !== -1) {
+            const draggedBlock = this.blocks[draggedBlockIndex];
+            this.blocks.splice(draggedBlockIndex, 1);
+            this.blocks.splice(targetBlockIndex, 0, draggedBlock);
             this.updateOrder();
           }
-        }
-      },
-      
-      deleteBlock(blockId, event) {
-        event.stopPropagation();
-        this.blocks = this.blocks.filter(b => b.id !== blockId);
-        this.updateOrder();
-      },
-      
-      startDragging(event, blockId) {
-        this.draggedBlockId = blockId;
-        event.target.style.cursor = 'grabbing';
-      },
-      
-      endDragging() {
-        this.draggedBlockId = null;
-        event.target.style.cursor = 'grab';
-      },
-      
-      reorderBlocks(event) {
-        const targetBlockId = event.target.closest('.content-block').id;
-        const draggedBlockIndex = this.blocks.findIndex(b => b.id === this.draggedBlockId);
-        const targetBlockIndex = this.blocks.findIndex(b => b.id === targetBlockId);
-      
-        if (draggedBlockIndex !== -1 && targetBlockIndex !== -1) {
-          const draggedBlock = this.blocks[draggedBlockIndex];
-          this.blocks.splice(draggedBlockIndex, 1);
-          this.blocks.splice(targetBlockIndex, 0, draggedBlock);
-          this.updateOrder();
-        }
-      },
-      
-      updateOrder() {
-        this.blocks.forEach((block, index) => {
-          block.order = index;
-        });
-      },
-    }));
-      });
+        },
+        
+        updateOrder() {
+          this.blocks.forEach((block, index) => {
+            block.order = index;
+          });
+        },
+      }));
+    });
   </script>
 
   <style>
@@ -323,6 +299,21 @@
       transition: transform 0.4s;
     }
 
+    .editable-region {
+      outline: 2px solid transparent;
+      outline-offset: 4px;
+      transition: outline-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .editable-region:hover,
+    .editable-region:focus {
+      outline-color: #FCBD01;
+    }
+
+    .editable-region:focus {
+      outline-style: solid;
+    }
 
   </style>
 

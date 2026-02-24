@@ -137,11 +137,11 @@
             <div class="space-y-4">
               <div class="flex flex-col space-y-2">
                 <label class="font-semibold">Heading</label>
-                <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.headingId" @input="updatePreview($event)" type="text" x-model="block.heading">
+                <input class="p-2 border-2 rounded-md hover:border-[#616161]" type="text" x-model="block.heading">
               </div>
               <div class="flex flex-col space-y-2">
                 <label class="font-semibold">Content</label>
-                <textarea class="p-2 border-2 rounded-md hover:border-[#616161]" rows="10" :data-input="block.contentId" @input="updatePreview($event)" x-model="block.content"></textarea>
+                <textarea class="p-2 border-2 rounded-md hover:border-[#616161]" rows="10" x-model="block.content"></textarea>
               </div>
             </div>
           </div>
@@ -174,11 +174,11 @@
             <div class="space-y-4">
               <div class="flex flex-col space-y-2">
                 <label class="font-semibold">Text</label>
-                <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.previewButtonId" @input="updateButtonPreview($event)" type="text" x-model="block.buttonText">
+                <input class="p-2 border-2 rounded-md hover:border-[#616161]" type="text" x-model="block.buttonText">
               </div>
               <div class="flex flex-col space-y-2">
                 <label class="font-semibold">Link URL</label>
-                <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.previewButtonId" type="text">
+                <input class="p-2 border-2 rounded-md hover:border-[#616161]" type="text">
               </div>
               <div class="flex flex-col space-y-2">
                 <label class="font-semibold">Color</label>

@@ -13,13 +13,18 @@
         <template x-if="block.type === 'text-block'">
           <div class="mb-2">
             <h2
-              class="mb-2 text-2xl font-bold uppercase"
+              class="mb-2 text-2xl font-bold uppercase editable-region"
               :id="block.headingId"
-              x-text="block.heading"></h2>
+              contenteditable="true"
+              x-effect="let h = block.heading; if (document.activeElement !== $el) $el.textContent = h"
+              @input="block.heading = $el.textContent"></h2>
             <p
+              class="editable-region"
               :id="block.contentId"
               style="white-space: pre-line;"
-              x-text="block.content"></p>
+              contenteditable="true"
+              x-effect="let c = block.content; if (document.activeElement !== $el) $el.innerText = c"
+              @input="block.content = $el.innerText"></p>
           </div>
         </template>
         <template x-if="block.type === 'image-block'">
@@ -27,9 +32,9 @@
             <img
               decoding="async"
               loading="lazy"
-              class="object-contain w-full rounded-md h-60"
+              class="object-contain w-full rounded-md h-60 editable-region"
               :src="block.image"
-              :data-input="block.previewImageId"
+              @click="handleImageInputClick($event, block.id)"
               alt="Placeholder">
           </div>
         </template>
@@ -37,9 +42,11 @@
           <div class="mb-2">
             <button
               :id="block.previewButtonId"
-              class="px-4 py-2 mt-4 font-bold text-white rounded hover:bg-opacity-75"
+              class="px-4 py-2 mt-4 font-bold text-white rounded editable-region"
               :style="{ backgroundColor: block.buttonColor }"
-              x-text="block.buttonText"></button>
+              contenteditable="true"
+              x-effect="let t = block.buttonText; if (document.activeElement !== $el) $el.textContent = t"
+              @input="block.buttonText = $el.textContent"></button>
           </div>
         </template>
       </div>
