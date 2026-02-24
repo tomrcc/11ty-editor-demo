@@ -2,10 +2,25 @@
   <div
     id="interaction-demo-window"
     x-data="contentManager({})"
-    class="relative hidden max-w-screen-lg mx-auto overflow-hidden text-black bg-white border-2 border-black border-solid rounded-lg shadow-lg md:block"
+    class="relative hidden max-w-screen-lg mx-auto overflow-hidden text-black bg-white border-2 border-black border-solid rounded-lg shadow-lg md:flex md:flex-col"
     style="--shadow-color: rgba(0,0,0,0.1); height: 700px;">
     {% bookshop "interactive-demo/bits/topbar" %}
-      <div class="relative grid h-full grid-cols-12">
+      <div class="flex items-center justify-between px-3 py-1.5 border-b-2 border-black">
+        <div class="flex items-center gap-1">
+          <button class="p-1 rounded hover:bg-gray-100" aria-label="Back">
+            <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button class="p-1 rounded hover:bg-gray-100" @click="toggleSidebar()" aria-label="Toggle sidebar">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+          <span class="text-sm font-semibold">Home</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-gray-400">No pending changes</span>
+          <button class="px-3 py-1 text-xs font-semibold bg-[#e8e8e8] text-gray-400 rounded">Save</button>
+        </div>
+      </div>
+      <div class="relative flex flex-1 min-h-0">
       <!-- Sidebar -->
     {% bookshop "interactive-demo/bits/sidebar" %}
       <!-- Main Content -->
@@ -62,6 +77,7 @@
         footerImage: '{{ content.navigation.footer_image }}',
         draggedBlockId: null,
         contentAdded: false,
+        sidebarOpen: true,
         
         openPanel(panelId) {
           const panel = document.getElementById(panelId);
@@ -124,6 +140,15 @@
         
         closeAddContentMenu() {
           document.getElementById('add-content-menu').classList.add('hidden');
+        },
+        
+        toggleSidebar() {
+          this.sidebarOpen = !this.sidebarOpen;
+          if (!this.sidebarOpen) {
+            this.closePanel();
+            this.closeAllMenus();
+            this.closeAddContentMenu();
+          }
         },
         
         addContentBlock(blockType) {
