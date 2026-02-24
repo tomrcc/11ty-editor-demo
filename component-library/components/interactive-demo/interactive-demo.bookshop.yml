@@ -1,0 +1,92 @@
+# Metadata about this component, to be used in the CMS
+spec:
+  structures:
+    - blocks
+  label: Interactive Demo
+  description: An interactive demo of the cloudcannon functionality
+  icon: flutter_dash
+  tags: 
+    - Demo
+
+# Defines the structure of this component, as well as the default values
+blueprint:
+  content: 
+    heading: bookshop:simple/heading!
+    heading_description: bookshop:simple/text-block!
+    navigation: 
+      header_image:
+      footer_image:
+    text_component:
+      name: Text Block
+      _type: text_block
+      label: Landing
+      text_heading: Welcome to the CloudCannon
+      content: >-
+        This is a simple interactive demo showcasing CloudCannon's live
+        editing functionality. You can click on each component or add a
+        new content block to see the changes in real-time.
+    image_component:
+      name: Image
+      _type: image
+      label: Landing
+      image: https://placehold.co/600x400
+    button_component:
+      name: Button
+      _type: button
+      label: Button
+      text: Click me
+      color: blue
+  style: 
+    display_heading: false 
+    display_heading_description: false
+    available_background_colors:
+      - color_value: "#fff"
+        color_name: White
+        default_background: true
+      - color_value: "#f3f4f6"
+        color_name: Grey
+        default_background: false
+      - color_value: "#fee2e2"
+        color_name: Red
+        default_background: false
+      - color_value: "#bfdbfe"
+        color_name: Blue
+        default_background: false
+      - color_value: "#d1fae5" 
+        color_name: Green
+        default_background: false
+      - color_value: "#fef08a" 
+        color_name: Yellow
+        default_background: false
+    available_button_colors:
+      - color_value: "blue"
+        color_name: Blue
+        default_background: true
+      - color_value: "red"
+        color_name: Red
+        default_background: false
+      - color_value: "green"
+        color_name: Green
+        default_background: false
+      - color_value: "#FC6D26"
+        color_name: Amber
+        default_background: false
+  
+
+# Overrides any fields in the blueprint when viewing this component in the component browser
+preview:
+
+# Any extra CloudCannon inputs configuration to apply to the blueprint
+_inputs:
+  content: 
+    type: textarea
+  default_background:
+    type: switch
+  color_value:
+    type: color
+  color_name:
+    type: text
+  display_heading:
+    type: switch 
+  display_heading_description:
+    type: switch

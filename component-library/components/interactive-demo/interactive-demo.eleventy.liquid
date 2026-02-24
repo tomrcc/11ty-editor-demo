@@ -1,0 +1,767 @@
+<section>
+  <div id="demo-heading" class="hidden md:block">
+    {% if style.display_heading %}
+    {% bookshop "simple/heading" bind: content.heading %}
+  {% endif %}
+  {% if style.display_heading_description %}
+    {% bookshop "simple/text-block" bind: content.heading_description %}
+  {% endif %}
+  </div>
+  {% if env_bookshop_live %}
+    <div class="relative hidden max-w-screen-lg mx-auto overflow-hidden bg-white text-black border-2 border-black border-solid rounded-lg shadow-lg md:block" style="--shadow-color: rgba(0,0,0,0.1); height: 700px;">
+      <div class="flex p-2 pl-4 space-x-2 border-b-2 border-black border-solid">
+        <span class="w-2 h-2 bg-[#EA6053] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#F0B646] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#58BD4E] rounded-full"></span>
+      </div>
+  
+      <div class="relative grid h-full grid-cols-12">
+        <!-- Sidebar -->
+        <div id="sidebar" class="relative z-10 h-full col-span-4 pb-8 overflow-y-auto border-r-2 border-black border-solid">
+          <div class="p-4">
+            <h2 class="mb-4 text-[2rem] leading-[2.5rem] font-bold">Hero</h2>
+            <!-- Background Color Selector -->
+            <div class="mb-4">
+              <label class="block mb-2 font-semibold">Background Color</label>
+              <div class="relative">
+                <select class="flex items-center justify-between w-full p-2 border-2 border-gray-300 rounded-md select-input" name="background_color" id="background_color">
+                  {% for colorOption in style.available_background_colors %}
+                    <option value="{{ colorOption.color_value }}">{{ colorOption.color_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+  
+            <div id="content-blocks-container">
+              <div class="p-[10px] bg-white border-2 border-solid border-[#cfcfcf] bt-none pointer [transition:_background-color_0.2s_ease-in-out] hover:border-[#616161] hover:bg-gray-100" style="order: 0;">
+                <div class="grid [grid-template-columns:_1fr_25px] justify-between">
+                  <div class="flex gap-[10px]">
+                    <div class="w-[48px] h-[48px]">
+                      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M14.59 2.59c-.38-.38-.89-.59-1.42-.59H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8.83c0-.53-.21-1.04-.59-1.41l-4.82-4.83zM15 18H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm-2-6V3.5L18.5 9H14z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-semibold leading-none">{{ content.text_component.name }}</p>
+                      <p class="block-description text-[14px] text-[#393939]">{{ content.text_component.label }}</p>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <button class="flex items-center justify-center w-6 h-6 text-gray-600 p-[1px] rounded-md hover:bg-[#cfcfcf] box-content">
+                      <svg class="fill-[#393939]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                      </svg>
+                    </button>
+                    <div class="absolute right-0 z-30 hidden w-48 py-2 mt-2 bg-white border-2 rounded shadow-xl">
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                        Move Up
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        Move Down
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v10zM18 4h-2.5l-.71-.71c-.18-.18-.44-.29-.7-.29H9.91c-.26 0-.52.11-.7.29L8.5 4H6c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-[10px] bg-white border-2 border-solid border-[#cfcfcf] bt-none pointer [transition:_background-color_0.2s_ease-in-out] hover:border-[#616161] hover:bg-gray-100" style="order: 1;">
+                <div class="grid [grid-template-columns:_1fr_25px] justify-between">
+                  <div class="flex gap-[10px]">
+                    <div class="w-[48px] h-[48px]">
+                      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.9 13.98l2.1 2.53 3.1-3.99c.2-.26.6-.26.8.01l3.51 4.68a.5.5 0 0 1-.4.8H6.02c-.42 0-.65-.48-.39-.81L8.12 14c.19-.26.57-.27.78-.02z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-semibold leading-none">{{ content.image_component.name }}</p>
+                      <p class="block-description text-[14px] text-[#393939]">{{ content.image_component.label }}</p>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <button class="flex items-center justify-center w-6 h-6 text-gray-600 p-[1px] rounded-md hover:bg-[#cfcfcf] box-content">
+                      <svg class="fill-[#393939]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                      </svg>
+                    </button>
+                    <div class="absolute right-0 z-30 hidden w-48 py-2 mt-2 bg-white border-2 rounded shadow-xl">
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                        Move Up
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        Move Down
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v10zM18 4h-2.5l-.71-.71c-.18-.18-.44-.29-.7-.29H9.91c-.26 0-.52.11-.7.29L8.5 4H6c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-[10px] bg-white border-2 border-solid border-[#cfcfcf] bt-none pointer [transition:_background-color_0.2s_ease-in-out] hover:border-[#616161] hover:bg-gray-100" style="order: 2;">
+                <div class="grid [grid-template-columns:_1fr_25px] justify-between">
+                  <div class="flex gap-[10px]">
+                    <div class="w-[48px] h-[48px]">
+                      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M22 9v6c0 1.1-.9 2-2 2h-1v-2h1V9H4v6h6v2H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-7.96 8.99a.5.5 0 0 0 .91 0l.63-1.4 1.4-.63a.5.5 0 0 0 0-.91l-1.4-.63-.63-1.4a.5.5 0 0 0-.91 0l-.63 1.4-1.4.63a.5.5 0 0 0 0 .91l1.4.63.63 1.4zm2.7-4.56c.1.22.42.22.52 0l.36-.8.8-.36c.22-.1.22-.42 0-.52l-.8-.36-.36-.8a.287.287 0 0 0-.52 0l-.36.8-.8.36c-.22.1-.22.42 0 .52l.8.36.36.8z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-semibold leading-none">{{ content.button_component.name }}</p>
+                      <p class="block-description text-[14px] text-[#393939]">{{ content.button_component.label }}</p>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <button class="flex items-center justify-center w-6 h-6 text-gray-600 p-[1px] rounded-md hover:bg-[#cfcfcf] box-content">
+                      <svg class="fill-[#393939]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                      </svg>
+                    </button>
+                    <div class="absolute right-0 z-30 hidden w-48 py-2 mt-2 bg-white border-2 rounded shadow-xl">
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                        Move Up
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        Move Down
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v10zM18 4h-2.5l-.71-.71c-.18-.18-.44-.29-.7-.29H9.91c-.26 0-.52.11-.7.29L8.5 4H6c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="mt-4">
+              <button class="relative flex items-center w-fit text-cc leading-[1.4] border-2 border-solid border-[#cfcfcf] font-bold rounded-lg px-5 py-2 hover:border-[color-mix(in_srgb,#034AD8_80%,#393939)] hover:bg-[rgba(3,75,216,0.05)]">
+                <svg class="fill-cc" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M18 13h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1s1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1z"></path></svg>
+                <span class="leading-none">Add Content Block</span>
+                <span class="absolute top-[-4px] right-[-5px] flex w-3 h-3">
+                  <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-[#B9E5E3]"></span>
+                  <span class="relative inline-flex w-3 h-3 rounded-full bg-[#B9E5E3]"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+  
+       <!-- Main Content -->
+        <div class="relative z-10 h-full col-span-8 pb-8 overflow-y-auto text-center" style="background-color: {{ style.default_preview_background_color }};">
+          <div class="min-h-[50px]">
+            <img decoding="async" loading="lazy" src="{{ content.navigation.header_image }}" alt="Navigation Bar" class="w-full h-[50px]">
+          </div>
+          <div id="panel-main" class="flex flex-col h-auto min-h-[calc(100%-160px)] p-4 space-y-4 pt-9 pb-0">
+            <div style="order: 0;">
+              <div class="mb-2">
+                <h2 class="mb-2 text-2xl font-bold uppercase">{{ content.text_component.text_heading }}</h2>
+                <p>{{ content.text_component.content }}</p>
+              </div>
+            </div>
+            <div style="order: 1;">
+              <div class="mb-2">
+                <img class="object-contain w-full rounded-md h-60" src="{{ content.image_component.image }}" alt="Placeholder">
+              </div>
+            </div>
+            <div style="order: 2;">
+              <div class="mb-2">
+                <button class="px-4 py-2 mt-4 font-bold text-white rounded hover:bg-opacity-75" style="background-color: {{ content.button_component.color }};">{{ content.button_component.text }}</button>
+              </div>
+            </div>
+          </div>
+          <div class="min-h-[82px] pt-4 px-4">
+            <img decoding="async" loading="lazy" src="{{ content.navigation.footer_image }}" alt="Navigation Bar" class="w-full h-[82px]">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+  <div id="interaction-demo-window" x-data="contentManager({})" class="relative hidden max-w-screen-lg mx-auto overflow-hidden text-black bg-white border-2 border-black border-solid rounded-lg shadow-lg md:block" style="--shadow-color: rgba(0,0,0,0.1); height: 700px;">
+    <div class="flex p-2 pl-4 space-x-2 border-b-2 border-black border-solid">
+      <span class="w-2 h-2 bg-[#EA6053] rounded-full"></span>
+      <span class="w-2 h-2 bg-[#F0B646] rounded-full"></span>
+      <span class="w-2 h-2 bg-[#58BD4E] rounded-full"></span>
+    </div>
+  
+    <div class="relative grid h-full grid-cols-12">
+      <!-- Sidebar -->
+      <div id="sidebar" class="relative z-10 h-full col-span-4 pb-8 overflow-y-auto border-r-2 border-black border-solid">
+        <div class="p-4">
+          <h2 class="mb-4 text-[2rem] leading-[2.5rem] font-bold">Hero</h2>
+          <!-- Background Color Selector -->
+          <div class="mb-4">
+            <label class="block mb-2 font-semibold">Background Color</label>
+            <div class="relative" @click.away="open = false" x-data="{ open: false, color: availableBackgroundColors.find(color => color.default_background)?.color_name || 'White' }">
+              <button @click="open = !open" :class="{'border-[#616161] rounded-t-md rounded-b-[transparent] open': open, 'border-gray-300 rounded-md': !open}" class="flex items-center justify-between w-full p-2 border-2 select-input">
+                <span x-text="color"></span>
+                <svg :class="{'rotate-180': !open}" class="w-4 h-4 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+              <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="absolute z-10 w-full bg-white border-2 overflow-hidden border-[#616161] border-t-0 rounded-b-md shadow-lg text-start">
+                <template x-for="colorOption in availableBackgroundColors" :key="colorOption.color_value">
+                  <div class="p-2 cursor-pointer hover:bg-gray-100" @click="color = colorOption.color_name; open = false; updateBackgroundColor(colorOption.color_value)" :data-value="colorOption.color_value" x-text="colorOption.color_name"></div>
+                </template>
+              </div>
+            </div>
+          </div>
+  
+          <div id="content-blocks-container" x-on:drop.prevent="reorderBlocks($event)" x-on:dragover.prevent="event.dataTransfer.dropEffect = 'move'">
+            <label class="block mb-2 font-semibold">Content Blocks</label>
+            <template x-for="(block, index) in blocks" :key="block.id">
+              <div :style="{ order: block.order }" class="p-[10px] bg-white border-2 border-solid border-[#cfcfcf] bt-none cursor-pointer [transition:_background-color_0.2s_ease-in-out] hover:border-[#616161] hover:bg-gray-100" :class="{
+                'content-block': true,
+                'single': blocks.length === 1,
+                'first': blocks.length > 1 && index === 0,
+                'last': blocks.length > 1 && index === blocks.length - 1,
+                'middle': blocks.length > 2 && index !== 0 && index !== blocks.length - 1
+              }" :id="block.id" draggable="true" @dragstart="startDragging($event, block.id)" @dragend="endDragging()">
+                <div class="grid [grid-template-columns:_1fr_25px] justify-between">
+                  <div class="flex gap-[10px]" @click="openPanel(block.panelId)">
+                    <div class="w-[48px] h-[48px]">
+                      <template x-if="block.type === 'text-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M14.59 2.59c-.38-.38-.89-.59-1.42-.59H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8.83c0-.53-.21-1.04-.59-1.41l-4.82-4.83zM15 18H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm-2-6V3.5L18.5 9H14c-.55 0-1-.45-1-1z"></path>
+                        </svg>
+                      </template>
+                      <template x-if="block.type === 'image-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.9 13.98l2.1 2.53 3.1-3.99c.2-.26.6-.26.8.01l3.51 4.68a.5.5 0 0 1-.4.8H6.02c-.42 0-.65-.48-.39-.81L8.12 14c.19-.26.57-.27.78-.02z"></path>
+                        </svg>
+                      </template>
+                      <template x-if="block.type === 'button-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M22 9v6c0 1.1-.9 2-2 2h-1v-2h1V9H4v6h6v2H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-7.96 8.99a.5.5 0 0 0 .91 0l.63-1.4 1.4-.63a.5.5 0 0 0 0-.91l-1.4-.63-.63-1.4a.5.5 0 0 0-.91 0l-.63 1.4-1.4.63a.5.5 0 0 0 0 .91l1.4.63.63 1.4zm2.7-4.56c.1.22.42.22.52 0l.36-.8.8-.36c.22-.1.22-.42 0-.52l-.8-.36-.36-.8a.287.287 0 0 0-.52 0l-.36.8-.8.36c-.22.1-.22.42 0 .52l.8.36.36.8z"></path>
+                        </svg>
+                      </template>
+                    </div>
+                    <div class="flex flex-col gap-1 justify-center">
+                      <p class="font-semibold leading-none block-title" x-text="block.title"></p>
+                      <p class="block-description text-[14px] text-[#393939]" :id="block.labelId" x-text="block.label"></p>
+                    </div>
+                  </div>
+                  <div class="relative cursor-grab" @click.away="closeBlockMenu(block.id)">
+                    <button @click.stop="toggleBlockMenu(block.id)" class="flex items-center justify-center w-6 h-6 text-gray-600 p-[1px] rounded-md hover:bg-[#cfcfcf] box-content cursor-grab" aria-label="Menu">
+                      <svg class="fill-[#393939]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                      </svg>
+                    </button>
+                    <div :id="block.menuId" class="absolute right-0 z-30 hidden w-48 py-2 mt-2 bg-white border-2 rounded shadow-xl">
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100" @click="moveBlock(block.id, 'up')">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                        Move Up
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100" @click="moveBlock(block.id, 'down')">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        Move Down
+                      </button>
+                      <button class="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100" @click="deleteBlock(block.id, $event)">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v10zM18 4h-2.5l-.71-.71c-.18-.18-.44-.29-.7-.29H9.91c-.26 0-.52.11-.7.29L8.5 4H6c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+  
+          <div class="mt-4">
+            <button @click="toggleAddContentMenu; contentAdded = true" @click.away="closeAddContentMenu" class="relative flex items-center w-fit text-cc leading-[1.4] border-2 border-solid border-[#cfcfcf] font-bold rounded-lg px-5 py-2 hover:border-[color-mix(in_srgb,#034AD8_80%,#393939)] hover:bg-[rgba(3,75,216,0.05)]">
+              <svg class="fill-cc" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M18 13h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1s1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1z"></path></svg>
+              <span class="leading-none">Add Content Block</span>
+              <span class="absolute top-[-4px] right-[-5px] flex w-3 h-3" x-show="!contentAdded" @click="contentAdded = true">
+                <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-[#B9E5E3]"></span>
+                <span class="relative inline-flex w-3 h-3 rounded-full bg-[#B9E5E3]"></span>
+              </span>
+            </button>
+            <div id="add-content-menu" class="hidden mt-2 bg-white border-2 rounded shadow-lg">
+              <template x-for="(blockType, index) in blockTypes" :key="index">
+                <div class="p-2 cursor-pointer hover:bg-gray-100" @click="addContentBlock(blockType)">
+                  <div class="flex items-center space-x-2">
+                    <div class="p-2">
+                      <template x-if="blockType.type === 'text-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M14.59 2.59c-.38-.38-.89-.59-1.42-.59H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8.83c0-.53-.21-1.04-.59-1.41l-4.82-4.83zM15 18H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm-2-6V3.5L18.5 9H14c-.55 0-1-.45-1-1z"></path>
+                        </svg>
+                      </template>
+                      <template x-if="blockType.type === 'image-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.9 13.98l2.1 2.53 3.1-3.99c.2-.26.6-.26.8.01l3.51 4.68a.5.5 0 0 1-.4.8H6.02c-.42 0-.65-.48-.39-.81L8.12 14c.19-.26.57-.27.78-.02z"></path>
+                        </svg>
+                      </template>
+                      <template x-if="blockType.type === 'button-block'">
+                        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                          <path d="M22 9v6c0 1.1-.9 2-2 2h-1v-2h1V9H4v6h6v2H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-7.96 8.99a.5.5 0 0 0 .91 0l.63-1.4 1.4-.63a.5.5 0 0 0 0-.91l-1.4-.63-.63-1.4a.5.5 0 0 0-.91 0l-.63 1.4-1.4.63a.5.5 0 0 0 0 .91l1.4.63.63 1.4zm2.7-4.56c.1.22.42.22.52 0l.36-.8.8-.36c.22-.1.22-.42 0-.52l-.8-.36-.36-.8a.287.287 0 0 0-.52 0l-.36.8-.8.36c-.22.1-.22.42 0 .52l.8.36.36.8z"></path>
+                        </svg>
+                      </template>
+                    </div>
+                    <div>
+                      <p x-text="blockType.name"></p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Component Panels -->
+        <div id="component-panels">
+          <template x-for="(block, index) in blocks" :key="block.panelId">
+            <div :id="block.panelId" class="component-panel absolute inset-y-0 left-0 z-20 hidden w-full p-4 overflow-y-auto transition-transform transform bg-white rounded-md shadow duration-[0.4s] translate-x-full">
+              <button class="flex items-center gap-1 p-2 pl-0 font-bold text-cc" @click="closePanel">
+                <svg class="fill-cc" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>
+                <span>Back</span>
+              </button>
+              <template x-if="block.type === 'text-block'">
+                <div>
+                  <h2 class="mb-2 text-2xl font-bold">{{ content.text_component.name}}</h2>
+                  <div class="space-y-4">
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Heading</label>
+                      <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.headingId" @input="updatePreview($event)" type="text" x-model="block.heading">
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Content</label>
+                      <textarea class="p-2 border-2 rounded-md hover:border-[#616161]" rows="10" :data-input="block.contentId" @input="updatePreview($event)" x-model="block.content"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template x-if="block.type === 'image-block'">
+                <div>
+                  <h2 class="mb-2 text-2xl font-bold">{{ content.image_component.name }}</h2>
+                  <div class="space-y-4">
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Image</label>
+                      <div class="relative">
+                        <img decoding="async" loading="lazy" class="object-contain w-full p-2 border-2 rounded-md h-60 hover:border-[#616161]" :src="block.image" :data-input="block.previewImageId" alt="Placeholder">
+                        <button class="absolute inset-0 flex overflow-hidden flex-col items-center w-full h-full py-8 bg-white opacity-0 justify-evenly pb-[2rem] p-1 hover:opacity-90 border-2 border-solid rounded-lg border-[#616161]" @click="handleImageInputClick($event, block.id)">
+                          <div class="w-[48px] h-[48px]">
+                            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                              <path d="m19.41 7.41-4.83-4.83c-.37-.37-.88-.58-1.41-.58H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8.83c0-.53-.21-1.04-.59-1.42zM14.8 15H13v3c0 .55-.45 1-1 1s-1-.45-1-1v-3H9.21c-.45 0-.67-.54-.35-.85l2.8-2.79c.2-.19.51-.19.71 0l2.79 2.79c.3.31.08.85-.36.85zM14 9c-.55 0-1-.45-1-1V3.5L18.5 9H14z"></path>
+                            </svg>
+                          </div>
+                          <span class="block text-[#616161] break-all text-center mt-1 overflow-hidden" x-text="block.image"></span>
+                          <span class="block font-bold leading-5 text-center cursor-pointer text-cc">Click to change image</span>
+                        </button>
+                      </div>
+                    </div>                  
+                  </div>
+                </div>
+              </template>
+              <template x-if="block.type === 'button-block'">
+                <div>
+                  <h2 class="mb-2 text-2xl font-bold">{{ content.button_component.name }}</h2>
+                  <div class="space-y-4">
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Text</label>
+                      <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.previewButtonId" @input="updateButtonPreview($event)" type="text" x-model="block.buttonText">
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Link URL</label>
+                      <input class="p-2 border-2 rounded-md hover:border-[#616161]" :data-input="block.previewButtonId" type="text">
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                      <label class="font-semibold">Color</label>
+                      <div class="relative" @click.away="open = false" x-data="{ open: false, color: availableButtonColors.find(color => color.default_background)?.color_name || 'Dark Purple' }">
+                        <button @click="open = !open" :class="{'border-[#616161] rounded-t-md rounded-b-none open': open, 'border-gray-300 rounded-md': !open}" class="flex items-center justify-between w-full p-2 border-2 select-input">
+                          <span x-text="color"></span>
+                          <svg :class="{'rotate-180': !open}" class="w-4 h-4 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                          </svg>
+                        </button>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="absolute z-10 w-full bg-white border-2 overflow-hidden border-[#616161] border-t-0 rounded-b-md shadow-lg text-start">
+                          <template x-for="colorOption in availableButtonColors" :key="colorOption.color_value">
+                            <div class="p-2 cursor-pointer hover:bg-gray-100" @click="color = colorOption.color_name; open = false; updateButtonColor($event, colorOption.color_value, block.id)" :data-value="colorOption.color_value" x-text="colorOption.color_name"></div>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+  
+      <!-- Main Content -->
+      <div class="relative z-10 h-full col-span-8 pb-8 overflow-y-auto text-center"  :style="{ backgroundColor: backgroundColor }">
+        <div class="min-h-[50px]">
+          <img decoding="async" loading="lazy" :src="navbarImage" alt="Navigation Bar" class="w-full h-[50px]">
+        </div>
+        <div id="panel-main" class="flex flex-col h-auto min-h-[calc(100%-160px)] p-4 space-y-4 pt-9 pb-0">
+          <template x-for="block in blocks" :key="block.contentId">
+            <div :style="{ order: block.order }" :id="block.contentId">
+              <template x-if="block.type === 'text-block'">
+                <div class="mb-2">
+                  <h2 class="mb-2 text-2xl font-bold uppercase" :id="block.headingId" x-text="block.heading"></h2>
+                  <p :id="block.contentId" style="white-space: pre-line;" x-text="block.content"></p>
+                </div>
+              </template>
+              <template x-if="block.type === 'image-block'">
+                <div class="mb-2">
+                  <img decoding="async" loading="lazy" class="object-contain w-full rounded-md h-60" :src="block.image" :data-input="block.previewImageId" alt="Placeholder">
+                </div>
+              </template>
+              <template x-if="block.type === 'button-block'">
+                <div class="mb-2">
+                  <button :id="block.previewButtonId" class="px-4 py-2 mt-4 font-bold text-white rounded hover:bg-opacity-75" :style="{ backgroundColor: block.buttonColor }" x-text="block.buttonText"></button>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+        <div class="min-h-[82px] pt-4 px-4">
+          <img decoding="async" loading="lazy" :src="footerImage" alt="Footer" class="w-full h-[82px]">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('contentManager', () => ({
+      blocks: [
+        {
+          id: 'block-1',
+          type: 'text-block',
+          title: '{{ content.text_component.name | escapeQuotes }}',
+          label: '{{ content.text_component.label | escapeQuotes }}',
+          heading: '{{ content.text_component.text_heading | escapeQuotes }}',
+          content: '{{ content.text_component.content | escapeQuotes }}',
+          labelId: 'text-block-label',
+          headingId: 'preview-title',
+          contentId: 'preview-content',
+          menuId: 'block-1-menu',
+          panelId: 'panel-1',
+          previewButtonId: 'preview-button',
+          order: 0
+        },
+        {
+          id: 'block-2',
+          type: 'image-block',
+          title: '{{ content.image_component.name | escapeQuotes }}',
+          label: '{{ content.image_component.label | escapeQuotes }}',
+          image: '{{ content.image_component.image | escapeQuotes }}',
+          labelId: 'image-block-label',
+          previewImageId: 'preview-image',
+          menuId: 'block-2-menu',
+          panelId: 'panel-2',
+          order: 1
+        }
+      ],
+      blockCounter: 3,
+      blockTypes: [
+        { type: 'text-block', name: '{{ content.text_component.name | escapeQuotes }}' },
+        { type: 'image-block', name: '{{ content.image_component.name | escapeQuotes }}' },
+        { type: 'button-block', name: '{{ content.button_component.name | escapeQuotes }}' }
+      ],
+      availableBackgroundColors: {{ style.available_background_colors | json }},
+      availableButtonColors: {{ style.available_button_colors | json }},
+      backgroundColor: (() => {
+        const colors = {{ style.available_background_colors | json }};
+        const defaultColor = colors.find(color => color.default_background) || { color_value: '{{ style.default_preview_background_color }}' };
+        return defaultColor.color_value;
+      })(),
+      navbarImage: '{{ content.navigation.header_image }}',
+      footerImage: '{{ content.navigation.footer_image }}',
+      draggedBlockId: null,
+      contentAdded: false,
+  
+      openPanel(panelId) {
+        const panel = document.getElementById(panelId);
+        const sidebar = document.getElementById('sidebar');
+        const sidebarScrollTop = sidebar.scrollTop;
+        
+        panel.classList.remove('hidden');
+        sidebar.style.overflow = 'hidden'; 
+        panel.style.top = `${sidebarScrollTop}px`; 
+        panel.style.height = '100%'; 
+  
+        setTimeout(() => {
+            panel.classList.remove('translate-x-full');
+            panel.classList.add('translate-x-0');
+        }, 10);
+      },
+  
+      closePanel() {
+        document.querySelectorAll('.component-panel').forEach(panel => {
+          panel.classList.remove('translate-x-0');
+          panel.classList.add('translate-x-full');
+          panel.style.height = '';
+          setTimeout(() => panel.classList.add('hidden'), 400);
+        });
+        const sidebar = document.getElementById('sidebar');
+        sidebar.style.overflow = 'auto';
+      },
+  
+      updatePreview(event) {
+        const blockId = event.target.closest('.component-panel').id.replace('panel-', '');
+        const block = this.blocks.find(b => b.id === blockId);
+        if (block) {
+          const targetId = event.target.getAttribute('data-input');
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.textContent = event.target.value;
+            if (targetId === block.headingId) {
+              block.heading = event.target.value;
+            } else if (targetId === block.contentId) {
+              block.content = event.target.value;
+            }
+          }
+        }
+      },
+  
+      updateLabel(event, blockId) {
+        const block = this.blocks.find(b => b.id === blockId);
+        if (block) block.label = event.target.value;
+      },
+  
+      handleImageInputClick(event, blockId) {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const block = this.blocks.find(b => b.id === blockId);
+            if (block) block.image = URL.createObjectURL(file);
+          }
+        };
+        fileInput.click();
+      },
+  
+      updateButtonPreview(event) {
+        const targetId = event.target.getAttribute('data-input');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) targetElement.textContent = event.target.value;
+      },
+  
+      updateButtonColor(event, color, blockId) {
+        const block = this.blocks.find(b => b.id === blockId);
+        if (block) block.buttonColor = color;
+      },
+  
+      updateBackgroundColor(color) {
+        this.backgroundColor = color;
+      },
+  
+      toggleAddContentMenu() {
+        document.getElementById('add-content-menu').classList.toggle('hidden');
+      },
+  
+      closeAddContentMenu() {
+        document.getElementById('add-content-menu').classList.add('hidden');
+      },
+  
+      addContentBlock(blockType) {
+        const newBlock = {
+          id: `block-${this.blockCounter}`,
+          type: blockType.type,
+          title: this.getBlockTitle(blockType.type),
+          label: this.getBlockLabel(blockType.type),
+          heading: blockType.type === 'text-block' ? '{{ content.text_component.text_heading | escapeQuotes }}' : '',
+          content: blockType.type === 'text-block' ? '{{ content.text_component.content | escapeQuotes }}' : '',
+          image: blockType.type === 'image-block' ? '{{ content.image_component.image }}' : '',
+          buttonText: blockType.type === 'button-block' ? '{{ content.button_component.text | escapeQuotes }}' : '',
+          buttonColor: blockType.type === 'button-block' ? '{{ content.button_component.color }}' : '',
+          labelId: `block-${this.blockCounter}-label`,
+          headingId: `block-${this.blockCounter}-heading`,
+          contentId: `block-${this.blockCounter}-content`,
+          menuId: `block-${this.blockCounter}-menu`,
+          panelId: `panel-${this.blockCounter}`,
+          previewButtonId: `preview-button-${this.blockCounter}`,
+          previewImageId: `preview-image-${this.blockCounter}`,
+          order: this.blockCounter
+        };
+        this.blocks.push(newBlock);
+        this.blockCounter++;
+        this.closeAddContentMenu();
+      },
+  
+      getBlockTitle(type) {
+        if (type === 'text-block') return '{{ content.text_component.name | escapeQuotes }}';
+        if (type === 'image-block') return '{{ content.image_component.name | escapeQuotes }}';
+        return '{{ content.button_component.name | escapeQuotes }}';
+      },
+  
+      getBlockLabel(type) {
+        if (type === 'text-block') return '{{ content.text_component.label | escapeQuotes }}';
+        if (type === 'button-block') return '{{ content.button_component.label | escapeQuotes }}';
+        return '{{ content.image_component.label | escapeQuotes }}';
+      },
+  
+      toggleBlockMenu(blockId) {
+        const menu = document.getElementById(`${blockId}-menu`);
+        this.closeAllMenus();
+        menu.classList.toggle('hidden');
+      },
+  
+      closeBlockMenu(blockId) {
+        document.getElementById(`${blockId}-menu`).classList.add('hidden');
+      },
+  
+      closeAllMenus() {
+        document.querySelectorAll('[id^="block-"][id$="-menu"]').forEach(menu => {
+          menu.classList.add('hidden');
+        });
+      },
+  
+      moveBlock(blockId, direction) {
+        const blockIndex = this.blocks.findIndex(b => b.id === blockId);
+        if (blockIndex !== -1) {
+          const targetIndex = direction === 'up' ? blockIndex - 1 : blockIndex + 1;
+          if (targetIndex >= 0 && targetIndex < this.blocks.length) {
+            [this.blocks[blockIndex], this.blocks[targetIndex]] = [this.blocks[targetIndex], this.blocks[blockIndex]];
+            this.updateOrder();
+          }
+        }
+      },
+  
+      deleteBlock(blockId, event) {
+        event.stopPropagation();
+        this.blocks = this.blocks.filter(b => b.id !== blockId);
+        this.updateOrder();
+      },
+  
+      startDragging(event, blockId) {
+        this.draggedBlockId = blockId;
+        event.target.style.cursor = 'grabbing';
+      },
+  
+      endDragging() {
+        this.draggedBlockId = null;
+        event.target.style.cursor = 'grab';
+      },
+  
+      reorderBlocks(event) {
+        const targetBlockId = event.target.closest('.content-block').id;
+        const draggedBlockIndex = this.blocks.findIndex(b => b.id === this.draggedBlockId);
+        const targetBlockIndex = this.blocks.findIndex(b => b.id === targetBlockId);
+  
+        if (draggedBlockIndex !== -1 && targetBlockIndex !== -1) {
+          const draggedBlock = this.blocks[draggedBlockIndex];
+          this.blocks.splice(draggedBlockIndex, 1);
+          this.blocks.splice(targetBlockIndex, 0, draggedBlock);
+          this.updateOrder();
+        }
+      },
+  
+      updateOrder() {
+        this.blocks.forEach((block, index) => {
+          block.order = index;
+        });
+      },
+    }));
+  });
+  </script>
+  {% endif %}
+  
+  <style>
+  #sidebar .content-block:first-of-type {
+  border-top: 2px solid #cfcfcf;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+#sidebar .content-block:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top: none;
+}
+
+#sidebar .content-block.middle {
+  border-radius: 0;
+  border-top: none;
+}
+
+#sidebar .content-block:not(:first-of-type):hover {
+  border-top: 2px solid #616161;
+  margin-top: -2px;
+}
+
+#sidebar .content-block, 
+#sidebar .content-block:last-child,
+#sidebar .content-block.single,
+#sidebar .content-block.middle, 
+#sidebar .content-block:first-of-type {
+  &:hover {
+    border-color: #616161;
+  }
+}
+
+#sidebar .content-block.single {
+  border-radius: 8px;
+  border-top: 2px solid #cfcfcf;
+}
+
+.select-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #cfcfcf;
+  border-radius: 8px;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.select-input:hover {
+  border-color: #616161;
+}
+
+.select-input.open {
+  border-color: #616161;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  /* border-bottom: none; */
+}
+
+.component-panel {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.4s;
+}
+
+
+  </style>
+  
+</section>
