@@ -5,6 +5,7 @@
 - Don't use square brackets in logs
 - Avoid factory, and generator functions
 - Ask questions during the planning phase if needed
+- Comment regex in steps if possible so that its human readable
 - Keep any really important info you discover in the bottom of this file, under the learnings heading. Keep it super brief, as we don't want to muddy up the context for new agents too much before they even start their prompt, but don't want to repeat primer instructions.
 
 # Brief
@@ -16,7 +17,7 @@ We have two demo components simulating CloudCannon's editor:
 
 The source demo shows a side-by-side view: source code (left) + visual editor (right). Users edit text in the visual preview, and the source code updates reactively. This teaches how CloudCannon's source editables work for pages without frontmatter.
 
-See `HANDOFF.md` for detailed implementation status and the next task (Stage 3: tutorial walkthrough).
+See `TUTORIAL_PLAN.md` for detailed implementation status and next task.
 
 # Learnings
 

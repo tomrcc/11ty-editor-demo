@@ -47,7 +47,59 @@
           @click="resetChanges()">Save</button>
       </div>
     </div>
-    <div class="relative flex flex-1 min-h-0">
+    <div x-show="mode === 'input'" x-cloak class="flex flex-1 min-h-0 items-center justify-center" style="background: #f9fafb;">
+      <div class="w-full max-w-md px-6">
+        <div class="mb-6 text-center">
+          <svg class="w-10 h-10 mx-auto mb-3 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.97.633-3.794 1.708-5.276" />
+          </svg>
+          <h3 class="mb-1 text-lg font-semibold text-gray-800">Load a webpage</h3>
+          <p class="text-sm text-gray-500">Enter a URL to see how Source Editable Regions work with real content.</p>
+        </div>
+        <form @submit.prevent="fetchPage()" class="flex gap-2">
+          <input
+            type="url"
+            x-model="url"
+            placeholder="https://example.com"
+            required
+            :disabled="loading"
+            class="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#034AD8] focus:border-transparent disabled:opacity-50">
+          <button
+            type="submit"
+            :disabled="loading"
+            class="px-4 py-2 text-sm font-semibold text-white rounded transition-colors disabled:opacity-50"
+            :class="loading ? 'bg-gray-400' : 'bg-[#034AD8] hover:bg-[#0240b8]'">
+            <span x-show="!loading">Load</span>
+            <span x-show="loading" class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              Loading
+            </span>
+          </button>
+        </form>
+        <div x-show="error" x-cloak class="mt-3 text-sm text-red-600" x-text="error"></div>
+        <div class="mt-5">
+          <p class="mb-2 text-xs text-gray-400">Try an example:</p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              @click="url = 'https://cloudcannon.com'; fetchPage()"
+              :disabled="loading"
+              class="px-2.5 py-1 text-xs rounded bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors disabled:opacity-50">
+              cloudcannon.com
+            </button>
+            <button
+              @click="url = 'https://example.com'; fetchPage()"
+              :disabled="loading"
+              class="px-2.5 py-1 text-xs rounded bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors disabled:opacity-50">
+              example.com
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div x-show="mode === 'demo'" class="relative flex flex-1 min-h-0">
       {% bookshop "interactive-source-demo/bits/sidebar" %}
       {% bookshop "interactive-source-demo/bits/main" %}
       <div
@@ -74,8 +126,223 @@
   </div>
 
   <script>
+    const SKIP_ABSOLUTIFY = /^(https?:\/\/|\/\/|#|data:|javascript:|mailto:|tel:|blob:)/i;
+
+    function shouldAbsolutify(url) {
+      if (!url || typeof url !== 'string') return false;
+      const trimmed = url.trim();
+      return trimmed !== '' && !SKIP_ABSOLUTIFY.test(trimmed);
+    }
+
+    function absolutifyUrl(url, baseUrl) {
+      try { return new URL(url.trim(), baseUrl).href; }
+      catch { return url; }
+    }
+
+    function absolutifySrcset(srcset, baseUrl) {
+      return srcset.split(',').map(entry => {
+        const parts = entry.trim().split(/\s+/);
+        if (parts.length > 0 && shouldAbsolutify(parts[0])) {
+          parts[0] = absolutifyUrl(parts[0], baseUrl);
+        }
+        return parts.join(' ');
+      }).join(', ');
+    }
+
+    function absolutifyCssUrls(cssText, baseUrl) {
+      return cssText.replace(/url\(\s*(['"]?)(.+?)\1\s*\)/g, (match, quote, url) => {
+        if (shouldAbsolutify(url)) {
+          return 'url(' + quote + absolutifyUrl(url, baseUrl) + quote + ')';
+        }
+        return match;
+      });
+    }
+
+    const VOID_ELEMENTS = new Set([
+      'area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr'
+    ]);
+    const INVISIBLE_TAGS = new Set(['style', 'link', 'meta', 'script', 'noscript', 'template']);
+    const MAX_CONTEXT_SIBLINGS = 2;
+
+    function formatAttrs(el) {
+      const parts = [];
+      for (const attr of el.attributes) {
+        const name = attr.name;
+        if (name.startsWith('data-') || name === 'style' || name.startsWith('aria-')) continue;
+        let val = attr.value;
+        if (val.length > 35) val = val.slice(0, 32) + '...';
+        parts.push(name + '="' + val + '"');
+        if (parts.length >= 3) break;
+      }
+      return parts.length ? ' ' + parts.join(' ') : '';
+    }
+
+    function formatOpenTag(el) {
+      const tag = el.tagName.toLowerCase();
+      return '<' + tag + formatAttrs(el) + '>';
+    }
+
+    function formatCloseTag(el) {
+      return '</' + el.tagName.toLowerCase() + '>';
+    }
+
+    function formatCollapsed(el) {
+      const tag = el.tagName.toLowerCase();
+      const attrs = formatAttrs(el);
+      if (VOID_ELEMENTS.has(tag)) return '<' + tag + attrs + ' />';
+      const text = el.textContent.trim();
+      if (el.children.length === 0 && text && text.length < 50) {
+        return '<' + tag + attrs + '>' + text + '</' + tag + '>';
+      }
+      if (el.children.length === 0 && text) {
+        return '<' + tag + attrs + '>' + text.slice(0, 30) + '...</' + tag + '>';
+      }
+      return '<' + tag + attrs + '><!-- ... --></' + tag + '>';
+    }
+
+    function extractSourceContext(doc, h1El) {
+      const body = doc.body;
+      const ancestorSet = new Set();
+      let node = h1El.parentElement;
+      while (node && node !== body) {
+        ancestorSet.add(node);
+        node = node.parentElement;
+      }
+
+      const lines = [];
+      let h1LineIndex = -1;
+
+      function visibleChildren(parent) {
+        return [...parent.children].filter(c => !INVISIBLE_TAGS.has(c.tagName.toLowerCase()));
+      }
+
+      function walk(parent, depth) {
+        const indent = '  '.repeat(depth);
+        const children = visibleChildren(parent);
+        const targetIdx = children.findIndex(c => c === h1El || ancestorSet.has(c));
+        if (targetIdx === -1) return;
+
+        const start = Math.max(0, targetIdx - MAX_CONTEXT_SIBLINGS);
+        const end = Math.min(children.length, targetIdx + MAX_CONTEXT_SIBLINGS + 1);
+
+        if (start > 0) lines.push({ text: indent + '<!-- ... -->' });
+
+        for (let i = start; i < end; i++) {
+          if (depth === 0 && i > start) lines.push({ text: '' });
+          const child = children[i];
+
+          if (child === h1El) {
+            h1LineIndex = lines.length;
+          } else if (ancestorSet.has(child)) {
+            lines.push({ text: indent + formatOpenTag(child) });
+            walk(child, depth + 1);
+            lines.push({ text: indent + formatCloseTag(child) });
+          } else {
+            lines.push({ text: indent + formatCollapsed(child) });
+          }
+        }
+
+        if (end < children.length) {
+          if (depth === 0) lines.push({ text: '' });
+          lines.push({ text: indent + '<!-- ... -->' });
+        }
+      }
+
+      walk(body, 0);
+
+      if (h1LineIndex === -1) h1LineIndex = lines.length;
+
+      return {
+        before: lines.slice(0, h1LineIndex),
+        after: lines.slice(h1LineIndex),
+        h1Indent: '  '.repeat(ancestorSet.size),
+      };
+    }
+
+    function processScrapedHtml(rawHtml, pageUrl) {
+      const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+
+      // Use <base href> if present, then remove it
+      const baseEl = doc.querySelector('base[href]');
+      const baseUrl = baseEl ? baseEl.href : pageUrl;
+      if (baseEl) baseEl.remove();
+
+      // Remove all scripts
+      doc.querySelectorAll('script, noscript').forEach(el => el.remove());
+
+      // Remove CloudCannon editing attributes
+      doc.querySelectorAll('[data-editable], [data-prop], [data-path], [data-key]').forEach(el => {
+        for (const attr of ['data-editable', 'data-prop', 'data-path', 'data-key', 'data-type']) {
+          el.removeAttribute(attr);
+        }
+      });
+
+      // Find h1 and extract source context BEFORE absolutifying (keeps URLs short in source view)
+      const h1 = doc.querySelector('h1');
+      if (!h1) {
+        throw new Error('No <h1> found on this page. Try a page with a heading.');
+      }
+      const sourceContext = extractSourceContext(doc, h1);
+
+      // Absolutify src, href
+      doc.querySelectorAll('[src], [href]').forEach(el => {
+        for (const attr of ['src', 'href']) {
+          const val = el.getAttribute(attr);
+          if (val && shouldAbsolutify(val)) {
+            el.setAttribute(attr, absolutifyUrl(val, baseUrl));
+          }
+        }
+      });
+
+      // Absolutify srcset
+      doc.querySelectorAll('[srcset]').forEach(el => {
+        el.setAttribute('srcset', absolutifySrcset(el.getAttribute('srcset'), baseUrl));
+      });
+
+      // Absolutify url() in inline styles
+      doc.querySelectorAll('[style]').forEach(el => {
+        const style = el.getAttribute('style');
+        if (style && style.includes('url(')) {
+          el.setAttribute('style', absolutifyCssUrls(style, baseUrl));
+        }
+      });
+
+      // Absolutify url() inside <style> blocks
+      doc.querySelectorAll('style').forEach(el => {
+        if (el.textContent.includes('url(')) {
+          el.textContent = absolutifyCssUrls(el.textContent, baseUrl);
+        }
+      });
+
+      // Inject editable region styles into the document head
+      const headEl = doc.querySelector('head');
+      if (headEl) {
+        const editableStyle = doc.createElement('style');
+        editableStyle.textContent = '.editable-region{outline:2px solid transparent;outline-offset:4px;transition:outline-color .15s ease;cursor:pointer}.editable-region:hover,.editable-region:focus{outline-color:#FCBD01}.editable-region:focus{outline-style:solid}';
+        headEl.appendChild(editableStyle);
+      }
+
+      return {
+        fullHtml: '<!DOCTYPE html>' + doc.documentElement.outerHTML,
+        headingText: h1.textContent.trim(),
+        sourceContext,
+      };
+    }
+
     document.addEventListener('alpine:init', () => {
       Alpine.data('sourceEditorManager', () => ({
+        mode: 'input',
+        url: '',
+        rawHtml: null,
+        pageUrl: null,
+        processedHtml: null,
+        sourceContextBefore: [],
+        sourceContextAfter: [],
+        h1Indent: '',
+        pagePath: '/index.html',
+        loading: false,
+        error: null,
+
         sourceOpen: true,
         hasChanges: false,
         lastEditedProp: null,
@@ -83,12 +350,7 @@
         tutorialStep: 0,
         lastAdvancedStep: null,
         advanceTimeout: null,
-        heading: '{{ content.page.title | escapeQuotes }}',
-        description: '{{ content.page.description | escapeQuotes }}',
-        buttonText: '{{ content.page.button_text | escapeQuotes }}',
-        heroImage: '{{ content.page.hero_image }}',
-        navbarImage: '{{ content.navigation.header_image }}',
-        footerImage: '{{ content.navigation.footer_image }}',
+        heading: '',
 
         tooltipSteps: [
           { text: 'This HTML page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
@@ -101,52 +363,40 @@
         get sourceLines() {
           const s = this.tutorialStep;
           const adv = this.lastAdvancedStep;
+          const ind = this.h1Indent;
+          const pad = ind + '    ';
           const lines = [];
 
-          lines.push(
-            { text: '<nav>' },
-            { text: '  <img src="/logo.svg" alt="My Site" />' },
-            { text: '</nav>' },
-            { text: '' },
-            { text: '<section>' },
-          );
+          lines.push(...this.sourceContextBefore);
 
           if (s >= 3) {
             lines.push(
-              { text: '  <h1 data-editable="source"', isHeading: true },
-              { text: '      data-path="/index.html"', isHeading: true },
-              { text: '      data-key="title">', isNew: adv === 3, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source"', isHeading: true },
+              { text: pad + 'data-path="' + this.pagePath + '"', isHeading: true },
+              { text: pad + 'data-key="title">', isNew: adv === 3, isHeading: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
+              { text: ind + '</h1>', isHeading: true },
             );
           } else if (s === 2) {
             lines.push(
-              { text: '  <h1 data-editable="source"', isHeading: true },
-              { text: '      data-path="/index.html">', isNew: adv === 2, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source"', isHeading: true },
+              { text: pad + 'data-path="' + this.pagePath + '">', isNew: adv === 2, isHeading: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
+              { text: ind + '</h1>', isHeading: true },
             );
           } else if (s === 1) {
             lines.push(
-              { text: '  <h1 data-editable="source">', isNew: adv === 1, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source">', isNew: adv === 1, isHeading: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
+              { text: ind + '</h1>', isHeading: true },
             );
           } else {
-            lines.push({ text: '  <h1>' + this.heading + '</h1>', isHeading: true });
+            lines.push(
+              { text: ind + '<h1>' + this.heading + '</h1>', isHeading: true },
+            );
           }
 
-          lines.push({ text: '  <p>' + this.description + '</p>' });
-          lines.push({ text: '  <img src="/hero.svg" alt="Hero" />' });
-          lines.push({ text: '  <button>' + this.buttonText + '</button>' });
-
-          lines.push(
-            { text: '</section>' },
-            { text: '' },
-            { text: '<footer>' },
-            { text: '  <p>&copy; 2025 My Site</p>' },
-            { text: '</footer>' },
-          );
+          lines.push(...this.sourceContextAfter);
 
           return lines;
         },
@@ -161,19 +411,28 @@
               this.lastAdvancedStep = null;
             }, 1500);
           }
+          if (this.tutorialStep === 3) {
+            this.$nextTick(() => this.enableH1Editing());
+          }
         },
 
         tooltipTop() {
           const lineH = 24;
           const tabH = 32;
+          const h1Start = this.sourceContextBefore.length;
+
+          let targetLine;
           switch (this.tutorialStep) {
-            case 0: return tabH + 4 * lineH;
-            case 1: return tabH + 5 * lineH;
-            case 2: return tabH + 6 * lineH;
-            case 3: return tabH + 7 * lineH;
-            case 4: return tabH + 4 * lineH;
+            case 0: targetLine = h1Start; break;
+            case 1: targetLine = h1Start; break;
+            case 2: targetLine = h1Start + 1; break;
+            case 3: targetLine = h1Start + 2; break;
+            case 4: targetLine = h1Start; break;
             default: return 0;
           }
+
+          const scrollTop = this.$refs.sourceScroll ? this.$refs.sourceScroll.scrollTop : 0;
+          return tabH + (targetLine * lineH) - scrollTop;
         },
 
         onEdit(prop) {
@@ -191,12 +450,90 @@
 
         toggleSource() {
           this.sourceOpen = !this.sourceOpen;
+        },
+
+        enableH1Editing() {
+          if (!this._previewH1 || this._previewH1.isContentEditable) return;
+          this._previewH1.contentEditable = 'true';
+          this._previewH1.classList.add('editable-region');
+          this._previewH1.addEventListener('input', () => {
+            this.heading = this._previewH1.textContent.trim();
+            this.onEdit('heading');
+          });
+          this.$watch('heading', (val) => {
+            const iframeActive = this.$refs.previewPane.contentDocument?.activeElement;
+            if (iframeActive !== this._previewH1) {
+              this._previewH1.textContent = val;
+            }
+          });
+        },
+
+        CORS_PROXY: 'https://corsproxy.io/?url=',
+
+        async fetchPage() {
+          if (!this.url || this.loading) return;
+
+          let normalized = this.url.trim();
+          if (!/^https?:\/\//i.test(normalized)) {
+            normalized = 'https://' + normalized;
+          }
+          this.url = normalized;
+
+          this.loading = true;
+          this.error = null;
+
+          try {
+            const response = await fetch(this.CORS_PROXY + encodeURIComponent(normalized));
+            if (!response.ok) {
+              throw new Error('Failed to fetch page (' + response.status + ')');
+            }
+            const html = await response.text();
+            if (html.length > 5 * 1024 * 1024) {
+              throw new Error('Page is too large (over 5 MB). Try a simpler page.');
+            }
+            if (!html.trim()) {
+              throw new Error('The page returned empty content.');
+            }
+            this.rawHtml = html;
+            this.pageUrl = normalized;
+
+            const result = processScrapedHtml(html, normalized);
+            this.processedHtml = result.fullHtml;
+            this.heading = result.headingText;
+            this.sourceContextBefore = result.sourceContext.before;
+            this.sourceContextAfter = result.sourceContext.after;
+            this.h1Indent = result.sourceContext.h1Indent;
+            try { this.pagePath = new URL(normalized).pathname; }
+            catch { this.pagePath = '/index.html'; }
+            if (this.pagePath === '/') this.pagePath = '/index.html';
+            this.mode = 'demo';
+
+            const onLoad = () => {
+              this.$refs.previewPane.removeEventListener('load', onLoad);
+              if (this.$refs.sourceScroll) {
+                const scrollTarget = Math.max(0, (this.sourceContextBefore.length - 2) * 24);
+                this.$refs.sourceScroll.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+              }
+              this._previewH1 = this.$refs.previewPane.contentDocument.querySelector('h1');
+            };
+            this.$refs.previewPane.addEventListener('load', onLoad);
+          } catch (e) {
+            if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
+              this.error = 'Network error. The CORS proxy may be down, or the URL is unreachable.';
+            } else {
+              this.error = e.message;
+            }
+          } finally {
+            this.loading = false;
+          }
         }
       }));
     });
   </script>
 
   <style>
+    [x-cloak] { display: none !important; }
+
     .editable-region {
       outline: 2px solid transparent;
       outline-offset: 4px;
