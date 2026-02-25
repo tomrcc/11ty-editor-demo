@@ -16,7 +16,7 @@ layout: layouts/component-page.html
 permalink: /
 eleventyExcludeFromCollections: false
 content_blocks:
-  - _bookshop_name: interactive-demo
+  - _bookshop_name: interactive-source-demo
     content:
       heading:
         _bookshop_name: simple/heading
@@ -107,53 +107,154 @@ content_blocks:
       navigation:
         header_image: https://cc-dam.imgix.net/Example-nav-1.svg
         footer_image: https://cc-dam.imgix.net/Footer.svg
-      text_component:
-        name: Text Block
-        _type: text_block
-        label: Headline & Description
-        text_heading: Edit this headline
-        content: >-
-          Click on each component in the sidebar to edit, or drag to
-          reorder — and see your changes in real-time. Try clicking
-          the + Add Content Block button to add a component to this
-          page!
-      image_component:
-        name: Image
-        _type: image
-        label: Hero Image
-        image: https://cc-dam.imgix.net/hero-example-demo-image.svg
-      button_component:
-        name: Button
-        _type: button
-        label: CTA
-        text: Find out more
-        color: '#3b2d63'
+      page:
+        title: Edit this headline
+        description: >-
+          This is a simple page with hard-coded content.
+          No frontmatter here!
+        button_text: Find out more
+        hero_image: https://cc-dam.imgix.net/hero-example-demo-image.svg
     style:
       display_heading: true
       display_heading_description: true
-      available_background_colors:
-        - color_value: '#f3f4f6'
-          color_name: Grey
-          default_background: false
-        - color_value: '#ffffff'
-          color_name: White
-          default_background: false
-        - color_value: '#ffe8bb'
-          color_name: Gold
-          default_background: false
-        - color_value: '#e6ecff'
-          color_name: Purple
-          default_background: true
-      available_button_colors:
-        - color_value: '#3b2d63'
-          color_name: Dark Purple
-          default_background: false
-        - color_value: '#d81e5b'
-          color_name: Red
-          default_background: false
-        - color_value: '#6e92ff'
-          color_name: Purple
-          default_background: false
+  # - _bookshop_name: interactive-demo
+  #   content:
+  #     heading:
+  #       _bookshop_name: simple/heading
+  #       content:
+  #         text: See your changes in real time ⤵
+  #       styles:
+  #         element: h2
+  #         width: normal
+  #         desktop:
+  #           text_alignment:
+  #             align: left
+  #           text_sizing:
+  #             text_size: normal
+  #           margin:
+  #             top: 0
+  #             bottom: 0
+  #         tablet:
+  #           text_alignment:
+  #             active: false
+  #             align: center
+  #           text_sizing:
+  #             active: false
+  #             text_size: big
+  #           margin:
+  #             active: false
+  #             top: 0
+  #             bottom: 0
+  #         mobile:
+  #           text_alignment:
+  #             active: false
+  #             align: center
+  #           text_sizing:
+  #             active: false
+  #             text_size: big
+  #           margin:
+  #             active: false
+  #             top: 0
+  #             bottom: 0
+  #     heading_description:
+  #       _bookshop_name: simple/text-block
+  #       content:
+  #         text_markdown: >-
+  #           Click **\+ Add Content Block** above to test-drive our
+  #           Visual Editor.
+
+
+  #           &nbsp;
+  #       styles:
+  #         width: large
+  #         desktop:
+  #           text_alignment:
+  #             align: left
+  #           text_sizing:
+  #             text_size: normal
+  #           margin:
+  #             top: 0
+  #             bottom: 30
+  #           block_alignment:
+  #             align_block: left
+  #         tablet:
+  #           text_alignment:
+  #             active: false
+  #             align: left
+  #           text_sizing:
+  #             active: false
+  #             text_size: normal
+  #           margin:
+  #             active: false
+  #             top: 0
+  #             bottom: 0
+  #           block_alignment:
+  #             active: false
+  #             align_block: left
+  #         mobile:
+  #           text_alignment:
+  #             active: false
+  #             align: left
+  #           text_sizing:
+  #             active: false
+  #             text_size: normal
+  #           margin:
+  #             active: false
+  #             top: 0
+  #             bottom: 0
+  #           block_alignment:
+  #             active: false
+  #             align_block: left
+  #     navigation:
+  #       header_image: https://cc-dam.imgix.net/Example-nav-1.svg
+  #       footer_image: https://cc-dam.imgix.net/Footer.svg
+  #     text_component:
+  #       name: Text Block
+  #       _type: text_block
+  #       label: Headline & Description
+  #       text_heading: Edit this headline
+  #       content: >-
+  #         Click on each component in the sidebar to edit, or drag to
+  #         reorder — and see your changes in real-time. Try clicking
+  #         the + Add Content Block button to add a component to this
+  #         page!
+  #     image_component:
+  #       name: Image
+  #       _type: image
+  #       label: Hero Image
+  #       image: https://cc-dam.imgix.net/hero-example-demo-image.svg
+  #     button_component:
+  #       name: Button
+  #       _type: button
+  #       label: CTA
+  #       text: Find out more
+  #       color: '#3b2d63'
+  #   style:
+  #     display_heading: true
+  #     display_heading_description: true
+  #     available_background_colors:
+  #       - color_value: '#f3f4f6'
+  #         color_name: Grey
+  #         default_background: false
+  #       - color_value: '#ffffff'
+  #         color_name: White
+  #         default_background: false
+  #       - color_value: '#ffe8bb'
+  #         color_name: Gold
+  #         default_background: false
+  #       - color_value: '#e6ecff'
+  #         color_name: Purple
+  #         default_background: true
+  #     available_button_colors:
+  #       - color_value: '#3b2d63'
+  #         color_name: Dark Purple
+  #         default_background: false
+  #       - color_value: '#d81e5b'
+  #         color_name: Red
+  #         default_background: false
+  #       - color_value: '#6e92ff'
+  #         color_name: Purple
+  #         default_background: false
   - _bookshop_name: hero
     background_color: '#ffffff'
     heading:

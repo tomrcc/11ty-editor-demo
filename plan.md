@@ -8,9 +8,18 @@
 
 # Brief
 
-I have an @component-library/components/interactive-demo/interactive-demo.eleventy.liquid component, which simulates what CloudCannon's editor looks like in the app. It doesn't have to be a 1to1, but it should give potential users a taster of what our visual editor looks like.
+We have two demo components simulating CloudCannon's editor:
 
+1. `interactive-demo` -- simulates structured data editing (frontmatter/Bookshop). DO NOT TOUCH.
+2. `interactive-source-demo` -- simulates Source Editable Regions (editing hard-coded HTML). This is the active work.
+
+The source demo shows a side-by-side view: source code (left) + visual editor (right). Users edit text in the visual preview, and the source code updates reactively. This teaches how CloudCannon's source editables work for pages without frontmatter.
+
+See `HANDOFF.md` for detailed implementation status and the next task (Stage 3: tutorial walkthrough).
 
 # Learnings
 
 - CloudCannon docs are indexed locally (no MCP server though). Use local index over web fetches where possible.
+- The Cursor browser MCP tool can't reliably test responsive breakpoints -- its viewport stays narrow regardless of resize commands. Verify `md:flex` responsive layouts in a real browser.
+- The 11ty file watcher doesn't detect changes in `component-library/` files. Touch `src/pages/index.md` or restart the server to trigger a rebuild after editing bookshop components.
+- CloudCannon source editable attributes: `data-editable="source"`, `data-path="/path/to/file"`, `data-key="unique-id"`. The older `class="editable"` method was deprecated Oct 2025.

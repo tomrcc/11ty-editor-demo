@@ -1,0 +1,34 @@
+spec:
+  structures:
+    - blocks
+  label: Interactive Source Demo
+  description: A demo showing CloudCannon's source editable regions with a side-by-side code and visual view
+  icon: code
+  tags: 
+    - Demo
+
+blueprint:
+  content: 
+    heading: bookshop:simple/heading!
+    heading_description: bookshop:simple/text-block!
+    navigation: 
+      header_image:
+      footer_image:
+    page:
+      title: Edit this headline
+      description: >-
+        This is a simple page with hard-coded content.
+        No frontmatter here!
+      button_text: Find out more
+      hero_image: https://placehold.co/600x400
+  style: 
+    display_heading: false 
+    display_heading_description: false
+
+preview:
+
+_inputs:
+  display_heading:
+    type: switch 
+  display_heading_description:
+    type: switch
