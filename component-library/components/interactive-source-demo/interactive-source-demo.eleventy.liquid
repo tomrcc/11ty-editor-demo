@@ -91,11 +91,11 @@
         footerImage: '{{ content.navigation.footer_image }}',
 
         tooltipSteps: [
-          { text: 'This HTML page has hard-coded content and no frontmatter. Let\u2019s make it editable with CloudCannon\u2019s Source Editable Regions.', button: 'Start' },
-          { text: 'Adding these three attributes tells CloudCannon this heading is editable. Changes write directly to your source file.', button: 'Next' },
-          { text: 'Any text element can become a Source Editable Region \u2014 headings, paragraphs, buttons, and more.', button: 'Next' },
-          { text: 'You can make as many elements editable as you need. Each one just needs its own unique key.', button: 'Next' },
-          { text: 'Your page is set up! Try editing the text on the right \u2014 the source file updates in real time.', button: 'Try it' },
+          { text: 'This HTML page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
+          { text: 'This attribute tells CloudCannon that this element\u2019s content can be edited directly in the source.', button: 'Next' },
+          { text: 'This tells CloudCannon which source file the content lives in.', button: 'Next' },
+          { text: 'This unique key identifies the editable region. Each region in a file needs its own key.', button: 'Next' },
+          { text: 'Your heading is set up! Try editing it on the right \u2014 the source updates in real time.', button: 'Try it' },
         ],
 
         get sourceLines() {
@@ -111,12 +111,24 @@
             { text: '<section>' },
           );
 
-          if (s >= 1) {
-            const isNew = adv === 1;
+          if (s >= 3) {
             lines.push(
-              { text: '  <h1 data-editable="source"', isNew },
-              { text: '      data-path="/index.html"', isNew },
-              { text: '      data-key="title">', isNew },
+              { text: '  <h1 data-editable="source"' },
+              { text: '      data-path="/index.html"' },
+              { text: '      data-key="title">', isNew: adv === 3 },
+              { text: '    ' + this.heading, prop: 'heading' },
+              { text: '  </h1>' },
+            );
+          } else if (s === 2) {
+            lines.push(
+              { text: '  <h1 data-editable="source"' },
+              { text: '      data-path="/index.html">', isNew: adv === 2 },
+              { text: '    ' + this.heading, prop: 'heading' },
+              { text: '  </h1>' },
+            );
+          } else if (s === 1) {
+            lines.push(
+              { text: '  <h1 data-editable="source">', isNew: adv === 1 },
               { text: '    ' + this.heading, prop: 'heading' },
               { text: '  </h1>' },
             );
@@ -124,33 +136,9 @@
             lines.push({ text: '  <h1>' + this.heading + '</h1>' });
           }
 
-          if (s >= 2) {
-            const isNew = adv === 2;
-            lines.push(
-              { text: '  <p data-editable="source"', isNew },
-              { text: '     data-path="/index.html"', isNew },
-              { text: '     data-key="description">', isNew },
-              { text: '    ' + this.description, prop: 'description' },
-              { text: '  </p>' },
-            );
-          } else {
-            lines.push({ text: '  <p>' + this.description + '</p>' });
-          }
-
+          lines.push({ text: '  <p>' + this.description + '</p>' });
           lines.push({ text: '  <img src="/hero.svg" alt="Hero" />' });
-
-          if (s >= 3) {
-            const isNew = adv === 3;
-            lines.push(
-              { text: '  <button data-editable="source"', isNew },
-              { text: '          data-path="/index.html"', isNew },
-              { text: '          data-key="cta">', isNew },
-              { text: '    ' + this.buttonText, prop: 'buttonText' },
-              { text: '  </button>' },
-            );
-          } else {
-            lines.push({ text: '  <button>' + this.buttonText + '</button>' });
-          }
+          lines.push({ text: '  <button>' + this.buttonText + '</button>' });
 
           lines.push(
             { text: '</section>' },
@@ -181,8 +169,8 @@
           switch (this.tutorialStep) {
             case 0: return tabH + 4 * lineH;
             case 1: return tabH + 5 * lineH;
-            case 2: return tabH + 10 * lineH;
-            case 3: return tabH + 16 * lineH;
+            case 2: return tabH + 6 * lineH;
+            case 3: return tabH + 7 * lineH;
             case 4: return tabH + 4 * lineH;
             default: return 0;
           }
@@ -228,7 +216,7 @@
     .tutorial-tooltip {
       position: absolute;
       z-index: 20;
-      left: calc(50% - 270px);
+      left: calc(50% + 12px);
       width: 260px;
       padding: 14px 16px;
       background: #fff;

@@ -11,33 +11,27 @@
     <div class="mb-2">
       <h2
         class="mb-2 text-2xl font-bold uppercase"
-        :class="tutorialStep >= 1 && 'editable-region'"
-        :contenteditable="tutorialStep >= 1"
+        :class="tutorialStep >= 3 && 'editable-region'"
+        :contenteditable="tutorialStep >= 3"
         x-effect="let h = heading; if (document.activeElement !== $el) $el.textContent = h"
         @input="heading = $el.textContent; onEdit('heading')"></h2>
       <p
-        :class="tutorialStep >= 2 && 'editable-region'"
         style="white-space: pre-line;"
-        :contenteditable="tutorialStep >= 2"
-        x-effect="let d = description; if (document.activeElement !== $el) $el.innerText = d"
-        @input="description = $el.innerText; onEdit('description')"></p>
+        x-effect="let d = description; if (document.activeElement !== $el) $el.innerText = d"></p>
     </div>
     <div class="mb-2">
       <img
         decoding="async"
         loading="lazy"
-        class="object-contain w-full rounded-md h-60 editable-region"
+        class="object-contain w-full rounded-md h-60"
         :src="heroImage"
         alt="Hero">
     </div>
     <div class="mb-2">
       <button
         class="px-4 py-2 mt-4 font-bold text-white rounded"
-        :class="tutorialStep >= 3 && 'editable-region'"
         style="background-color: #3b2d63;"
-        :contenteditable="tutorialStep >= 3"
-        x-effect="let t = buttonText; if (document.activeElement !== $el) $el.textContent = t"
-        @input="buttonText = $el.textContent; onEdit('buttonText')"></button>
+        x-effect="let t = buttonText; if (document.activeElement !== $el) $el.textContent = t"></button>
     </div>
   </div>
   <div class="min-h-[82px] pt-4 px-4">

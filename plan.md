@@ -4,6 +4,7 @@
 - Keep comments minimal. When replacing old logic/comments, don't muddy comments up with how things used to be.
 - Don't use square brackets in logs
 - Avoid factory, and generator functions
+- Ask questions during the planning phase if needed
 - Keep any really important info you discover in the bottom of this file, under the learnings heading. Keep it super brief, as we don't want to muddy up the context for new agents too much before they even start their prompt, but don't want to repeat primer instructions.
 
 # Brief
