@@ -10,8 +10,12 @@
     <div class="flex-1 overflow-auto">
       <table class="w-full border-collapse font-mono text-[13px]">
         <template x-for="(line, i) in sourceLines" :key="i">
-          <tr class="leading-6 transition-colors duration-700"
-              :style="(line.prop && line.prop === lastEditedProp) || line.isNew ? 'background-color: rgba(252, 189, 1, 0.12)' : ''">
+          <tr class="leading-6"
+              style="transition: background-color 700ms, opacity 300ms;"
+              :style="{
+                backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
+                opacity: tutorialStep <= 4 && !line.isHeading ? 0.3 : 1,
+              }">
             <td class="text-right select-none pr-4 pl-3 align-top"
                 style="color: #6c7086; width: 1%; white-space: nowrap;"
                 x-text="i + 1"></td>

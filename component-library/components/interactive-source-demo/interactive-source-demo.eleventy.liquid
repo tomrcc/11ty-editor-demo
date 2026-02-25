@@ -113,27 +113,27 @@
 
           if (s >= 3) {
             lines.push(
-              { text: '  <h1 data-editable="source"' },
-              { text: '      data-path="/index.html"' },
-              { text: '      data-key="title">', isNew: adv === 3 },
-              { text: '    ' + this.heading, prop: 'heading' },
-              { text: '  </h1>' },
+              { text: '  <h1 data-editable="source"', isHeading: true },
+              { text: '      data-path="/index.html"', isHeading: true },
+              { text: '      data-key="title">', isNew: adv === 3, isHeading: true },
+              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
+              { text: '  </h1>', isHeading: true },
             );
           } else if (s === 2) {
             lines.push(
-              { text: '  <h1 data-editable="source"' },
-              { text: '      data-path="/index.html">', isNew: adv === 2 },
-              { text: '    ' + this.heading, prop: 'heading' },
-              { text: '  </h1>' },
+              { text: '  <h1 data-editable="source"', isHeading: true },
+              { text: '      data-path="/index.html">', isNew: adv === 2, isHeading: true },
+              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
+              { text: '  </h1>', isHeading: true },
             );
           } else if (s === 1) {
             lines.push(
-              { text: '  <h1 data-editable="source">', isNew: adv === 1 },
-              { text: '    ' + this.heading, prop: 'heading' },
-              { text: '  </h1>' },
+              { text: '  <h1 data-editable="source">', isNew: adv === 1, isHeading: true },
+              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
+              { text: '  </h1>', isHeading: true },
             );
           } else {
-            lines.push({ text: '  <h1>' + this.heading + '</h1>' });
+            lines.push({ text: '  <h1>' + this.heading + '</h1>', isHeading: true });
           }
 
           lines.push({ text: '  <p>' + this.description + '</p>' });
