@@ -1,0 +1,126 @@
+---
+permalink: /compare/
+layout: false
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview Compare</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: system-ui, sans-serif; }
+    body { display: flex; flex-direction: column; }
+
+    #banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 12px;
+      background: #1e293b; color: #94a3b8;
+      font-size: 12px;
+    }
+    #banner .url { color: #e2e8f0; font-family: monospace; }
+    #banner .status { margin-left: auto; }
+    #banner .status.ok { color: #4ade80; }
+    #banner .status.err { color: #f87171; }
+
+    #input-screen {
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh;
+      background: #f8fafc;
+    }
+    #input-screen form {
+      display: flex; gap: 8px;
+      width: 100%; max-width: 480px; padding: 0 24px;
+    }
+    #input-screen input {
+      flex: 1; padding: 8px 12px;
+      border: 1px solid #cbd5e1; border-radius: 6px;
+      font-size: 14px;
+    }
+    #input-screen button {
+      padding: 8px 16px;
+      background: #034AD8; color: white; border: none; border-radius: 6px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    #preview-frame {
+      width: 100%; flex: 1; border: 0;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div id="banner" style="display:none">
+    <span>Comparing:</span>
+    <span class="url" id="banner-url"></span>
+    <span class="status" id="banner-status"></span>
+  </div>
+
+  <div id="input-screen">
+    <form id="url-form">
+      <input type="url" id="url-input" placeholder="https://example.com" required>
+      <button type="submit">Compare</button>
+    </form>
+  </div>
+
+  <iframe id="preview-frame" sandbox="allow-same-origin" style="display:none"></iframe>
+
+  <script src="/assets/scripts/html-processor.js"></script>
+  <script>
+    const CORS_PROXY = 'https://corsproxy.io/?url=';
+
+    const banner = document.getElementById('banner');
+    const bannerUrl = document.getElementById('banner-url');
+    const bannerStatus = document.getElementById('banner-status');
+    const inputScreen = document.getElementById('input-screen');
+    const frame = document.getElementById('preview-frame');
+    const form = document.getElementById('url-form');
+    const urlInput = document.getElementById('url-input');
+
+    async function loadPreview(targetUrl) {
+      let normalized = targetUrl.trim();
+      if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized;
+
+      bannerUrl.textContent = normalized;
+      bannerStatus.textContent = 'Loading...';
+      bannerStatus.className = 'status';
+      banner.style.display = 'flex';
+      inputScreen.style.display = 'none';
+
+      try {
+        const resp = await fetch(CORS_PROXY + encodeURIComponent(normalized));
+        if (!resp.ok) throw new Error('Fetch failed (' + resp.status + ')');
+        const html = await resp.text();
+        if (html.length > 5 * 1024 * 1024) throw new Error('Page too large (>5MB)');
+
+        const { doc, baseUrl } = parseAndCleanHtml(html, normalized);
+        absolutifyDocument(doc, baseUrl);
+        const fullHtml = serializeProcessedDoc(doc);
+
+        frame.srcdoc = fullHtml;
+        frame.style.display = 'block';
+        bannerStatus.textContent = 'Loaded';
+        bannerStatus.className = 'status ok';
+      } catch (e) {
+        bannerStatus.textContent = e.message;
+        bannerStatus.className = 'status err';
+        inputScreen.style.display = 'flex';
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const urlParam = params.get('url');
+    if (urlParam) {
+      urlInput.value = urlParam;
+      loadPreview(urlParam);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      loadPreview(urlInput.value);
+    });
+  </script>
+</body>
+</html>

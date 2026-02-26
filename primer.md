@@ -19,9 +19,22 @@ The source demo shows a side-by-side view: source code (left) + visual editor (r
 
 See `TUTORIAL_PLAN.md` for detailed implementation status and next task.
 
+# Visual comparison workflow
+
+When working on HTML processing or CSS fidelity, always compare the processed preview against the live site. Don't just screenshot the preview pane -- you have nothing to compare it to.
+
+1. Navigate to the live URL in the browser, take a `fullPage: true` screenshot
+2. Navigate to `http://localhost:8080/compare/?url=<encoded-url>`, wait for the "Loaded" banner, take a `fullPage: true` screenshot
+3. Compare the two screenshots top-down. Be specific about differences (e.g. "nav background is transparent instead of dark")
+4. Fix processing logic in `src/assets/scripts/html-processor.js`, reload comparison page, re-screenshot, repeat
+
+The `.cursor/rules/visual-comparison.mdc` rule triggers automatically when you touch the processor or demo files and has full details.
+
 # Learnings
 
 - CloudCannon docs are indexed locally (no MCP server though). Use local index over web fetches where possible.
 - The Cursor browser MCP tool can't reliably test responsive breakpoints -- its viewport stays narrow regardless of resize commands. Verify `md:flex` responsive layouts in a real browser.
 - The 11ty file watcher doesn't detect changes in `component-library/` files. Touch `src/pages/index.md` or restart the server to trigger a rebuild after editing bookshop components.
 - CloudCannon source editable attributes: `data-editable="source"`, `data-path="/path/to/file"`, `data-key="unique-id"`. The older `class="editable"` method was deprecated Oct 2025.
+- HTML processing functions (URL helpers, `parseAndCleanHtml`, `absolutifyDocument`, `serializeProcessedDoc`) live in `src/assets/scripts/html-processor.js`. Shared between the demo component and the `/compare/` page. Source context extraction stays in the demo component's inline script.
+- The `/compare/` page (`src/pages/compare.html`) renders processed HTML full-viewport for visual comparison against the live site. Accepts `?url=` query param.

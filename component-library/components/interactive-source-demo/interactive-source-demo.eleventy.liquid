@@ -125,39 +125,8 @@
     </div>
   </div>
 
+  <script src="/assets/scripts/html-processor.js"></script>
   <script>
-    const SKIP_ABSOLUTIFY = /^(https?:\/\/|\/\/|#|data:|javascript:|mailto:|tel:|blob:)/i;
-
-    function shouldAbsolutify(url) {
-      if (!url || typeof url !== 'string') return false;
-      const trimmed = url.trim();
-      return trimmed !== '' && !SKIP_ABSOLUTIFY.test(trimmed);
-    }
-
-    function absolutifyUrl(url, baseUrl) {
-      try { return new URL(url.trim(), baseUrl).href; }
-      catch { return url; }
-    }
-
-    function absolutifySrcset(srcset, baseUrl) {
-      return srcset.split(',').map(entry => {
-        const parts = entry.trim().split(/\s+/);
-        if (parts.length > 0 && shouldAbsolutify(parts[0])) {
-          parts[0] = absolutifyUrl(parts[0], baseUrl);
-        }
-        return parts.join(' ');
-      }).join(', ');
-    }
-
-    function absolutifyCssUrls(cssText, baseUrl) {
-      return cssText.replace(/url\(\s*(['"]?)(.+?)\1\s*\)/g, (match, quote, url) => {
-        if (shouldAbsolutify(url)) {
-          return 'url(' + quote + absolutifyUrl(url, baseUrl) + quote + ')';
-        }
-        return match;
-      });
-    }
-
     const VOID_ELEMENTS = new Set([
       'area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr'
     ]);
@@ -259,74 +228,28 @@
       };
     }
 
-    function processScrapedHtml(rawHtml, pageUrl) {
-      const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
-
-      // Use <base href> if present, then remove it
-      const baseEl = doc.querySelector('base[href]');
-      const baseUrl = baseEl ? baseEl.href : pageUrl;
-      if (baseEl) baseEl.remove();
-
-      // Remove all scripts
-      doc.querySelectorAll('script, noscript').forEach(el => el.remove());
-
-      // Remove CloudCannon editing attributes
-      doc.querySelectorAll('[data-editable], [data-prop], [data-path], [data-key]').forEach(el => {
-        for (const attr of ['data-editable', 'data-prop', 'data-path', 'data-key', 'data-type']) {
-          el.removeAttribute(attr);
-        }
-      });
-
-      // Find h1 and extract source context BEFORE absolutifying (keeps URLs short in source view)
-      const h1 = doc.querySelector('h1');
-      if (!h1) {
-        throw new Error('No <h1> found on this page. Try a page with a heading.');
+    function isElementVisible(el) {
+      while (el) {
+        const s = getComputedStyle(el);
+        if (s.display === 'none' || s.visibility === 'hidden') return false;
+        el = el.parentElement;
       }
+      return true;
+    }
+
+    function findVisibleH1(doc) {
+      const all = doc.querySelectorAll('h1');
+      for (const h1 of all) {
+        if (isElementVisible(h1)) return h1;
+      }
+      return all[0] || null;
+    }
+
+    function processScrapedHtmlForDemo(rawHtml, pageUrl) {
+      const { doc, h1, headingText, baseUrl } = parseAndCleanHtml(rawHtml, pageUrl);
       const sourceContext = extractSourceContext(doc, h1);
-
-      // Absolutify src, href
-      doc.querySelectorAll('[src], [href]').forEach(el => {
-        for (const attr of ['src', 'href']) {
-          const val = el.getAttribute(attr);
-          if (val && shouldAbsolutify(val)) {
-            el.setAttribute(attr, absolutifyUrl(val, baseUrl));
-          }
-        }
-      });
-
-      // Absolutify srcset
-      doc.querySelectorAll('[srcset]').forEach(el => {
-        el.setAttribute('srcset', absolutifySrcset(el.getAttribute('srcset'), baseUrl));
-      });
-
-      // Absolutify url() in inline styles
-      doc.querySelectorAll('[style]').forEach(el => {
-        const style = el.getAttribute('style');
-        if (style && style.includes('url(')) {
-          el.setAttribute('style', absolutifyCssUrls(style, baseUrl));
-        }
-      });
-
-      // Absolutify url() inside <style> blocks
-      doc.querySelectorAll('style').forEach(el => {
-        if (el.textContent.includes('url(')) {
-          el.textContent = absolutifyCssUrls(el.textContent, baseUrl);
-        }
-      });
-
-      // Inject editable region styles into the document head
-      const headEl = doc.querySelector('head');
-      if (headEl) {
-        const editableStyle = doc.createElement('style');
-        editableStyle.textContent = '.editable-region{outline:2px solid transparent;outline-offset:4px;transition:outline-color .15s ease;cursor:pointer}.editable-region:hover,.editable-region:focus{outline-color:#FCBD01}.editable-region:focus{outline-style:solid}';
-        headEl.appendChild(editableStyle);
-      }
-
-      return {
-        fullHtml: '<!DOCTYPE html>' + doc.documentElement.outerHTML,
-        headingText: h1.textContent.trim(),
-        sourceContext,
-      };
+      absolutifyDocument(doc, baseUrl);
+      return { fullHtml: serializeProcessedDoc(doc), headingText, sourceContext };
     }
 
     document.addEventListener('alpine:init', () => {
@@ -497,7 +420,7 @@
             this.rawHtml = html;
             this.pageUrl = normalized;
 
-            const result = processScrapedHtml(html, normalized);
+            const result = processScrapedHtmlForDemo(html, normalized);
             this.processedHtml = result.fullHtml;
             this.heading = result.headingText;
             this.sourceContextBefore = result.sourceContext.before;
@@ -510,11 +433,30 @@
 
             const onLoad = () => {
               this.$refs.previewPane.removeEventListener('load', onLoad);
+              const iframeDoc = this.$refs.previewPane.contentDocument;
+              this._previewH1 = findVisibleH1(iframeDoc);
+
+              // If the visible h1 isn't the first in DOM order, the source
+              // context we built earlier is pointing at the wrong element.
+              // Re-parse and re-extract around the correct one.
+              const allH1s = iframeDoc.querySelectorAll('h1');
+              const visibleIdx = [...allH1s].indexOf(this._previewH1);
+              if (visibleIdx > 0) {
+                const { doc } = parseAndCleanHtml(this.rawHtml, this.pageUrl);
+                const correctH1 = doc.querySelectorAll('h1')[visibleIdx];
+                if (correctH1) {
+                  this.heading = correctH1.textContent.trim();
+                  const ctx = extractSourceContext(doc, correctH1);
+                  this.sourceContextBefore = ctx.before;
+                  this.sourceContextAfter = ctx.after;
+                  this.h1Indent = ctx.h1Indent;
+                }
+              }
+
               if (this.$refs.sourceScroll) {
                 const scrollTarget = Math.max(0, (this.sourceContextBefore.length - 2) * 24);
                 this.$refs.sourceScroll.scrollTo({ top: scrollTarget, behavior: 'smooth' });
               }
-              this._previewH1 = this.$refs.previewPane.contentDocument.querySelector('h1');
             };
             this.$refs.previewPane.addEventListener('load', onLoad);
           } catch (e) {
