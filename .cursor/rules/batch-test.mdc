@@ -1,0 +1,58 @@
+---
+description: Batch visual comparison testing -- two-phase hybrid workflow using Playwright + agent review
+globs: test-sites.txt, edge-cases.md, test-results/**
+alwaysApply: false
+---
+
+# Batch Visual Comparison Test
+
+Two-phase workflow: Playwright handles mechanical testing (fetch, screenshots, h1 detection), then an agent reviews the results and updates `edge-cases.md`.
+
+## Phase 1: Run the Playwright script (USER runs this, NOT the agent)
+
+**DO NOT run `npm run test:visual` yourself.** It is expensive (network fetches + screenshots for every site) and burns too many tokens. The user will run it and tell you when results are ready.
+
+The script reads `test-sites.txt`, tests each site, and writes:
+- `test-results/report.md` -- structured pass/fail results per site
+- `test-results/screenshots/<domain>-live.png` -- screenshot of the live site
+- `test-results/screenshots/<domain>-processed.png` -- screenshot of the processed compare page
+
+## Phase 2: Agent review
+
+After the script finishes, the agent should:
+
+1. Read `test-results/report.md` for the summary and per-site results.
+2. For each site that **passed** the fetch/load test, read both screenshot images (`<domain>-live.png` and `<domain>-processed.png`) and compare them top-down.
+3. Apply the visual comparison criteria from `.cursor/rules/visual-comparison.mdc`:
+   - **Flag**: Missing backgrounds/gradients, broken layouts, images not loading, CSS that clearly didn't apply, elements visible/hidden incorrectly
+   - **Ignore**: JS-dependent visuals (animations, scroll-triggered reveals, lazy-loaded images, interactive menus), font differences, cookie banners/modals
+4. For sites that **failed** the fetch/load test, note the error from the report -- no visual comparison needed.
+5. For sites where **H1 detection failed**, note the error.
+
+## Updating edge-cases.md
+
+Read `edge-cases.md` first so you know which sites already have entries.
+
+- **Any check fails**: Append a new entry (or update the existing entry) using this format:
+
+```markdown
+## <url>
+- **Status**: Failing | Flaky | Fetch error
+- **Category**: Layout | Images | Fetch | CSS | H1 detection | Other
+- **Description**: <Specific, concrete description of what's wrong>
+- **What to ignore**: <Any expected differences that aren't real bugs>
+- **Likely pipeline stage**: <Which function in html-processor.js or demo component likely needs fixing>
+- **Tested**: <YYYY-MM-DD>
+```
+
+- If a site already has an entry and now **passes all checks**, update its Status to "Fixed" and update the Tested date.
+- If a site already has an entry and still **fails**, update the Description and Tested date.
+
+## Final summary
+
+After reviewing all sites, output:
+
+```
+Batch test complete: X sites tested, Y passed, Z failed
+Failed sites: <list of URLs>
+```

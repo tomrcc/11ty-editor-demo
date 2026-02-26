@@ -59,6 +59,14 @@ function parseAndCleanHtml(rawHtml, pageUrl) {
     }
   });
 
+  // crossorigin on media elements triggers CORS enforcement when the processed
+  // HTML loads from localhost. Without the attribute, images load fine as opaque
+  // cross-origin resources. Leave crossorigin on <link> -- stylesheets need it
+  // for CDNs that require the CORS request flow.
+  doc.querySelectorAll('img[crossorigin], video[crossorigin], audio[crossorigin], source[crossorigin]').forEach(el => {
+    el.removeAttribute('crossorigin');
+  });
+
   // Inline styles like display:var(--flag) break when the script that
   // defines the variable is gone. Drop the display declaration so the
   // element falls back to its class-based display value.
@@ -77,7 +85,7 @@ function parseAndCleanHtml(rawHtml, pageUrl) {
     }
   });
 
-  const h1 = doc.querySelector('h1');
+  const h1 = doc.querySelector('h1:not([aria-hidden="true"])') || doc.querySelector('h1');
   if (!h1) {
     throw new Error('No <h1> found on this page. Try a page with a heading.');
   }

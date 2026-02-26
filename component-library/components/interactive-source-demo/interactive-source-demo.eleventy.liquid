@@ -47,11 +47,24 @@
           @click="resetChanges()">Save</button>
       </div>
     </div>
-    <div x-show="mode === 'input'" x-cloak class="flex flex-1 min-h-0 items-center justify-center" style="background: #f9fafb;">
+    <div
+      x-show="mode === 'input'"
+      x-cloak
+      class="flex flex-1 min-h-0 items-center justify-center"
+      style="background: #f9fafb;">
       <div class="w-full max-w-md px-6">
         <div class="mb-6 text-center">
-          <svg class="w-10 h-10 mx-auto mb-3 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.97.633-3.794 1.708-5.276" />
+          <svg
+            class="w-10 h-10 mx-auto mb-3 text-gray-300"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.97.633-3.794 1.708-5.276" />
           </svg>
           <h3 class="mb-1 text-lg font-semibold text-gray-800">Load a webpage</h3>
           <p class="text-sm text-gray-500">Enter a URL to see how Source Editable Regions work with real content.</p>
@@ -71,15 +84,32 @@
             :class="loading ? 'bg-gray-400' : 'bg-[#034AD8] hover:bg-[#0240b8]'">
             <span x-show="!loading">Load</span>
             <span x-show="loading" class="flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              <svg
+                class="w-3.5 h-3.5 animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
               Loading
             </span>
           </button>
         </form>
-        <div x-show="error" x-cloak class="mt-3 text-sm text-red-600" x-text="error"></div>
+        <div
+          x-show="error"
+          x-cloak
+          class="mt-3 text-sm text-red-600"
+          x-text="error"></div>
         <div class="mt-5">
           <p class="mb-2 text-xs text-gray-400">Try an example:</p>
           <div class="flex flex-wrap gap-2">
@@ -88,12 +118,6 @@
               :disabled="loading"
               class="px-2.5 py-1 text-xs rounded bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors disabled:opacity-50">
               cloudcannon.com
-            </button>
-            <button
-              @click="url = 'https://example.com'; fetchPage()"
-              :disabled="loading"
-              class="px-2.5 py-1 text-xs rounded bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors disabled:opacity-50">
-              example.com
             </button>
           </div>
         </div>
@@ -240,6 +264,7 @@
     function findVisibleH1(doc) {
       const all = doc.querySelectorAll('h1');
       for (const h1 of all) {
+        if (h1.getAttribute('aria-hidden') === 'true') continue;
         if (isElementVisible(h1)) return h1;
       }
       return all[0] || null;
@@ -377,8 +402,24 @@
 
         enableH1Editing() {
           if (!this._previewH1 || this._previewH1.isContentEditable) return;
+
+          // Some sites layer duplicate h1s for visual effects (e.g. stripe.com).
+          // The decorative copy has aria-hidden="true" and a higher z-index,
+          // blocking clicks on the real heading. Hide it.
+          const parent = this._previewH1.parentElement;
+          if (parent) {
+            const text = this._previewH1.textContent.trim();
+            parent.querySelectorAll('h1[aria-hidden="true"]').forEach(sib => {
+              if (sib !== this._previewH1 && sib.textContent.trim() === text) {
+                sib.style.display = 'none';
+              }
+            });
+          }
+
           this._previewH1.contentEditable = 'true';
           this._previewH1.classList.add('editable-region');
+          this._previewH1.style.position = 'relative';
+          this._previewH1.style.zIndex = '999';
           this._previewH1.addEventListener('input', () => {
             this.heading = this._previewH1.textContent.trim();
             this.onEdit('heading');
@@ -474,7 +515,9 @@
   </script>
 
   <style>
-    [x-cloak] { display: none !important; }
+    [x-cloak] {
+      display: none !important;
+    }
 
     .editable-region {
       outline: 2px solid transparent;
