@@ -16,7 +16,8 @@
     "tailwind:watch": "tailwindcss -i src/assets/styles/tailwind.css -o _site/assets/styles/tailwind.css --watch --postcss",
     "tailwind:build": "tailwindcss -i src/assets/styles/tailwind.css -o _site/assets/styles/tailwind.css --postcss",
     "start": "npm-run-all sass:build tailwind:build bookshop-sass:build --parallel bookshop-sass:watch sass:watch tailwind:watch eleventy:watch",
-    "build": "npm-run-all sass:build tailwind:build bookshop-sass:build eleventy:build"
+    "build": "npm-run-all sass:build tailwind:build bookshop-sass:build eleventy:build",
+    "test:visual": "node tests/batch-visual-test.js"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "@bookshop/eleventy-engine": "3.16.1",
     "@bookshop/generate": "3.16.1",
     "autoprefixer": "^10.4.20",
+    "playwright": "^1.58.2",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13"
   },

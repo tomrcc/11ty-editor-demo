@@ -1,0 +1,48 @@
+---
+description: Visual comparison workflow for verifying scraped HTML fidelity against live sites
+globs: src/assets/scripts/html-processor.js, src/pages/compare.html, component-library/components/interactive-source-demo/**
+alwaysApply: false
+---
+
+# Visual Comparison Workflow
+
+When working on HTML processing, CSS fidelity, or visual preview issues, use this workflow to compare the processed preview against the live site. Do NOT rely solely on screenshotting the preview pane -- always compare against the live original.
+
+## Steps
+
+1. **Screenshot the live site.** Navigate to the target URL and take a full-page screenshot:
+   - `browser_navigate` to the URL, then `browser_wait_for` with `time: 3`
+   - `browser_take_screenshot` with `fullPage: true`, `filename: "live-site.png"`
+
+2. **Screenshot the comparison page.** Navigate to the local comparison page and take a full-page screenshot:
+   - `browser_navigate` to `http://localhost:8080/compare/?url=<URL-encoded target>`
+   - `browser_wait_for` with `text: "Loaded"` (the banner shows "Loaded" when the preview renders)
+   - `browser_take_screenshot` with `fullPage: true`, `filename: "processed-preview.png"`
+
+3. **Compare top-down.** Both screenshots are now in context. Focus on the top two viewport-heights first, then scan further. Describe differences concretely:
+   - "The nav background is transparent instead of dark" (good)
+   - "Looks a bit off" (bad -- be specific)
+
+4. **Iterate.** Fix the processing logic in `src/assets/scripts/html-processor.js`, reload the comparison page, re-screenshot, and compare again.
+
+## What to ignore
+
+- **JS-dependent visuals** (animations, scroll-triggered reveals, lazy-loaded images, interactive menus) -- scripts are stripped, so these won't render. Not a bug.
+- **Font differences** -- some sites restrict font loading via CORS. System font fallbacks are expected.
+- **Cookie banners / modals** -- these are JS-driven and won't appear in the processed version.
+
+## What to flag
+
+- Missing background colors or gradients
+- Broken layouts (columns collapsed, spacing wrong)
+- Images not loading (check for relative URL issues)
+- CSS that clearly didn't apply (unstyled text, missing borders)
+- Elements visible in preview that are hidden on the live site (or vice versa)
+
+## Architecture
+
+The processing logic lives in `src/assets/scripts/html-processor.js` and is shared between the demo component and the comparison page. The pipeline is three phases:
+
+1. `parseAndCleanHtml(rawHtml, pageUrl)` -- parse, strip scripts/CC attrs, find h1
+2. `absolutifyDocument(doc, baseUrl)` -- rewrite relative URLs to absolute
+3. `serializeProcessedDoc(doc)` -- inject editable styles, serialize to HTML string

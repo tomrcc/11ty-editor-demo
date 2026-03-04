@@ -41,6 +41,7 @@ module.exports = async function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets/images");
   eleventyConfig.addPassthroughCopy("src/assets/videos");
   eleventyConfig.addPassthroughCopy("src/assets/documents");
+  eleventyConfig.addPassthroughCopy("src/assets/scripts");
   eleventyConfig.addPassthroughCopy(
     "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
   );

@@ -1,0 +1,6 @@
+---
+description: Ensures agents read project context before starting work
+alwaysApply: true
+---
+
+Before starting any task, read `primer.md` in the project root and follow its instructions. It contains the project brief, key architectural decisions, and accumulated learnings. Also read `TUTORIAL_PLAN.md` to understand current implementation status and the edge-case hardening workflow.

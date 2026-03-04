@@ -1,0 +1,23 @@
+# Sites to test with the batch visual comparison workflow.
+# One URL per line. Blank lines and # comments are ignored.
+
+# Passing -- visual preview matches live site, h1 editable in demo
+# https://cloudcannon.com
+# https://docs.github.com
+# https://stripe.com
+# https://astro.build
+# https://vercel.com
+# https://www.netlify.com
+
+# Failing -- visual preview broken (see edge-cases.md)
+# https://aaronhawkins.nz
+# https://developer.mozilla.org
+
+# Won't fix -- JS-rendered content, blank/incomplete after script stripping
+# https://tailwindcss.com
+# https://nextjs.org
+
+# To test
+https://pagefind.app/
+https://rosey.app/
+https://www.cloudflare.com/
