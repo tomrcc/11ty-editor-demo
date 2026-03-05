@@ -112,6 +112,48 @@
           x-text="tooltipSteps[tutorialStep]?.button"></button>
       </div>
     </div>
+    <div
+      x-show="showSaveModal"
+      x-cloak
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="absolute inset-0 z-30 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.25);"
+      @click.self="showSaveModal = false">
+      <div
+        x-show="showSaveModal"
+        x-transition:enter="transition ease-out duration-200 delay-75"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        class="w-full max-w-md mx-4 bg-white rounded-lg shadow-xl overflow-hidden"
+        style="border-top: 4px solid #034AD8;">
+        <div class="px-8 pt-10 pb-8 text-center">
+          <div class="flex justify-center mb-5">
+            <div class="flex items-center justify-center w-12 h-12 rounded-full" style="background: #e6f4ea;">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 13l4 4L19 7" stroke="#34a853" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="text-base text-gray-600 mb-1">Together, we just added visual editing to a world-class website.</p>
+          <p class="text-base font-bold text-gray-900 mb-6">Imagine what you could do with yours.</p>
+          <a
+            href="https://cloudcannon.com/free-trial/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block px-6 py-2.5 text-sm font-semibold text-white rounded-md transition-colors"
+            style="background-color: #034AD8;"
+            onmouseover="this.style.backgroundColor='#0240b8'"
+            onmouseout="this.style.backgroundColor='#034AD8'">
+            Sign up for a free trial
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="/assets/scripts/html-processor.js"></script>
@@ -267,6 +309,7 @@
         error: null,
 
         sourceOpen: true,
+        showSaveModal: false,
         hasChanges: false,
         lastEditedProp: null,
         flashTimeout: null,
@@ -369,6 +412,7 @@
 
         resetChanges() {
           this.hasChanges = false;
+          this.showSaveModal = true;
         },
 
         toggleSource() {
@@ -428,6 +472,7 @@
           this.rawHtml = null;
           this.error = null;
           this.hasChanges = false;
+          this.showSaveModal = false;
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
           this._previewH1 = null;
