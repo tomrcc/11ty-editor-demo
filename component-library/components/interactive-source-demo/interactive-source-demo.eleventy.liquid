@@ -2,97 +2,114 @@
   <div
     id="source-demo-window"
     x-data="sourceEditorManager()"
-    class="relative hidden max-w-screen-lg mx-auto overflow-hidden text-black bg-white border-2 border-black border-solid rounded-lg shadow-lg md:flex md:flex-col"
-    style="--shadow-color: rgba(0,0,0,0.1); height: 700px;">
-    {% bookshop "interactive-source-demo/bits/topbar" %}
-    <div class="flex items-center justify-between px-3 py-1.5 border-b border-gray-200">
-      <div class="flex items-center gap-3">
-        <button class="p-1 rounded hover:bg-gray-100" @click="goBack()" aria-label="Back to site picker">
-          <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <svg class="w-6 h-6" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 3L3 10.5V25.5L18 33L33 25.5V10.5L18 3Z" fill="#F56B2A"/>
-          <path d="M18 10C14.134 10 11 13.134 11 17C11 19.388 12.18 21.498 14 22.748V26H16V23.93C16.634 24.14 17.304 24.26 18 24.26C18.696 24.26 19.366 24.14 20 23.93V26H22V22.748C23.82 21.498 25 19.388 25 17C25 13.134 21.866 10 18 10ZM15.5 17C15.5 16.172 16.172 15.5 17 15.5C17.828 15.5 18.5 16.172 18.5 17C18.5 17.828 17.828 18.5 17 18.5C16.172 18.5 15.5 17.828 15.5 17ZM20.5 17C20.5 16.172 19.828 15.5 19 15.5C19.828 15.5 20.5 16.172 20.5 17C20.5 17.828 19.828 18.5 19 18.5C19.828 18.5 20.5 17.828 20.5 17Z" fill="white" fill-opacity="0.9"/>
-        </svg>
-        <span class="text-sm font-semibold" x-text="pagePath.split('/').pop() || 'index.html'"></span>
+    class="relative hidden max-w-screen-lg mx-auto md:flex md:flex-row gap-3"
+    style="height: 700px;">
+    <div
+      x-show="mode === 'demo' && sourceOpen"
+      x-cloak
+      class="w-[48%] shrink-0 overflow-hidden flex flex-col rounded-lg border-2 border-black shadow-lg"
+      style="background: #1e1e2e;">
+      <div class="flex p-2 pl-4 space-x-2 border-b" style="border-color: #313244;">
+        <span class="w-2 h-2 bg-[#EA6053] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#F0B646] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#58BD4E] rounded-full"></span>
       </div>
-      <div class="flex items-center gap-3">
-        <span
-          class="text-xs"
-          :class="hasChanges ? 'text-amber-600 font-semibold' : 'text-gray-400'"
-          x-text="hasChanges ? 'Unsaved changes' : 'No pending changes'"></span>
-        <svg class="w-7 h-7" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="14" fill="#E5E7EB"/>
-          <circle cx="10" cy="12" r="1.5" fill="#374151"/>
-          <circle cx="18" cy="12" r="1.5" fill="#374151"/>
-          <path d="M9.5 17.5C10.5 19.5 12 20.5 14 20.5C16 20.5 17.5 19.5 18.5 17.5" stroke="#374151" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        </svg>
-        <button
-          class="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded transition-colors"
-          :class="hasChanges ? 'bg-[#034AD8] text-white hover:bg-[#0240b8]' : 'bg-gray-100 text-gray-500'"
-          @click="resetChanges()">
-          <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+      {% bookshop "interactive-source-demo/bits/sidebar" %}
+    </div>
+    <div class="flex-1 min-w-0 overflow-hidden flex flex-col text-black bg-white rounded-lg border-2 border-black shadow-lg">
+      <div class="flex p-2 pl-4 space-x-2 border-b-2 border-black">
+        <span class="w-2 h-2 bg-[#EA6053] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#F0B646] rounded-full"></span>
+        <span class="w-2 h-2 bg-[#58BD4E] rounded-full"></span>
+      </div>
+      <div class="flex items-center justify-between px-3 py-1.5 border-b border-gray-200">
+        <div class="flex items-center gap-3">
+          <button class="p-1 rounded hover:bg-gray-100" @click="goBack()" aria-label="Back to site picker">
+            <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <svg class="w-6 h-6" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 3L3 10.5V25.5L18 33L33 25.5V10.5L18 3Z" fill="#F56B2A"/>
+            <path d="M18 10C14.134 10 11 13.134 11 17C11 19.388 12.18 21.498 14 22.748V26H16V23.93C16.634 24.14 17.304 24.26 18 24.26C18.696 24.26 19.366 24.14 20 23.93V26H22V22.748C23.82 21.498 25 19.388 25 17C25 13.134 21.866 10 18 10ZM15.5 17C15.5 16.172 16.172 15.5 17 15.5C17.828 15.5 18.5 16.172 18.5 17C18.5 17.828 17.828 18.5 17 18.5C16.172 18.5 15.5 17.828 15.5 17ZM20.5 17C20.5 16.172 19.828 15.5 19 15.5C19.828 15.5 20.5 16.172 20.5 17C20.5 17.828 19.828 18.5 19 18.5C19.828 18.5 20.5 17.828 20.5 17Z" fill="white" fill-opacity="0.9"/>
           </svg>
-          Save
-        </button>
+          <span class="text-sm font-semibold" x-text="pagePath.split('/').pop() || 'index.html'"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            class="text-xs"
+            :class="hasChanges ? 'text-amber-600 font-semibold' : 'text-gray-400'"
+            x-text="hasChanges ? 'Unsaved changes' : 'No pending changes'"></span>
+          <svg class="w-7 h-7" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="14" fill="#E5E7EB"/>
+            <circle cx="10" cy="12" r="1.5" fill="#374151"/>
+            <circle cx="18" cy="12" r="1.5" fill="#374151"/>
+            <path d="M9.5 17.5C10.5 19.5 12 20.5 14 20.5C16 20.5 17.5 19.5 18.5 17.5" stroke="#374151" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          <button
+            class="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded transition-colors"
+            :class="hasChanges ? 'bg-[#034AD8] text-white hover:bg-[#0240b8]' : 'bg-gray-100 text-gray-500'"
+            @click="resetChanges()">
+            <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            Save
+          </button>
+        </div>
+      </div>
+      <div
+        x-show="mode === 'input'"
+        x-cloak
+        class="flex flex-1 min-h-0 items-center justify-center"
+        style="background: #f9fafb;">
+        <div class="w-full max-w-sm px-6 text-center">
+          <h3 class="mb-1 text-lg font-semibold text-gray-800">Choose a site to try</h3>
+          <p class="mb-5 text-sm text-gray-500">See how Source Editable Regions work with real content.</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <template x-for="site in PRESET_SITES" :key="site.url">
+              <button
+                @click="loadSite(site.url)"
+                :disabled="loading"
+                class="px-3 py-1.5 text-sm rounded-md bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-medium transition-colors disabled:opacity-50"
+                x-text="site.label"></button>
+            </template>
+          </div>
+          <div x-show="loading" class="flex items-center justify-center gap-2 mt-4 text-sm text-gray-500">
+            <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Loading&hellip;
+          </div>
+          <div
+            x-show="error"
+            x-cloak
+            class="mt-3 text-sm text-red-600"
+            x-text="error"></div>
+        </div>
+      </div>
+      <div x-show="mode === 'demo'" class="relative flex-1 min-h-0 overflow-hidden">
+        {% bookshop "interactive-source-demo/bits/main" %}
       </div>
     </div>
     <div
-      x-show="mode === 'input'"
-      x-cloak
-      class="flex flex-1 min-h-0 items-center justify-center"
-      style="background: #f9fafb;">
-      <div class="w-full max-w-sm px-6 text-center">
-        <h3 class="mb-1 text-lg font-semibold text-gray-800">Choose a site to try</h3>
-        <p class="mb-5 text-sm text-gray-500">See how Source Editable Regions work with real content.</p>
-        <div class="flex flex-wrap justify-center gap-2">
-          <template x-for="site in PRESET_SITES" :key="site.url">
-            <button
-              @click="loadSite(site.url)"
-              :disabled="loading"
-              class="px-3 py-1.5 text-sm rounded-md bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-medium transition-colors disabled:opacity-50"
-              x-text="site.label"></button>
-          </template>
-        </div>
-        <div x-show="loading" class="flex items-center justify-center gap-2 mt-4 text-sm text-gray-500">
-          <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-          </svg>
-          Loading&hellip;
-        </div>
-        <div
-          x-show="error"
-          x-cloak
-          class="mt-3 text-sm text-red-600"
-          x-text="error"></div>
-      </div>
-    </div>
-    <div x-show="mode === 'demo'" class="relative flex flex-1 min-h-0 gap-1 bg-gray-100">
-      {% bookshop "interactive-source-demo/bits/sidebar" %}
-      {% bookshop "interactive-source-demo/bits/main" %}
-      <div
-        x-show="tutorialStep <= 4"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        class="tutorial-tooltip"
-        :style="'top: ' + tooltipTop() + 'px'">
-        <div class="text-sm leading-snug text-gray-700" x-text="tooltipSteps[tutorialStep]?.text"></div>
-        <div class="flex items-center justify-between mt-3">
-          <span class="text-xs text-gray-400" x-text="(tutorialStep + 1) + ' / 5'"></span>
-          <button
-            class="px-3 py-1 text-xs font-semibold text-white rounded"
-            style="background-color: #034AD8;"
-            @click="nextStep()"
-            x-text="tooltipSteps[tutorialStep]?.button"></button>
-        </div>
+      x-show="mode === 'demo' && tutorialStep <= 4"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-95"
+      class="tutorial-tooltip"
+      :style="'top: ' + tooltipTop() + 'px'">
+      <div class="text-sm leading-snug text-gray-700" x-text="tooltipSteps[tutorialStep]?.text"></div>
+      <div class="flex items-center justify-between mt-3">
+        <span class="text-xs text-gray-400" x-text="(tutorialStep + 1) + ' / 5'"></span>
+        <button
+          class="px-3 py-1 text-xs font-semibold text-white rounded"
+          style="background-color: #034AD8;"
+          @click="nextStep()"
+          x-text="tooltipSteps[tutorialStep]?.button"></button>
       </div>
     </div>
   </div>
@@ -324,7 +341,7 @@
 
         tooltipTop() {
           const lineH = 24;
-          const tabH = 32;
+          const tabH = 57;
           const h1Start = this.sourceContextBefore.length;
 
           let targetLine;
@@ -520,7 +537,7 @@
     .tutorial-tooltip {
       position: absolute;
       z-index: 20;
-      left: calc(50% + 14px);
+      left: calc(48% + 14px);
       width: 260px;
       padding: 14px 16px;
       background: #fff;
