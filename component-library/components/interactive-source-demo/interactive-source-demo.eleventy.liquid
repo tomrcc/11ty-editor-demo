@@ -73,10 +73,107 @@
               x-text="error"></div>
           </div>
         </div>
+        <button
+          x-show="tutorialPhase === 'heading-complete' && !showImagePrompt"
+          x-cloak
+          x-transition:enter="transition ease-out duration-300 delay-500"
+          x-transition:enter-start="opacity-0 scale-75"
+          x-transition:enter-end="opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 scale-100"
+          x-transition:leave-end="opacity-0 scale-75"
+          class="image-tutorial-fab absolute bottom-4 right-4 z-20 flex items-center justify-center w-11 h-11 rounded-full shadow-lg transition-transform hover:scale-110"
+          style="background-color: #034AD8;"
+          @click="showImagePrompt = true">
+          <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </button>
+        <div
+          x-show="showImagePrompt"
+          x-cloak
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 translate-y-2"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 translate-y-0"
+          x-transition:leave-end="opacity-0 translate-y-2"
+          class="absolute bottom-4 right-4 z-20 w-64 p-4 bg-white rounded-lg shadow-xl"
+          style="border-top: 3px solid #034AD8;">
+          <p class="text-sm text-gray-700 leading-snug mb-3">Want to make an image editable too?</p>
+          <div class="flex items-center justify-end gap-2">
+            <button
+              class="px-3 py-1 text-xs font-semibold text-gray-500 rounded hover:bg-gray-100"
+              @click="skipImageTutorial()">No thanks</button>
+            <button
+              class="px-3 py-1 text-xs font-semibold text-white rounded"
+              style="background-color: #034AD8;"
+              @click="startImageTutorial()">Yes, let&rsquo;s go</button>
+          </div>
+        </div>
+        <div
+          x-show="showImagePicker"
+          x-cloak
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="absolute inset-0 z-20 flex items-center justify-center"
+          style="background: rgba(0,0,0,0.15);"
+          @click.self="showImagePicker = false">
+          <div
+            x-show="showImagePicker"
+            x-transition:enter="transition ease-out duration-200 delay-75"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="w-72 p-4 bg-white rounded-lg shadow-xl"
+            style="border-top: 3px solid #034AD8;">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-600">Change image</span>
+              <button
+                @click="showImagePicker = false"
+                class="text-gray-400 hover:text-gray-600">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <label class="text-xs text-gray-500 font-semibold">Image URL</label>
+            <div class="flex gap-2 mt-1">
+              <input
+                type="text"
+                x-model="imagePickerUrl"
+                @keydown.enter="applyImageUrl()"
+                class="flex-1 px-2 py-1.5 text-xs border border-gray-300 rounded focus:border-[#FCBD01] focus:outline-none" />
+              <button
+                @click="applyImageUrl()"
+                class="px-3 py-1.5 text-xs font-semibold text-white rounded"
+                style="background-color: #034AD8;">Apply</button>
+            </div>
+            <div class="my-3 border-t border-gray-200"></div>
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              x-ref="imageFileInput"
+              @change="handleImageUpload($event)" />
+            <button
+              @click="$refs.imageFileInput.click()"
+              class="flex items-center justify-center gap-1.5 w-full px-3 py-1.5 text-xs font-semibold text-gray-600 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+              <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              Upload image
+            </button>
+            <p class="text-xs text-gray-400 mt-2">In CloudCannon, this opens your asset browser.</p>
+          </div>
+        </div>
       </div>
     </div>
     <div
-      x-show="processedHtml && tutorialStep <= 4"
+      x-show="processedHtml && (tutorialPhase === 'heading' || tutorialPhase === 'image')"
       x-transition:enter="transition ease-out duration-200"
       x-transition:enter-start="opacity-0 scale-95"
       x-transition:enter-end="opacity-100 scale-100"
@@ -85,14 +182,14 @@
       x-transition:leave-end="opacity-0 scale-95"
       class="tutorial-tooltip"
       :style="'top: ' + tooltipTop() + 'px'">
-      <div class="text-sm leading-snug text-gray-700" x-text="tooltipSteps[tutorialStep]?.text"></div>
+      <div class="text-sm leading-snug text-gray-700" x-text="activeTooltip?.text"></div>
       <div class="flex items-center justify-between mt-3">
-        <span class="text-xs text-gray-400" x-text="(tutorialStep + 1) + ' / 5'"></span>
+        <span class="text-xs text-gray-400" x-text="stepLabel"></span>
         <button
-          class="px-3 py-1 text-xs font-semibold text-white rounded"
-          style="background-color: #034AD8;"
-          @click="nextStep()"
-          x-text="tooltipSteps[tutorialStep]?.button"></button>
+            class="px-3 py-1 text-xs font-semibold text-white rounded"
+            style="background-color: #034AD8;"
+            @click="advanceTutorial()"
+            x-text="activeTooltip?.button"></button>
       </div>
     </div>
     <div
@@ -183,17 +280,17 @@
       return '<' + tag + attrs + '><!-- ... --></' + tag + '>';
     }
 
-    function extractSourceContext(doc, h1El) {
+    function extractSourceContext(doc, targetEl) {
       const body = doc.body;
       const ancestorSet = new Set();
-      let node = h1El.parentElement;
+      let node = targetEl.parentElement;
       while (node && node !== body) {
         ancestorSet.add(node);
         node = node.parentElement;
       }
 
       const lines = [];
-      let h1LineIndex = -1;
+      let targetLineIndex = -1;
 
       function visibleChildren(parent) {
         return [...parent.children].filter(c => !INVISIBLE_TAGS.has(c.tagName.toLowerCase()));
@@ -202,11 +299,11 @@
       function walk(parent, depth) {
         const indent = '  '.repeat(depth);
         const children = visibleChildren(parent);
-        const targetIdx = children.findIndex(c => c === h1El || ancestorSet.has(c));
-        if (targetIdx === -1) return;
+        const idx = children.findIndex(c => c === targetEl || ancestorSet.has(c));
+        if (idx === -1) return;
 
-        const start = Math.max(0, targetIdx - MAX_CONTEXT_SIBLINGS);
-        const end = Math.min(children.length, targetIdx + MAX_CONTEXT_SIBLINGS + 1);
+        const start = Math.max(0, idx - MAX_CONTEXT_SIBLINGS);
+        const end = Math.min(children.length, idx + MAX_CONTEXT_SIBLINGS + 1);
 
         if (start > 0) lines.push({ text: indent + '<!-- ... -->' });
 
@@ -214,8 +311,8 @@
           if (depth === 0 && i > start) lines.push({ text: '' });
           const child = children[i];
 
-          if (child === h1El) {
-            h1LineIndex = lines.length;
+          if (child === targetEl) {
+            targetLineIndex = lines.length;
           } else if (ancestorSet.has(child)) {
             lines.push({ text: indent + formatOpenTag(child) });
             walk(child, depth + 1);
@@ -233,12 +330,12 @@
 
       walk(body, 0);
 
-      if (h1LineIndex === -1) h1LineIndex = lines.length;
+      if (targetLineIndex === -1) targetLineIndex = lines.length;
 
       return {
-        before: lines.slice(0, h1LineIndex),
-        after: lines.slice(h1LineIndex),
-        h1Indent: '  '.repeat(ancestorSet.size),
+        before: lines.slice(0, targetLineIndex),
+        after: lines.slice(targetLineIndex),
+        indent: '  '.repeat(ancestorSet.size),
       };
     }
 
@@ -260,11 +357,26 @@
       return all[0] || null;
     }
 
+    function findVisibleImage(doc) {
+      const all = doc.querySelectorAll('img');
+      for (const img of all) {
+        if (img.getAttribute('aria-hidden') === 'true') continue;
+        if (img.getAttribute('role') === 'presentation') continue;
+        if (!isElementVisible(img)) continue;
+        const rect = img.getBoundingClientRect();
+        if (rect.width < 150 || rect.height < 80) continue;
+        const src = img.getAttribute('src') || '';
+        if (src.startsWith('data:')) continue;
+        return img;
+      }
+      return null;
+    }
+
     function processScrapedHtmlForDemo(rawHtml, pageUrl) {
       const { doc, h1, headingText, baseUrl } = parseAndCleanHtml(rawHtml, pageUrl);
-      const sourceContext = extractSourceContext(doc, h1);
+      const ctx = extractSourceContext(doc, h1);
       absolutifyDocument(doc, baseUrl);
-      return { fullHtml: serializeProcessedDoc(doc), headingText, sourceContext };
+      return { fullHtml: serializeProcessedDoc(doc), headingText, sourceContext: ctx };
     }
 
     document.addEventListener('alpine:init', () => {
@@ -290,6 +402,19 @@
         advanceTimeout: null,
         heading: '',
 
+        tutorialPhase: 'heading',
+        showImagePrompt: false,
+        showImagePicker: false,
+        imagePickerUrl: '',
+        imageTutorialStep: 0,
+        lastAdvancedImageStep: null,
+        imageAdvanceTimeout: null,
+        imageSourceContextBefore: [],
+        imageSourceContextAfter: [],
+        imageIndent: '',
+        imageSrc: '',
+        imageAlt: '',
+
         tooltipSteps: [
           { text: 'This HTML page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
           { text: 'This attribute tells CloudCannon that this element\u2019s content can be edited directly in the source.', button: 'Next' },
@@ -298,7 +423,36 @@
           { text: 'Your heading is set up! Try editing it on the right \u2014 the source updates in real time.', button: 'Try it' },
         ],
 
+        imageTooltipSteps: [
+          { text: 'Let\u2019s make this image editable too. Same three attributes.', button: 'Start' },
+          { text: 'This tells CloudCannon the image can be edited directly in the source.', button: 'Next' },
+          { text: 'This tells CloudCannon which file the image lives in.', button: 'Next' },
+          { text: 'This key identifies the editable region \u2014 each one in a file needs a unique key.', button: 'Next' },
+          { text: 'Your image is set up! Try clicking it to change it \u2014 the source updates in real time.', button: 'Try it' },
+        ],
+
+        get activeTooltip() {
+          switch (this.tutorialPhase) {
+            case 'heading': return this.tooltipSteps[this.tutorialStep];
+            case 'image': return this.imageTooltipSteps[this.imageTutorialStep];
+            default: return null;
+          }
+        },
+
+        get stepLabel() {
+          if (this.tutorialPhase === 'heading') return (this.tutorialStep + 1) + ' / 5';
+          if (this.tutorialPhase === 'image') return (this.imageTutorialStep + 1) + ' / 5';
+          return '';
+        },
+
         get sourceLines() {
+          if (this.tutorialPhase === 'image' || this.imageTutorialStep >= 5) {
+            return this.buildCombinedSourceLines();
+          }
+          return this.buildHeadingSourceLines();
+        },
+
+        buildHeadingSourceLines() {
           const s = this.tutorialStep;
           const adv = this.lastAdvancedStep;
           const ind = this.h1Indent;
@@ -309,34 +463,100 @@
 
           if (s >= 3) {
             lines.push(
-              { text: ind + '<h1 data-editable="source"', isHeading: true },
-              { text: pad + 'data-path="' + this.pagePath + '"', isHeading: true },
-              { text: pad + 'data-key="title">', isNew: adv === 3, isHeading: true },
-              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
-              { text: ind + '</h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source"', isTarget: true },
+              { text: pad + 'data-path="' + this.pagePath + '"', isTarget: true },
+              { text: pad + 'data-key="title">', isNew: adv === 3, isTarget: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isTarget: true },
+              { text: ind + '</h1>', isTarget: true },
             );
           } else if (s === 2) {
             lines.push(
-              { text: ind + '<h1 data-editable="source"', isHeading: true },
-              { text: pad + 'data-path="' + this.pagePath + '">', isNew: adv === 2, isHeading: true },
-              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
-              { text: ind + '</h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source"', isTarget: true },
+              { text: pad + 'data-path="' + this.pagePath + '">', isNew: adv === 2, isTarget: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isTarget: true },
+              { text: ind + '</h1>', isTarget: true },
             );
           } else if (s === 1) {
             lines.push(
-              { text: ind + '<h1 data-editable="source">', isNew: adv === 1, isHeading: true },
-              { text: ind + '  ' + this.heading, prop: 'heading', isHeading: true },
-              { text: ind + '</h1>', isHeading: true },
+              { text: ind + '<h1 data-editable="source">', isNew: adv === 1, isTarget: true },
+              { text: ind + '  ' + this.heading, prop: 'heading', isTarget: true },
+              { text: ind + '</h1>', isTarget: true },
             );
           } else {
             lines.push(
-              { text: ind + '<h1>' + this.heading + '</h1>', isHeading: true },
+              { text: ind + '<h1>' + this.heading + '</h1>', isTarget: true },
             );
           }
 
           lines.push(...this.sourceContextAfter);
 
           return lines;
+        },
+
+        buildCombinedSourceLines() {
+          const lines = [];
+
+          const hInd = this.h1Indent;
+          const hPad = hInd + '    ';
+          lines.push(...this.sourceContextBefore);
+          lines.push(
+            { text: hInd + '<h1 data-editable="source"', isTarget: true },
+            { text: hPad + 'data-path="' + this.pagePath + '"', isTarget: true },
+            { text: hPad + 'data-key="title">', isTarget: true },
+            { text: hInd + '  ' + this.heading, prop: 'heading', isTarget: true },
+            { text: hInd + '</h1>', isTarget: true },
+          );
+          lines.push(...this.sourceContextAfter);
+
+          lines.push({ text: '' }, { text: '<!-- ... -->' }, { text: '' });
+
+          const s = this.imageTutorialStep;
+          const adv = this.lastAdvancedImageStep;
+          const ind = this.imageIndent;
+          const pad = ind + '     ';
+
+          const srcDisplay = this.imageSrc.length > 35
+            ? this.imageSrc.slice(0, 32) + '...' : this.imageSrc;
+          const altDisplay = this.imageAlt
+            ? (this.imageAlt.length > 25 ? this.imageAlt.slice(0, 22) + '...' : this.imageAlt) : '';
+          const altPart = altDisplay ? ' alt="' + altDisplay + '"' : '';
+
+          lines.push(...this.imageSourceContextBefore);
+
+          if (s >= 3) {
+            lines.push(
+              { text: ind + '<img data-editable="source"', isTarget: true },
+              { text: pad + 'data-path="' + this.pagePath + '"', isTarget: true },
+              { text: pad + 'data-key="hero_image"', isNew: adv === 3, isTarget: true },
+              { text: pad + 'src="' + srcDisplay + '"' + altPart + '>', prop: 'imageSrc', isTarget: true },
+            );
+          } else if (s === 2) {
+            lines.push(
+              { text: ind + '<img data-editable="source"', isTarget: true },
+              { text: pad + 'data-path="' + this.pagePath + '"', isNew: adv === 2, isTarget: true },
+              { text: pad + 'src="' + srcDisplay + '"' + altPart + '>', prop: 'imageSrc', isTarget: true },
+            );
+          } else if (s === 1) {
+            lines.push(
+              { text: ind + '<img data-editable="source"', isNew: adv === 1, isTarget: true },
+              { text: pad + 'src="' + srcDisplay + '"' + altPart + '>', prop: 'imageSrc', isTarget: true },
+            );
+          } else {
+            lines.push(
+              { text: ind + '<img src="' + srcDisplay + '"' + altPart + '>', isTarget: true },
+            );
+          }
+
+          lines.push(...this.imageSourceContextAfter);
+
+          return lines;
+        },
+
+        advanceTutorial() {
+          switch (this.tutorialPhase) {
+            case 'heading': this.nextStep(); break;
+            case 'image': this.nextImageStep(); break;
+          }
         },
 
         nextStep() {
@@ -352,13 +572,73 @@
           if (this.tutorialStep === 3) {
             this.$nextTick(() => this.enableH1Editing());
           }
+          if (this.tutorialStep === 5) {
+            this.tutorialPhase = this._previewImg ? 'heading-complete' : 'complete';
+          }
+        },
+
+        nextImageStep() {
+          if (this.imageTutorialStep > 4) return;
+          this.imageTutorialStep++;
+          if (this.imageTutorialStep >= 1 && this.imageTutorialStep <= 3) {
+            this.lastAdvancedImageStep = this.imageTutorialStep;
+            clearTimeout(this.imageAdvanceTimeout);
+            this.imageAdvanceTimeout = setTimeout(() => {
+              this.lastAdvancedImageStep = null;
+            }, 1500);
+          }
+          if (this.imageTutorialStep === 3) {
+            this.$nextTick(() => this.enableImageEditing());
+          }
+          if (this.imageTutorialStep === 5) {
+            this.tutorialPhase = 'complete';
+          }
+        },
+
+        startImageTutorial() {
+          this.showImagePrompt = false;
+          this.tutorialPhase = 'image';
+          this.imageTutorialStep = 0;
+          this.$nextTick(() => {
+            if (this.$refs.sourceScroll) {
+              const headingBlock = this.sourceContextBefore.length + 5 + this.sourceContextAfter.length;
+              const imgOffset = headingBlock + 3 + this.imageSourceContextBefore.length;
+              const scrollTarget = Math.max(0, (imgOffset - 2) * 24);
+              this.$refs.sourceScroll.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+            }
+            if (this._previewImg) {
+              this._previewImg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          });
+        },
+
+        skipImageTutorial() {
+          this.showImagePrompt = false;
+          this.tutorialPhase = 'complete';
         },
 
         tooltipTop() {
           const lineH = 24;
           const tabH = 57;
-          const h1Start = this.sourceContextBefore.length;
+          const scrollTop = this.$refs.sourceScroll ? this.$refs.sourceScroll.scrollTop : 0;
 
+          if (this.tutorialPhase === 'image') {
+            const headingBlock = this.sourceContextBefore.length + 5 + this.sourceContextAfter.length;
+            const imgStart = headingBlock + 3 + this.imageSourceContextBefore.length;
+            const imgScroll = Math.max(0, (imgStart - 2) * lineH);
+            let targetLine;
+            switch (this.imageTutorialStep) {
+              case 0: targetLine = imgStart; break;
+              case 1: targetLine = imgStart; break;
+              case 2: targetLine = imgStart + 1; break;
+              case 3: targetLine = imgStart + 2; break;
+              case 4: targetLine = imgStart; break;
+              default: return 0;
+            }
+            return tabH + (targetLine * lineH) - imgScroll;
+          }
+
+          const h1Start = this.sourceContextBefore.length;
           let targetLine;
           switch (this.tutorialStep) {
             case 0: targetLine = h1Start; break;
@@ -366,10 +646,8 @@
             case 2: targetLine = h1Start + 1; break;
             case 3: targetLine = h1Start + 2; break;
             case 4: targetLine = h1Start; break;
-            default: return 0;
+            default: targetLine = h1Start; break;
           }
-
-          const scrollTop = this.$refs.sourceScroll ? this.$refs.sourceScroll.scrollTop : 0;
           return tabH + (targetLine * lineH) - scrollTop;
         },
 
@@ -423,7 +701,59 @@
           });
         },
 
-        CORS_PROXY: 'https://corsproxy.io/?url=',
+        updatePreviewImage(newSrc) {
+          const img = this._previewImg;
+          if (!img) return;
+
+          const picture = img.closest('picture');
+          if (picture) {
+            picture.querySelectorAll('source').forEach(s => s.remove());
+          }
+
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+          img.removeAttribute('loading');
+          img.src = newSrc;
+        },
+
+        enableImageEditing() {
+          if (!this._previewImg || this._previewImg._editingEnabled) return;
+          this._previewImg._editingEnabled = true;
+
+          this._previewImg.classList.add('editable-region');
+          this._previewImg.style.position = 'relative';
+          this._previewImg.style.zIndex = '999';
+          this._previewImg.style.cursor = 'pointer';
+
+          this._previewImg.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.imagePickerUrl = this._previewImg.src;
+            this.showImagePicker = true;
+          });
+        },
+
+        applyImageUrl() {
+          if (!this._previewImg || !this.imagePickerUrl) return;
+          this.updatePreviewImage(this.imagePickerUrl);
+          const shortSrc = this.imagePickerUrl.replace(/^https?:\/\/[^/]+/, '');
+          this.imageSrc = shortSrc || this.imagePickerUrl;
+          this.onEdit('imageSrc');
+          this.showImagePicker = false;
+        },
+
+        handleImageUpload(event) {
+          const file = event.target.files[0];
+          if (!file || !this._previewImg) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.updatePreviewImage(reader.result);
+            this.imageSrc = '/' + file.name;
+            this.onEdit('imageSrc');
+            this.showImagePicker = false;
+          };
+          reader.readAsDataURL(file);
+        },
 
         init() {
           const params = new URLSearchParams(window.location.search);
@@ -450,7 +780,8 @@
           this.error = null;
 
           try {
-            const response = await fetch(this.CORS_PROXY + encodeURIComponent(normalized));
+            const hostname = new URL(normalized).hostname;
+            const response = await fetch('/scraped/' + hostname + '.html');
             if (!response.ok) {
               throw new Error('Failed to fetch page (' + response.status + ')');
             }
@@ -466,10 +797,13 @@
 
             const result = processScrapedHtmlForDemo(html, normalized);
             this.processedHtml = result.fullHtml;
+            this.$nextTick(() => {
+              this.$refs.previewPane.srcdoc = this.processedHtml;
+            });
             this.heading = result.headingText;
             this.sourceContextBefore = result.sourceContext.before;
             this.sourceContextAfter = result.sourceContext.after;
-            this.h1Indent = result.sourceContext.h1Indent;
+            this.h1Indent = result.sourceContext.indent;
             try { this.pagePath = new URL(normalized).pathname; }
             catch { this.pagePath = '/index.html'; }
             if (this.pagePath === '/') this.pagePath = '/index.html';
@@ -492,7 +826,25 @@
                   const ctx = extractSourceContext(doc, correctH1);
                   this.sourceContextBefore = ctx.before;
                   this.sourceContextAfter = ctx.after;
-                  this.h1Indent = ctx.h1Indent;
+                  this.h1Indent = ctx.indent;
+                }
+              }
+
+              this._previewImg = findVisibleImage(iframeDoc);
+              if (this._previewImg) {
+                const allImgs = iframeDoc.querySelectorAll('img');
+                const imgIdx = [...allImgs].indexOf(this._previewImg);
+                const { doc } = parseAndCleanHtml(this.rawHtml, this.pageUrl);
+                const matchedImg = doc.querySelectorAll('img')[imgIdx];
+                if (matchedImg) {
+                  this.imageSrc = matchedImg.getAttribute('src') || '';
+                  this.imageAlt = matchedImg.getAttribute('alt') || '';
+                  const imgCtx = extractSourceContext(doc, matchedImg);
+                  this.imageSourceContextBefore = imgCtx.before;
+                  this.imageSourceContextAfter = imgCtx.after;
+                  this.imageIndent = imgCtx.indent;
+                } else {
+                  this._previewImg = null;
                 }
               }
 
@@ -503,11 +855,7 @@
             };
             this.$refs.previewPane.addEventListener('load', onLoad);
           } catch (e) {
-            if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
-              this.error = 'Network error. The CORS proxy may be down, or the URL is unreachable.';
-            } else {
-              this.error = e.message;
-            }
+            this.error = e.message;
           } finally {
             this.loading = false;
           }
@@ -559,6 +907,15 @@
       border-top: 8px solid transparent;
       border-bottom: 8px solid transparent;
       border-right: 8px solid #fff;
+    }
+
+    .image-tutorial-fab {
+      animation: fab-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fab-pulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(3, 74, 216, 0.3); }
+      50% { box-shadow: 0 4px 20px rgba(3, 74, 216, 0.6); }
     }
   </style>
 

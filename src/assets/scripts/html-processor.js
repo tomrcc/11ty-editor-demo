@@ -133,7 +133,7 @@ function serializeProcessedDoc(doc) {
   const headEl = doc.querySelector('head');
   if (headEl) {
     const editableStyle = doc.createElement('style');
-    editableStyle.textContent = '.editable-region{outline:2px solid transparent;outline-offset:4px;transition:outline-color .15s ease;cursor:pointer}.editable-region:hover,.editable-region:focus{outline-color:#FCBD01}.editable-region:focus{outline-style:solid}';
+    editableStyle.textContent = '.editable-region{outline:2px solid transparent;outline-offset:4px;transition:outline-color .15s ease;cursor:pointer}.editable-region:hover,.editable-region:focus{outline-color:#FCBD01}.editable-region:focus{outline-style:solid}img.editable-region{cursor:pointer}';
     headEl.appendChild(editableStyle);
   }
   return '<!DOCTYPE html>' + doc.documentElement.outerHTML;

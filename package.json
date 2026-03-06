@@ -15,8 +15,9 @@
     "eleventy:watch": "ELEVENTY_ENV=development eleventy --serve",
     "tailwind:watch": "tailwindcss -i src/assets/styles/tailwind.css -o _site/assets/styles/tailwind.css --watch --postcss",
     "tailwind:build": "tailwindcss -i src/assets/styles/tailwind.css -o _site/assets/styles/tailwind.css --postcss",
+    "scrape": "node scripts/scrape-sites.js",
     "start": "npm-run-all sass:build tailwind:build bookshop-sass:build --parallel bookshop-sass:watch sass:watch tailwind:watch eleventy:watch",
-    "build": "npm-run-all sass:build tailwind:build bookshop-sass:build eleventy:build",
+    "build": "npm-run-all scrape sass:build tailwind:build bookshop-sass:build eleventy:build",
     "test:visual": "node tests/batch-visual-test.js"
   },
   "keywords": [],

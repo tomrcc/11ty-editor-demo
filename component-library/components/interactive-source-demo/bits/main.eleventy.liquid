@@ -2,10 +2,9 @@
   <iframe
     x-ref="previewPane"
     sandbox="allow-same-origin"
-    class="w-full h-full border-0"
-    x-effect="if (processedHtml) $refs.previewPane.srcdoc = processedHtml"></iframe>
+    class="w-full h-full border-0"></iframe>
   <div
-    x-show="tutorialStep <= 4"
+    x-show="tutorialPhase === 'heading' || tutorialPhase === 'image'"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
