@@ -19,8 +19,6 @@ The source demo shows a side-by-side view: source code (left) + visual editor (r
 See `HANDOFF.md` for detailed implementation status and the next task (Stage 3: tutorial walkthrough).
 
 # Learnings
-
-- CloudCannon docs are indexed locally (no MCP server though). Use local index over web fetches where possible.
 - The Cursor browser MCP tool can't reliably test responsive breakpoints -- its viewport stays narrow regardless of resize commands. Verify `md:flex` responsive layouts in a real browser.
 - The 11ty file watcher doesn't detect changes in `component-library/` files. Touch `src/pages/index.md` or restart the server to trigger a rebuild after editing bookshop components.
 - CloudCannon source editable attributes: `data-editable="source"`, `data-path="/path/to/file"`, `data-key="unique-id"`. The older `class="editable"` method was deprecated Oct 2025.
