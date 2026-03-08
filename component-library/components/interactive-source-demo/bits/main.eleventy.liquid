@@ -1,3 +1,5 @@
+<!-- Jetstream preview -->
+<template x-if="currentSite === 'jetstream'">
 <div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white jt-preview">
   <!-- Nav -->
   <nav class="jt-nav">
@@ -139,3 +141,142 @@
     class="absolute inset-0 z-10 pointer-events-none"
     style="background: rgba(255, 255, 255, 0.6);"></div>
 </div>
+</template>
+
+<!-- Sendit preview -->
+<template x-if="currentSite === 'sendit'">
+<div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white sd-preview">
+  <!-- Nav -->
+  <nav class="sd-nav">
+    <a href="/" class="sd-nav-logo">
+      <img src="/demo-sites/sendit/images/logo.svg" alt="Sendit" />
+    </a>
+    <ul class="sd-nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="sd-nav-end">
+      <a href="#" class="sd-btn sd-btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="sd-hero">
+    <div class="sd-hero-shapes">
+      <div class="sd-hero-shape sd-hero-shape-1"></div>
+      <div class="sd-hero-shape sd-hero-shape-2"></div>
+    </div>
+    <div class="sd-hero-content">
+      <h1
+        :class="tutorialStep >= 3 && 'editable-region'"
+        :contenteditable="tutorialStep >= 3"
+        x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
+        @input="headingMain = $el.textContent; onEdit('headingMain')"></h1>
+      <p class="sd-hero-subtext"
+        x-effect="let d = description; if (document.activeElement !== $el) $el.innerHTML = d"></p>
+      <a href="#" class="sd-btn sd-btn-primary">Try This Free</a>
+    </div>
+    <div class="sd-hero-image">
+      <img src="/demo-sites/sendit/images/hero-image.avif" alt="Reports dashboard" />
+    </div>
+  </section>
+
+  <!-- Counter strip -->
+  <section class="sd-counter">
+    <div class="sd-counter-grid">
+      <div class="sd-counter-item">
+        <div class="sd-counter-number">$211m</div>
+        <div class="sd-counter-label">Venture capital raised</div>
+      </div>
+      <div class="sd-counter-item">
+        <div class="sd-counter-number">2016</div>
+        <div class="sd-counter-label">Established in</div>
+      </div>
+      <div class="sd-counter-item">
+        <div class="sd-counter-number">40+</div>
+        <div class="sd-counter-label">Team members</div>
+      </div>
+      <div class="sd-counter-item">
+        <div class="sd-counter-number">4322+</div>
+        <div class="sd-counter-label">Active users</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features header -->
+  <div class="sd-section-header">
+    <h2 class="sd-section-heading">Sendit <span class="sd-section-heading-accent">Features</span></h2>
+    <p class="sd-section-subtext">Our platform offers the most advanced features including automated email content creation, dynamic personalization, and customer segmentation.</p>
+  </div>
+
+  <!-- Feature rows -->
+  <section class="sd-features">
+    <div class="sd-feature-row">
+      <div class="sd-feature-text">
+        <h3 class="sd-feature-title">Email Campaign in one minute</h3>
+        <p class="sd-feature-desc">Send an email campaign with one click, in just minutes. Automate your emails and content, while keeping the human touch.</p>
+      </div>
+    </div>
+    <div class="sd-feature-row sd-feature-row-reversed">
+      <div class="sd-feature-text">
+        <h3 class="sd-feature-title">See every Lead in one Place</h3>
+        <p class="sd-feature-desc">Sales analytics and automation made simple: see every sales lead in one place, regardless of where it came from.</p>
+      </div>
+    </div>
+    <div class="sd-feature-row">
+      <div class="sd-feature-text">
+        <h3 class="sd-feature-title">100% free uploads</h3>
+        <p class="sd-feature-desc">Browse our collection of email marketing templates and start sending beautiful emails in minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="sd-footer">
+    <div class="sd-footer-top">
+      <div class="sd-footer-brand">
+        <img src="/demo-sites/sendit/images/footer-logo.svg" alt="Sendit" />
+        <p class="sd-footer-copyright">© 2026 MyCompany. All rights reserved.</p>
+      </div>
+      <div class="sd-footer-columns">
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Main Pages</div>
+          <ul>
+            <li>Home</li>
+            <li>Features</li>
+            <li>Pricing</li>
+          </ul>
+        </div>
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Community</div>
+          <ul>
+            <li>Blog</li>
+            <li>Changelog</li>
+          </ul>
+        </div>
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Company</div>
+          <ul>
+            <li>About</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <hr class="sd-footer-divider" />
+  </footer>
+
+  <!-- Tutorial overlay -->
+  <div
+    x-show="tutorialStep <= 4"
+    x-transition:leave="transition ease-out duration-300"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="absolute inset-0 z-10 pointer-events-none"
+    style="background: rgba(255, 255, 255, 0.6);"></div>
+</div>
+</template>
