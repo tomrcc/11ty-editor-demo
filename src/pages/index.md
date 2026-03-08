@@ -104,16 +104,6 @@ content_blocks:
             block_alignment:
               active: false
               align_block: left
-      navigation:
-        header_image: https://cc-dam.imgix.net/Example-nav-1.svg
-        footer_image: https://cc-dam.imgix.net/Footer.svg
-      page:
-        title: Edit this headline
-        description: >-
-          This is a simple page with hard-coded content.
-          No frontmatter here!
-        button_text: Find out more
-        hero_image: https://cc-dam.imgix.net/hero-example-demo-image.svg
     style:
       display_heading: true
       display_heading_description: true

@@ -1,4 +1,5 @@
 <section>
+  <link rel="stylesheet" href="/demo-sites/jetstream/preview-styles.css" />
   <div
     id="source-demo-window"
     x-data="sourceEditorManager()"
@@ -133,69 +134,89 @@
         tutorialStep: 0,
         lastAdvancedStep: null,
         advanceTimeout: null,
-        heading: '{{ content.page.title | escapeQuotes }}',
-        description: '{{ content.page.description | escapeQuotes }}',
-        buttonText: '{{ content.page.button_text | escapeQuotes }}',
-        heroImage: '{{ content.page.hero_image }}',
-        navbarImage: '{{ content.navigation.header_image }}',
-        footerImage: '{{ content.navigation.footer_image }}',
+        headingMain: 'Introducing',
+        headingHighlight: 'Jetstream',
+        description: 'A new Astro template by CloudCannon, built with our <a href="#">Astro Component Starter</a> for top performance, true visual editing, and an ideal developer experience.',
+
+        regions: [
+          { key: 'heading-main', prop: 'headingMain', tag: 'span' },
+          { key: 'heading-highlight', prop: 'headingHighlight', tag: 'span', className: 'highlight' },
+        ],
+
+        sourcePath: '/index.astro',
 
         tooltipSteps: [
-          { text: 'This HTML page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
+          { text: 'This Astro page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
           { text: 'This attribute tells CloudCannon that this element\u2019s content can be edited directly in the source.', button: 'Next' },
           { text: 'This tells CloudCannon which source file the content lives in.', button: 'Next' },
           { text: 'This unique key identifies the editable region. Each region in a file needs its own key.', button: 'Next' },
           { text: 'Your heading is set up! Try editing it on the right \u2014 the source updates in real time.', button: 'Try it' },
         ],
 
-        get sourceLines() {
+        regionLines(region, indent) {
           const s = this.tutorialStep;
           const adv = this.lastAdvancedStep;
+          const val = this[region.prop];
+          const cls = region.className ? ` class="${region.className}"` : '';
+          const pad = ' '.repeat(indent);
+          const attrPad = ' '.repeat(indent + 2 + region.tag.length + 1);
           const lines = [];
-
-          lines.push(
-            { text: '<nav>' },
-            { text: '  <img src="/logo.svg" alt="My Site" />' },
-            { text: '</nav>' },
-            { text: '' },
-            { text: '<section>' },
-          );
 
           if (s >= 3) {
             lines.push(
-              { text: '  <h1 data-editable="source"', isHeading: true },
-              { text: '      data-path="/index.html"', isHeading: true },
-              { text: '      data-key="title">', isNew: adv === 3, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: pad + '<' + region.tag + cls + ' data-editable="source"', isHeading: true },
+              { text: attrPad + 'data-path="' + this.sourcePath + '"', isHeading: true },
+              { text: attrPad + 'data-key="' + region.key + '">', isNew: adv === 3, isHeading: true },
+              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
+              { text: pad + '</' + region.tag + '>', isHeading: true },
             );
           } else if (s === 2) {
             lines.push(
-              { text: '  <h1 data-editable="source"', isHeading: true },
-              { text: '      data-path="/index.html">', isNew: adv === 2, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: pad + '<' + region.tag + cls + ' data-editable="source"', isHeading: true },
+              { text: attrPad + 'data-path="' + this.sourcePath + '">', isNew: adv === 2, isHeading: true },
+              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
+              { text: pad + '</' + region.tag + '>', isHeading: true },
             );
           } else if (s === 1) {
             lines.push(
-              { text: '  <h1 data-editable="source">', isNew: adv === 1, isHeading: true },
-              { text: '    ' + this.heading, prop: 'heading', isHeading: true },
-              { text: '  </h1>', isHeading: true },
+              { text: pad + '<' + region.tag + cls + ' data-editable="source">', isNew: adv === 1, isHeading: true },
+              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
+              { text: pad + '</' + region.tag + '>', isHeading: true },
             );
           } else {
-            lines.push({ text: '  <h1>' + this.heading + '</h1>', isHeading: true });
+            lines.push({ text: pad + '<' + region.tag + cls + '>' + val + '</' + region.tag + '>', isHeading: true });
           }
 
-          lines.push({ text: '  <p>' + this.description + '</p>' });
-          lines.push({ text: '  <img src="/hero.svg" alt="Hero" />' });
-          lines.push({ text: '  <button>' + this.buttonText + '</button>' });
+          return lines;
+        },
+
+        get sourceLines() {
+          const lines = [];
 
           lines.push(
+            { text: '---' },
+            { text: 'import Header from "../components/Header.astro";' },
+            { text: 'import Footer from "../components/Footer.astro";' },
+            { text: '---' },
+            { text: '' },
+            { text: '<Header />' },
+            { text: '' },
+            { text: '<section class="hero">' },
+            { text: '  <h1>' },
+          );
+
+          for (const region of this.regions) {
+            lines.push(...this.regionLines(region, 4));
+          }
+
+          lines.push(
+            { text: '  </h1>' },
+            { text: '  <p>A new Astro template by CloudCannon...</p>' },
+            { text: '  <a href="/get-started" class="button">Deploy Jetstream</a>' },
+            { text: '  <img src="/dashboard.svg" alt="Dashboard" />' },
             { text: '</section>' },
             { text: '' },
-            { text: '<footer>' },
-            { text: '  <p>&copy; 2025 My Site</p>' },
-            { text: '</footer>' },
+            { text: '<Footer />' },
           );
 
           return lines;
@@ -217,11 +238,11 @@
           const lineH = 24;
           const tabH = 32;
           switch (this.tutorialStep) {
-            case 0: return tabH + 4 * lineH;
-            case 1: return tabH + 5 * lineH;
-            case 2: return tabH + 6 * lineH;
-            case 3: return tabH + 7 * lineH;
-            case 4: return tabH + 4 * lineH;
+            case 0: return tabH + 8 * lineH;
+            case 1: return tabH + 9 * lineH;
+            case 2: return tabH + 10 * lineH;
+            case 3: return tabH + 11 * lineH;
+            case 4: return tabH + 8 * lineH;
             default: return 0;
           }
         },

@@ -1,0 +1,463 @@
+/*
+ * Jetstream preview styles — scoped to .jt-preview
+ * Extracted from the Jetstream Astro template's design tokens and component styles.
+ * All classes prefixed with .jt- to avoid collision with the host site's Tailwind.
+ */
+
+/* ── Design tokens ── */
+.jt-preview {
+  --jt-gray-0: hsl(0 0% 100%);
+  --jt-gray-1: hsl(0 0% 92%);
+  --jt-gray-2: hsl(0 0% 83%);
+  --jt-gray-3: hsl(0 0% 75%);
+  --jt-gray-8: hsl(0 0% 33%);
+  --jt-gray-9: hsl(0 0% 25%);
+  --jt-gray-10: hsl(0 0% 17%);
+  --jt-gray-11: hsl(0 0% 8%);
+  --jt-gray-12: hsl(0 0% 0%);
+
+  --jt-purple-2: hsl(256 100% 94%);
+  --jt-purple-3: hsl(256 80% 88%);
+  --jt-purple-4: hsl(256 70% 78%);
+  --jt-purple-5: hsl(256 60% 66%);
+  --jt-purple-6: hsl(256 70% 50%);
+  --jt-purple-9: hsl(256 90% 30%);
+
+  --jt-pink-2: hsl(328 100% 90%);
+  --jt-pink-4: hsl(328 80% 70%);
+  --jt-pink-6: hsl(328 70% 50%);
+
+  --jt-color-brand: var(--jt-purple-6);
+  --jt-color-text: var(--jt-gray-10);
+  --jt-color-text-strong: var(--jt-gray-12);
+  --jt-color-text-muted: var(--jt-gray-8);
+  --jt-color-text-on-brand: #fff;
+  --jt-color-bg: #fff;
+  --jt-color-bg-surface: hsl(256 30% 96%);
+  --jt-color-bg-muted: hsl(256 20% 93%);
+  --jt-color-bg-highlight: hsl(256 100% 97%);
+  --jt-color-bg-brand: hsl(256 70% 50%);
+  --jt-color-bg-inverse: hsl(256 90% 12%);
+  --jt-color-border-subtle: hsl(0 0% 90%);
+  --jt-color-shadow: rgba(0, 0, 0, 0.06);
+
+  --jt-font-body: 'Inter', sans-serif;
+  --jt-font-headings: 'JetBrains Mono', monospace;
+
+  --jt-radius-sm: 6px;
+  --jt-radius-md: 10px;
+  --jt-radius-lg: 16px;
+  --jt-radius-full: 9999px;
+
+  --jt-spacing-xs: 0.25rem;
+  --jt-spacing-sm: 0.625rem;
+  --jt-spacing-md: 1rem;
+  --jt-spacing-lg: 1.5rem;
+  --jt-spacing-xl: 2rem;
+  --jt-spacing-2xl: 3rem;
+  --jt-spacing-3xl: 4rem;
+
+  font-family: var(--jt-font-body);
+  color: var(--jt-color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background: var(--jt-color-bg);
+  overflow-x: hidden;
+}
+
+.jt-preview *, .jt-preview *::before, .jt-preview *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.jt-preview img {
+  max-width: 100%;
+  display: block;
+}
+
+.jt-preview a {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ── Nav ── */
+.jt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.5rem;
+}
+
+.jt-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--jt-color-bg);
+  border: 2px solid var(--jt-color-border-subtle);
+  box-shadow: 10px 10px 29px 10px var(--jt-color-shadow);
+  padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+  border-top-right-radius: var(--jt-radius-md);
+  border-bottom-right-radius: var(--jt-radius-md);
+}
+
+.jt-nav-logo img {
+  height: 0.9em;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.jt-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 1;
+  justify-content: center;
+  list-style: none;
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+.jt-nav-links a {
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--jt-radius-sm);
+  color: var(--jt-color-text-strong);
+  white-space: nowrap;
+}
+
+.jt-nav-end {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+/* ── Buttons ── */
+.jt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-weight: 700;
+  font-size: 0.6rem;
+  padding: 0.35em 0.65em;
+  border-radius: var(--jt-radius-sm);
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.jt-btn-primary,
+.jt-preview a.jt-btn-primary {
+  background: var(--jt-color-bg-brand);
+  color: var(--jt-color-text-on-brand);
+}
+
+.jt-btn-tertiary {
+  background: var(--jt-color-bg);
+  border-color: var(--jt-color-border-subtle);
+  color: var(--jt-color-text-strong);
+}
+
+.jt-btn-secondary {
+  background: var(--jt-color-bg-muted);
+  color: var(--jt-color-text-strong);
+}
+
+.jt-btn-ghost {
+  background: transparent;
+  color: var(--jt-color-text-strong);
+  padding: 0.35em;
+}
+
+.jt-btn-icon {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+/* ── Hero ── */
+.jt-hero {
+  position: relative;
+  text-align: center;
+  padding: 2rem 1rem 0;
+  overflow: hidden;
+}
+
+.jt-hero-bg {
+  position: absolute;
+  inset: 0;
+  --grid-size: 20px;
+  --line: var(--jt-color-bg-highlight);
+  opacity: 0.4;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: calc(var(--grid-size) / 2) calc(var(--grid-size) / 2);
+  pointer-events: none;
+}
+
+.jt-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.jt-hero h1,
+.jt-hero .jt-heading-4xl {
+  font-family: var(--jt-font-headings);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--jt-color-text-strong);
+  margin-bottom: 0.75rem;
+}
+
+.jt-hero h1 .jt-highlight {
+  color: var(--jt-color-brand);
+}
+
+.jt-hero-subtext {
+  font-size: 0.7rem;
+  color: var(--jt-color-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.jt-hero-subtext a {
+  color: var(--jt-color-brand);
+  text-decoration: underline;
+}
+
+.jt-hero-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.jt-hero-image {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  border-radius: var(--jt-radius-lg);
+  overflow: hidden;
+}
+
+.jt-hero-image img {
+  width: 100%;
+  height: auto;
+}
+
+/* ── Logo strip ── */
+.jt-logo-strip {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.jt-logo-strip-heading {
+  font-family: var(--jt-font-headings);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--jt-color-text-muted);
+  margin-bottom: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.jt-logo-strip-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+.jt-logo-strip-track img {
+  height: 24px;
+  width: auto;
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+/* ── Feature grid ── */
+.jt-features {
+  padding: 1.5rem 0.75rem;
+}
+
+.jt-features-header {
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto 1.25rem;
+}
+
+.jt-section-heading {
+  font-family: var(--jt-font-headings);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--jt-color-text-strong);
+  margin-bottom: 0.35rem;
+}
+
+.jt-section-subtext {
+  font-size: 0.65rem;
+  color: var(--jt-color-text-muted);
+  line-height: 1.5;
+}
+
+.jt-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.jt-feature-card {
+  background: var(--jt-color-bg-surface);
+  border-radius: var(--jt-radius-md);
+  padding: 0.75rem;
+  border: 1px solid var(--jt-color-border-subtle);
+}
+
+.jt-feature-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--jt-color-bg-muted);
+  border-radius: var(--jt-radius-sm);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.jt-feature-title {
+  font-family: var(--jt-font-headings);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--jt-color-text-strong);
+  margin-bottom: 0.2rem;
+}
+
+.jt-feature-desc {
+  font-size: 0.55rem;
+  color: var(--jt-color-text-muted);
+  line-height: 1.5;
+}
+
+/* ── CTA ── */
+.jt-cta {
+  padding: 1.5rem 0.75rem;
+  text-align: center;
+}
+
+.jt-cta-inner {
+  position: relative;
+  background: var(--jt-color-bg-surface);
+  border-radius: var(--jt-radius-md);
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
+
+.jt-cta-bg-lines {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--jt-color-bg-surface);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--jt-color-bg-surface) 0 1px,
+    transparent 2px 20px
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.jt-cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+.jt-cta-heading {
+  font-family: var(--jt-font-headings);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--jt-color-text-strong);
+  margin-bottom: 0.35rem;
+}
+
+.jt-cta-subtext {
+  font-size: 0.6rem;
+  color: var(--jt-color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Footer ── */
+.jt-footer {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid var(--jt-color-border-subtle);
+}
+
+.jt-footer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.jt-footer-logo img {
+  height: 0.75em;
+  width: auto;
+}
+
+.jt-footer-links {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: var(--jt-color-text-strong);
+}
+
+.jt-footer-divider {
+  border: none;
+  border-top: 2px solid var(--jt-color-border-subtle);
+  margin: 0.5rem 0;
+}
+
+.jt-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jt-footer-legal {
+  font-size: 0.5rem;
+  color: var(--jt-color-text-muted);
+}
+
+.jt-footer-socials {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.jt-footer-socials svg {
+  width: 0.7rem;
+  height: 0.7rem;
+  color: var(--jt-color-text-muted);
+}
+
+/* ── Animations ── */
+@keyframes jt-rotate-angle {
+  from { --jt-angle: 0deg; }
+  to { --jt-angle: 360deg; }
+}
+
+@property --jt-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}

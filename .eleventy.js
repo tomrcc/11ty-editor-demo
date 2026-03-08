@@ -39,6 +39,7 @@ module.exports = async function (eleventyConfig) {
   eleventyConfig.addFilter("markdownify", (markdown) => md.render(markdown));
 
   eleventyConfig.addPassthroughCopy("src/assets/images");
+  eleventyConfig.addPassthroughCopy("demo-sites");
   eleventyConfig.addPassthroughCopy("src/assets/videos");
   eleventyConfig.addPassthroughCopy("src/assets/documents");
   eleventyConfig.addPassthroughCopy(

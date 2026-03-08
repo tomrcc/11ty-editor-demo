@@ -1,47 +1,136 @@
-<div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto text-center bg-white">
-  <div class="min-h-[50px]">
-    <img
-      decoding="async"
-      loading="lazy"
-      :src="navbarImage"
-      alt="Navigation Bar"
-      class="w-full h-[50px]">
-  </div>
-  <div class="flex flex-col p-4 space-y-4 pt-9 pb-0 min-h-[calc(100%-160px)]">
-    <div class="mb-2">
-      <h2
-        class="mb-2 text-2xl font-bold uppercase"
-        :class="tutorialStep >= 3 && 'editable-region'"
-        :contenteditable="tutorialStep >= 3"
-        x-effect="let h = heading; if (document.activeElement !== $el) $el.textContent = h"
-        @input="heading = $el.textContent; onEdit('heading')"></h2>
-      <p
-        style="white-space: pre-line;"
-        x-effect="let d = description; if (document.activeElement !== $el) $el.innerText = d"></p>
+<div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white jt-preview">
+  <!-- Nav -->
+  <nav class="jt-nav">
+    <div class="jt-nav-inner">
+      <a href="/" class="jt-nav-logo">
+        <img src="/demo-sites/jetstream/images/jetstream-logo.svg" alt="Jetstream" />
+      </a>
+      <ul class="jt-nav-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <div class="jt-nav-end">
+        <a href="#" class="jt-btn jt-btn-primary">Get started →</a>
+      </div>
     </div>
-    <div class="mb-2">
-      <img
-        decoding="async"
-        loading="lazy"
-        class="object-contain w-full rounded-md h-60"
-        :src="heroImage"
-        alt="Hero">
+  </nav>
+
+  <!-- Hero -->
+  <section class="jt-hero">
+    <div class="jt-hero-bg"></div>
+    <div class="jt-hero-content">
+      <h1>
+        <span
+          :class="tutorialStep >= 3 && 'editable-region'"
+          :contenteditable="tutorialStep >= 3"
+          x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
+          @input="headingMain = $el.textContent; onEdit('headingMain')"></span><br />
+        <span class="jt-highlight"
+          :class="tutorialStep >= 3 && 'editable-region'"
+          :contenteditable="tutorialStep >= 3"
+          x-effect="let t = headingHighlight; if (document.activeElement !== $el) $el.textContent = t"
+          @input="headingHighlight = $el.textContent; onEdit('headingHighlight')"></span>
+      </h1>
+      <p class="jt-hero-subtext"
+        x-effect="let d = description; if (document.activeElement !== $el) $el.innerHTML = d"></p>
+      <div class="jt-hero-buttons">
+        <a href="#" class="jt-btn jt-btn-primary">Deploy Jetstream on CloudCannon →</a>
+        <a href="#" class="jt-btn jt-btn-tertiary">Check out the Component Starter →</a>
+      </div>
     </div>
-    <div class="mb-2">
-      <button
-        class="px-4 py-2 mt-4 font-bold text-white rounded"
-        style="background-color: #3b2d63;"
-        x-effect="let t = buttonText; if (document.activeElement !== $el) $el.textContent = t"></button>
+    <div class="jt-hero-image">
+      <img src="/demo-sites/jetstream/images/hero-1.svg" alt="Dashboard overview" />
     </div>
-  </div>
-  <div class="min-h-[82px] pt-4 px-4">
-    <img
-      decoding="async"
-      loading="lazy"
-      :src="footerImage"
-      alt="Footer"
-      class="w-full h-[82px]">
-  </div>
+  </section>
+
+  <!-- Logo strip -->
+  <section class="jt-logo-strip">
+    <p class="jt-logo-strip-heading">Trusted by industry leaders</p>
+    <div class="jt-logo-strip-track">
+      <img src="/demo-sites/jetstream/images/apex.svg" alt="Apex" />
+      <img src="/demo-sites/jetstream/images/aura.svg" alt="Aura" />
+      <img src="/demo-sites/jetstream/images/fintech.svg" alt="FinTech" />
+      <img src="/demo-sites/jetstream/images/medical.svg" alt="Medical" />
+      <img src="/demo-sites/jetstream/images/dental.svg" alt="Dental" />
+      <img src="/demo-sites/jetstream/images/fake-uni.svg" alt="University" />
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="jt-features">
+    <div class="jt-features-header">
+      <h2 class="jt-section-heading">What we do best</h2>
+      <p class="jt-section-subtext">Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night.</p>
+    </div>
+    <div class="jt-features-grid">
+      <div class="jt-feature-card">
+        <div class="jt-feature-icon">⚡</div>
+        <h3 class="jt-feature-title">Lightning Fast</h3>
+        <p class="jt-feature-desc">Edge-optimized delivery with sub-50ms response times worldwide.</p>
+      </div>
+      <div class="jt-feature-card">
+        <div class="jt-feature-icon">🔒</div>
+        <h3 class="jt-feature-title">Secure by Default</h3>
+        <p class="jt-feature-desc">Enterprise-grade security with automatic SSL and DDoS protection.</p>
+      </div>
+      <div class="jt-feature-card">
+        <div class="jt-feature-icon">📊</div>
+        <h3 class="jt-feature-title">Real-time Analytics</h3>
+        <p class="jt-feature-desc">Monitor performance and usage with built-in dashboards.</p>
+      </div>
+      <div class="jt-feature-card">
+        <div class="jt-feature-icon">🔄</div>
+        <h3 class="jt-feature-title">Auto Scaling</h3>
+        <p class="jt-feature-desc">Seamlessly handle traffic spikes without manual intervention.</p>
+      </div>
+      <div class="jt-feature-card">
+        <div class="jt-feature-icon">🛠️</div>
+        <h3 class="jt-feature-title">Developer First</h3>
+        <p class="jt-feature-desc">Powerful APIs, CLI tools, and integrations your team already loves.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="jt-cta">
+    <div class="jt-cta-inner">
+      <div class="jt-cta-bg-lines"></div>
+      <div class="jt-cta-content">
+        <h2 class="jt-cta-heading">Start building with Jetstream today</h2>
+        <p class="jt-cta-subtext">Deploy your first project in under five minutes.</p>
+        <a href="#" class="jt-btn jt-btn-primary">Get started for free →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="jt-footer">
+    <div class="jt-footer-top">
+      <div class="jt-footer-logo">
+        <img src="/demo-sites/jetstream/images/jetstream-logo.svg" alt="Jetstream" />
+      </div>
+      <ul class="jt-footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <hr class="jt-footer-divider" />
+    <div class="jt-footer-bottom">
+      <span class="jt-footer-legal">© 2026 All rights reserved.</span>
+      <div class="jt-footer-socials">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Tutorial overlay -->
   <div
     x-show="tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
