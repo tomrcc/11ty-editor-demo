@@ -1,0 +1,7 @@
+[
+  { "name": "CloudCannon", "url": "https://cloudcannon.com", "slug": "cloudcannon-com" },
+  { "name": "GitHub Docs", "url": "https://docs.github.com", "slug": "docs-github-com" },
+  { "name": "Astro", "url": "https://astro.build", "slug": "astro-build" },
+  { "name": "Vercel", "url": "https://vercel.com", "slug": "vercel-com" },
+  { "name": "Netlify", "url": "https://www.netlify.com", "slug": "www-netlify-com" }
+]

@@ -141,6 +141,8 @@
 
   <script src="/assets/scripts/html-processor.js"></script>
   <script>
+    const DEMO_SITES = {{ demo_sites | json }};
+
     const VOID_ELEMENTS = new Set([
       'area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr'
     ]);
@@ -423,43 +425,39 @@
           });
         },
 
-        CORS_PROXY: 'https://corsproxy.io/?url=',
-
         init() {
           const params = new URLSearchParams(window.location.search);
-          const siteParam = params.get('site');
-          if (!siteParam) {
+          const slug = params.get('site');
+          if (!slug) {
             this.loading = false;
             this.error = 'No site specified. Use the launcher to pick a site.';
             return;
           }
-          this.url = siteParam;
+          this._siteData = DEMO_SITES.find(s => s.slug === slug);
+          if (!this._siteData) {
+            this.loading = false;
+            this.error = 'Unknown site "' + slug + '". Use the launcher to pick a supported site.';
+            return;
+          }
+          this.url = this._siteData.url;
           this.fetchPage();
         },
 
         async fetchPage() {
-          if (!this.url) return;
+          if (!this._siteData) return;
 
-          let normalized = this.url.trim();
-          if (!/^https?:\/\//i.test(normalized)) {
-            normalized = 'https://' + normalized;
-          }
-          this.url = normalized;
-
+          const normalized = this._siteData.url;
           this.loading = true;
           this.error = null;
 
           try {
-            const response = await fetch(this.CORS_PROXY + encodeURIComponent(normalized));
+            const response = await fetch('/assets/scraped/' + this._siteData.slug + '.html');
             if (!response.ok) {
-              throw new Error('Failed to fetch page (' + response.status + ')');
+              throw new Error('Failed to load pre-fetched page (' + response.status + ')');
             }
             const html = await response.text();
-            if (html.length > 5 * 1024 * 1024) {
-              throw new Error('Page is too large (over 5 MB). Try a simpler page.');
-            }
             if (!html.trim()) {
-              throw new Error('The page returned empty content.');
+              throw new Error('The pre-fetched page is empty.');
             }
             this.rawHtml = html;
             this.pageUrl = normalized;
@@ -503,11 +501,7 @@
             };
             this.$refs.previewPane.addEventListener('load', onLoad);
           } catch (e) {
-            if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
-              this.error = 'Network error. The CORS proxy may be down, or the URL is unreachable.';
-            } else {
-              this.error = e.message;
-            }
+            this.error = e.message;
           } finally {
             this.loading = false;
           }

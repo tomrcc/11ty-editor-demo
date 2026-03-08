@@ -7,7 +7,8 @@ Replaced the hardcoded demo content in `interactive-source-demo` with runtime-sc
 ### Architecture
 
 ```
-URL Input → fetch via CORS proxy → DOMParser → process HTML → inject preview + generate source lines
+Build: fetch sites → static HTML files
+Client: load static file → DOMParser → process HTML → inject preview + generate source lines
 ```
 
 **Key files:**
@@ -20,7 +21,7 @@ URL Input → fetch via CORS proxy → DOMParser → process HTML → inject pre
 
 **Data flow:**
 
-1. User enters URL → `fetchPage()` fetches via `corsproxy.io` CORS proxy
+1. User picks a site from the launcher → `fetchPage()` loads pre-fetched HTML from `/assets/scraped/<slug>.html`
 2. `parseAndCleanHtml()` (shared) parses with DOMParser, strips scripts/CC attrs, strips `x-cloak`, cleans `display:var()`, finds first h1
 3. `extractSourceContext()` (demo-only) extracts source context BEFORE absolutifying (keeps URLs short in source view)
 4. `absolutifyDocument()` (shared) rewrites all relative URLs to absolute
@@ -61,7 +62,7 @@ The preview is currently a sandboxed iframe with `srcdoc`. An earlier investigat
 ## Learnings
 
 - **11ty file watcher doesn't detect `component-library/` changes.** Touch `src/pages/index.md` or restart the server after editing bookshop components.
-- **CORS proxy:** `corsproxy.io` is free for localhost/dev. Production domains need the $5/mo Hobby plan. The proxy URL is a single constant (`CORS_PROXY`) — easy to swap.
+- **Build-time fetch:** Site HTML is fetched at build time by `scripts/fetch-sites.js` and served as static files from `/assets/scraped/`. The site list lives in `src/_data/demo_sites.json`. The compare page still uses `corsproxy.io` for local dev.
 - **Alpine `x-cloak` handling:** Sites using Alpine.js have `[x-cloak]{display:none!important}` in CSS. Since scripts are stripped and Alpine never initialises, `x-cloak` elements stay hidden. The processor removes `x-cloak` and infers default visibility from `x-show` expressions (negated = visible by default, bare var = hidden by default).
 - **Script-dependent CSS variables:** Inline styles like `display:var(--flag)` break when the script that defines the variable is stripped. The processor removes `display:var()` declarations so class-based rules take over.
 - **Font CORS errors are expected.** Some sites restrict font loading to specific origins. Fonts fall back to system fonts — harmless.
