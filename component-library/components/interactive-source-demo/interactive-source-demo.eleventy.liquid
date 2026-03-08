@@ -157,35 +157,42 @@
           const s = this.tutorialStep;
           const adv = this.lastAdvancedStep;
           const val = this[region.prop];
-          const cls = region.className ? ` class="${region.className}"` : '';
           const pad = ' '.repeat(indent);
-          const attrPad = ' '.repeat(indent + 2 + region.tag.length + 1);
+          const attrPad = ' '.repeat(indent + 2);
           const lines = [];
 
-          if (s >= 3) {
-            lines.push(
-              { text: pad + '<' + region.tag + cls + ' data-editable="source"', isHeading: true },
-              { text: attrPad + 'data-path="' + this.sourcePath + '"', isHeading: true },
-              { text: attrPad + 'data-key="' + region.key + '">', isNew: adv === 3, isHeading: true },
-              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
-              { text: pad + '</' + region.tag + '>', isHeading: true },
-            );
-          } else if (s === 2) {
-            lines.push(
-              { text: pad + '<' + region.tag + cls + ' data-editable="source"', isHeading: true },
-              { text: attrPad + 'data-path="' + this.sourcePath + '">', isNew: adv === 2, isHeading: true },
-              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
-              { text: pad + '</' + region.tag + '>', isHeading: true },
-            );
-          } else if (s === 1) {
-            lines.push(
-              { text: pad + '<' + region.tag + cls + ' data-editable="source">', isNew: adv === 1, isHeading: true },
-              { text: pad + '  ' + val, prop: region.prop, isHeading: true },
-              { text: pad + '</' + region.tag + '>', isHeading: true },
-            );
-          } else {
+          if (s === 0) {
+            const cls = region.className ? ` class="${region.className}"` : '';
             lines.push({ text: pad + '<' + region.tag + cls + '>' + val + '</' + region.tag + '>', isHeading: true });
+            return lines;
           }
+
+          lines.push({ text: pad + '<' + region.tag, isHeading: true });
+
+          if (region.className) {
+            lines.push({ text: attrPad + 'class="' + region.className + '"', isHeading: true });
+          }
+
+          if (s === 1) {
+            lines.push({ text: attrPad + 'data-editable="source">', isNew: adv === 1, isHeading: true });
+          } else {
+            lines.push({ text: attrPad + 'data-editable="source"', isHeading: true });
+          }
+
+          if (s >= 2 && s === 2) {
+            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '">', isNew: adv === 2, isHeading: true });
+          } else if (s >= 2) {
+            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '"', isHeading: true });
+          }
+
+          if (s >= 3) {
+            lines.push({ text: attrPad + 'data-key="' + region.key + '">', isNew: adv === 3, isHeading: true });
+          }
+
+          lines.push(
+            { text: attrPad + val, prop: region.prop, isHeading: true },
+            { text: pad + '</' + region.tag + '>', isHeading: true },
+          );
 
           return lines;
         },
@@ -195,28 +202,28 @@
 
           lines.push(
             { text: '---' },
-            { text: 'import Header from "../components/Header.astro";' },
-            { text: 'import Footer from "../components/Footer.astro";' },
+            { text: 'import Layout from "../layouts/BaseLayout.astro"' },
             { text: '---' },
             { text: '' },
-            { text: '<Header />' },
-            { text: '' },
-            { text: '<section class="hero">' },
-            { text: '  <h1>' },
+            { text: '<Layout title="home">' },
+            { text: '  <section class="hero">' },
+            { text: '    <h1>' },
           );
 
           for (const region of this.regions) {
-            lines.push(...this.regionLines(region, 4));
+            lines.push(...this.regionLines(region, 6));
           }
 
           lines.push(
-            { text: '  </h1>' },
-            { text: '  <p>A new Astro template by CloudCannon...</p>' },
-            { text: '  <a href="/get-started" class="button">Deploy Jetstream</a>' },
-            { text: '  <img src="/dashboard.svg" alt="Dashboard" />' },
-            { text: '</section>' },
+            { text: '    </h1>' },
+            { text: '    <p>A new Astro template by CloudCannon...</p>' },
+            { text: '    <a href="/get-started" class="button">Deploy Jetstream</a>' },
+            { text: '    <img src="/dashboard.svg" alt="Dashboard" />' },
+            { text: '  </section>' },
             { text: '' },
-            { text: '<Footer />' },
+            { text: '  <!-- ... Rest of page here -->' },
+            { text: '' },
+            { text: '</Layout>' },
           );
 
           return lines;
@@ -238,11 +245,11 @@
           const lineH = 24;
           const tabH = 32;
           switch (this.tutorialStep) {
-            case 0: return tabH + 8 * lineH;
-            case 1: return tabH + 9 * lineH;
-            case 2: return tabH + 10 * lineH;
-            case 3: return tabH + 11 * lineH;
-            case 4: return tabH + 8 * lineH;
+            case 0: return tabH + 6 * lineH;
+            case 1: return tabH + 8 * lineH;
+            case 2: return tabH + 9 * lineH;
+            case 3: return tabH + 10 * lineH;
+            case 4: return tabH + 6 * lineH;
             default: return 0;
           }
         },
