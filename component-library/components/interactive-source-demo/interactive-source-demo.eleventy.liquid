@@ -195,7 +195,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p class="mt-4 mb-1 text-gray-700">Together, we just added visual editing to a world-class website.</p>
+            <p class="mt-4 mb-1 text-gray-700">Together, we just added visual editing to a static site.</p>
             <p class="mb-6 font-semibold text-gray-900">Imagine what you could do with yours.</p>
             <a
               href="https://cloudcannon.com/free-trial/"
@@ -254,6 +254,8 @@
         headingTutorialComplete: false,
         imageTutorialComplete: false,
         dataTutorialComplete: false,
+        highlightTarget: null,
+        highlightTimeout: null,
         codeScrollTop: 0,
 
         blogTitle: 'Start building with Jetstream today',
@@ -673,12 +675,17 @@
           if (this.tutorialStep === 4) {
             if (this.activeTutorial === 'heading') {
               this.headingTutorialComplete = true;
+              this.highlightTarget = 'heading';
             } else if (this.activeTutorial === 'image') {
               this.imageTutorialComplete = true;
+              this.highlightTarget = 'image';
             } else if (this.activeTutorial === 'data') {
               this.dataTutorialComplete = true;
+              this.highlightTarget = 'data';
             }
             this.activeTutorial = null;
+            clearTimeout(this.highlightTimeout);
+            this.highlightTimeout = setTimeout(() => { this.highlightTarget = null; }, 2000);
             return;
           }
 
@@ -813,6 +820,8 @@
         onEdit(prop) {
           this.hasChanges = true;
           this.lastEditedProp = prop;
+          this.highlightTarget = null;
+          clearTimeout(this.highlightTimeout);
           clearTimeout(this.flashTimeout);
           this.flashTimeout = setTimeout(() => {
             this.lastEditedProp = null;
@@ -894,6 +903,16 @@
 
     .editable-region-image:hover {
       outline-color: #FCBD01;
+    }
+
+    .editable-region-highlight {
+      animation: region-pulse 0.4s ease-in-out 3;
+      outline-color: #FCBD01;
+    }
+
+    @keyframes region-pulse {
+      0%, 100% { outline-color: #FCBD01; }
+      50% { outline-color: transparent; }
     }
 
     .blog-body-toolbar {

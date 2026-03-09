@@ -26,12 +26,12 @@
     <div class="jt-hero-content">
       <h1>
         <span
-          :class="headingEditable && 'editable-region'"
+          :class="[headingEditable && 'editable-region', highlightTarget === 'heading' && 'editable-region-highlight']"
           :contenteditable="headingEditable"
           x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
           @input="headingMain = $el.textContent; onEdit('headingMain')"></span><br />
         <span class="jt-highlight"
-          :class="headingEditable && 'editable-region'"
+          :class="[headingEditable && 'editable-region', highlightTarget === 'heading' && 'editable-region-highlight']"
           :contenteditable="headingEditable"
           x-effect="let t = headingHighlight; if (document.activeElement !== $el) $el.textContent = t"
           @input="headingHighlight = $el.textContent; onEdit('headingHighlight')"></span>
@@ -46,7 +46,7 @@
     <div class="jt-hero-image">
       <img
         :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/jetstream/images/hero-1.svg'"
-        :class="imageEditable && 'editable-region-image'"
+        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
         @click="imageEditable && (showImagePicker = !showImagePicker)"
         alt="Dashboard overview" />
     </div>
@@ -176,7 +176,7 @@
     </div>
     <div class="sd-hero-content">
       <h1
-        :class="headingEditable && 'editable-region'"
+        :class="[headingEditable && 'editable-region', highlightTarget === 'heading' && 'editable-region-highlight']"
         :contenteditable="headingEditable"
         x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
         @input="headingMain = $el.textContent; onEdit('headingMain')"></h1>
@@ -187,7 +187,7 @@
     <div class="sd-hero-image">
       <img
         :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/sendit/images/hero-image.avif'"
-        :class="imageEditable && 'editable-region-image'"
+        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
         @click="imageEditable && (showImagePicker = !showImagePicker)"
         alt="Reports dashboard" />
     </div>
@@ -312,7 +312,7 @@
 
   <section class="jt-blog-hero">
     <h1 class="jt-blog-title"
-      :class="titleEditable && 'editable-region'"
+      :class="[titleEditable && 'editable-region', highlightTarget === 'data' && 'editable-region-highlight']"
       :contenteditable="titleEditable"
       x-effect="let t = blogTitle; if (document.activeElement !== $el) $el.textContent = t"
       @input="blogTitle = $el.textContent; onEdit('blogTitle')"></h1>
@@ -333,7 +333,7 @@
     <button @mousedown.prevent="document.execCommand('italic')"><em>I</em></button>
   </div>
   <div class="jt-blog-body"
-    :class="bodyEditable && 'editable-region'"
+    :class="[bodyEditable && 'editable-region', highlightTarget === 'data' && 'editable-region-highlight']"
     :contenteditable="bodyEditable"
     x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerHTML = b"
     @input="blogBody = $el.innerHTML; onEdit('blogBody')"></div>
@@ -397,7 +397,7 @@
       <div class="sd-blog-hero-shape sd-blog-hero-shape-2"></div>
     </div>
     <h1 class="sd-blog-title"
-      :class="titleEditable && 'editable-region'"
+      :class="[titleEditable && 'editable-region', highlightTarget === 'data' && 'editable-region-highlight']"
       :contenteditable="titleEditable"
       x-effect="let t = blogTitle; if (document.activeElement !== $el) $el.textContent = t"
       @input="blogTitle = $el.textContent; onEdit('blogTitle')"></h1>
@@ -418,7 +418,7 @@
     <button @mousedown.prevent="document.execCommand('italic')"><em>I</em></button>
   </div>
   <div class="sd-blog-body"
-    :class="bodyEditable && 'editable-region'"
+    :class="[bodyEditable && 'editable-region', highlightTarget === 'data' && 'editable-region-highlight']"
     :contenteditable="bodyEditable"
     x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerHTML = b"
     @input="blogBody = $el.innerHTML; onEdit('blogBody')"></div>
