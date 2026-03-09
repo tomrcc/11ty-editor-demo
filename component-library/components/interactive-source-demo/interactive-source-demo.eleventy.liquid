@@ -196,18 +196,34 @@
           x-transition:leave="transition ease-in duration-150"
           x-transition:leave-start="opacity-100 scale-100"
           x-transition:leave-end="opacity-0 scale-95"
-          class="w-full max-w-md p-8 mx-4 text-center bg-white rounded-lg shadow-xl">
-          <h3 class="mb-2 text-xl font-bold">Save your changes</h3>
-          <p class="mb-6 text-gray-600">To save and publish content edits, you need a CloudCannon account.</p>
-          <a
-            href="https://cloudcannon.com"
-            target="_blank"
-            rel="noopener"
-            class="inline-block px-6 py-2.5 text-white font-semibold rounded transition-colors hover:opacity-90"
-            style="background-color: #034AD8;">Try CloudCannon</a>
-          <button
-            @click="showSaveModal = false"
-            class="block mx-auto mt-3 text-sm text-gray-400 hover:text-gray-600">Dismiss</button>
+          class="save-modal-card">
+
+          <div class="text-center">
+            <div class="save-modal-checkmark">
+              <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p class="mt-4 mb-1 text-gray-700">Together, we just added visual editing to a world-class website.</p>
+            <p class="mb-6 font-semibold text-gray-900">Imagine what you could do with yours.</p>
+            <a
+              href="https://cloudcannon.com/free-trial/"
+              target="_blank"
+              rel="noopener"
+              class="inline-block px-6 py-2.5 text-sm text-white font-semibold rounded-md transition-colors hover:opacity-90"
+              style="background-color: #034AD8;">Sign up for a free trial</a>
+            <a
+              href="https://cloudcannon.com/documentation/"
+              target="_blank"
+              rel="noopener"
+              class="block mt-3 text-sm font-medium text-gray-500 transition-colors hover:text-gray-700">Read the docs &rarr;</a>
+          </div>
+
+          <div x-show="!allTutorialsComplete" class="save-modal-divider"></div>
+          <div x-show="!allTutorialsComplete" class="save-modal-notice">
+            <span x-text="'You have ' + remainingTutorials + ' tutorial' + (remainingTutorials === 1 ? '' : 's') + ' left.'"></span>
+            <button @click="resumeIncomplete()" class="save-modal-notice-link">Continue &rarr;</button>
+          </div>
         </div>
       </div>
     </div>
@@ -603,6 +619,34 @@
             this.lastEditedProp = null;
           }, 1500);
         },
+
+        get allTutorialsComplete() {
+          return this.headingTutorialComplete && this.imageTutorialComplete;
+        },
+
+        get remainingTutorials() {
+          return this.tutorialTracks.filter(t => !t.complete).length;
+        },
+
+        get tutorialTracks() {
+          return [
+            { id: 'heading', label: 'Text editing', complete: this.headingTutorialComplete },
+            { id: 'image', label: 'Image editing', complete: this.imageTutorialComplete },
+          ];
+        },
+
+        resumeIncomplete() {
+          this.showSaveModal = false;
+          if (!this.headingTutorialComplete) {
+            this.activeTutorial = 'heading';
+            this.tutorialStep = 0;
+            return;
+          }
+          if (!this.imageTutorialComplete) {
+            this.startImageTutorial();
+            return;
+          }
+        },
       }));
     });
   </script>
@@ -701,6 +745,56 @@
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .save-modal-card {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 16px;
+      padding: 32px;
+      background: #fff;
+      border-radius: 10px;
+      border-top: 4px solid #034AD8;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .save-modal-checkmark {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: #d1fae5;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .save-modal-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 20px 0 16px;
+    }
+
+    .save-modal-notice {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .save-modal-notice-link {
+      background: none;
+      border: none;
+      color: #034AD8;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 4px;
+    }
+
+    .save-modal-notice-link:hover {
+      text-decoration: underline;
     }
   </style>
 
