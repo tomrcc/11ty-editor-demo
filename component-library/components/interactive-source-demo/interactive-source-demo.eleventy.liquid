@@ -82,7 +82,7 @@
 
       <!-- Tutorial Tooltip -->
       <div
-        x-show="tutorialStep <= 4"
+        x-show="activeTutorial !== null && tutorialStep <= 4"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-95"
         x-transition:enter-end="opacity-100 scale-100"
@@ -91,15 +91,89 @@
         x-transition:leave-end="opacity-0 scale-95"
         class="tutorial-tooltip"
         :style="'top: ' + tooltipTop() + 'px'">
-        <div class="text-sm leading-snug text-gray-700" x-text="tooltipSteps[tutorialStep]?.text"></div>
+        <div class="text-sm leading-snug text-gray-700" x-text="currentTooltipSteps[tutorialStep]?.text"></div>
         <div class="flex items-center justify-between mt-3">
           <span class="text-xs text-gray-400" x-text="(tutorialStep + 1) + ' / 5'"></span>
           <button
             class="px-3 py-1 text-xs font-semibold text-white rounded"
             style="background-color: #034AD8;"
             @click="nextStep()"
-            x-text="tooltipSteps[tutorialStep]?.button"></button>
+            x-text="currentTooltipSteps[tutorialStep]?.button"></button>
         </div>
+      </div>
+
+      <!-- Next Tutorial Prompt -->
+      <button
+        x-show="showNextTutorialPrompt"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+        @click="startImageTutorial()"
+        class="next-tutorial-prompt">
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Next: Edit an image</span>
+        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Image Picker -->
+      <div
+        x-show="showImagePicker"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="image-picker"
+        @click.outside="showImagePicker = false">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-semibold text-gray-800">Choose image</span>
+          <button @click="showImagePicker = false" class="p-0.5 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100">
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex gap-1 p-0.5 mb-3 rounded-md" style="background: #f1f5f9;">
+          <button
+            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
+            :class="imagePickerMode === 'url' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+            @click="imagePickerMode = 'url'">URL</button>
+          <button
+            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
+            :class="imagePickerMode === 'upload' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+            @click="imagePickerMode = 'upload'">Upload</button>
+        </div>
+        <template x-if="imagePickerMode === 'url'">
+          <div>
+            <input
+              type="text"
+              x-model="imagePickerUrl"
+              placeholder="https://placebear.com/200/300"
+              @keydown.enter="applyImageUrl()"
+              class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <button
+              @click="applyImageUrl()"
+              :disabled="!imagePickerUrl.trim()"
+              class="w-full px-3 py-1.5 mt-2 text-xs font-semibold text-white rounded-md transition-colors disabled:opacity-40"
+              style="background-color: #034AD8;">Apply</button>
+          </div>
+        </template>
+        <template x-if="imagePickerMode === 'upload'">
+          <div>
+            <label class="flex flex-col items-center justify-center gap-1.5 px-3 py-4 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
+              <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              <span class="text-xs text-gray-500">Choose a file</span>
+              <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event)" />
+            </label>
+          </div>
+        </template>
       </div>
 
       <!-- Save Modal -->
@@ -146,14 +220,27 @@
         showSaveModal: false,
         lastEditedProp: null,
         flashTimeout: null,
+        currentSite: 'jetstream',
+
+        activeTutorial: 'heading',
         tutorialStep: 0,
         lastAdvancedStep: null,
         advanceTimeout: null,
-        currentSite: 'jetstream',
+        headingTutorialComplete: false,
+        imageTutorialComplete: false,
+        showNextTutorialPrompt: false,
+        nextPromptTimeout: null,
 
         headingMain: 'Introducing',
         headingHighlight: 'Jetstream',
         description: 'A new Astro template by CloudCannon, built with our <a href="#">Astro Component Starter</a> for top performance, true visual editing, and an ideal developer experience.',
+
+        heroImageSrc: '/dashboard.svg',
+        heroImageAlt: 'Dashboard',
+        heroImagePreviewSrc: '/demo-sites/jetstream/images/hero-1.svg',
+        showImagePicker: false,
+        imagePickerUrl: '',
+        imagePickerMode: 'url',
 
         sites: {
           jetstream: {
@@ -169,6 +256,8 @@
             ],
             sourcePath: '/index.astro',
             sidebarFilename: 'index.astro',
+            imageDefaults: { src: '/dashboard.svg', alt: 'Dashboard', previewSrc: '/demo-sites/jetstream/images/hero-1.svg' },
+            imageKey: 'hero-image',
           },
           sendit: {
             label: 'Sendit',
@@ -182,6 +271,8 @@
             ],
             sourcePath: '/index.astro',
             sidebarFilename: 'index.astro',
+            imageDefaults: { src: '/hero-image.avif', alt: 'Dashboard', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
+            imageKey: 'hero-image',
           },
         },
 
@@ -190,22 +281,49 @@
         get sourcePath() { return this.site.sourcePath; },
         get sidebarFilename() { return this.site.sidebarFilename; },
 
+        get headingSetupLevel() {
+          if (this.headingTutorialComplete) return 4;
+          if (this.activeTutorial === 'heading') return this.tutorialStep;
+          return 0;
+        },
+
+        get imageSetupLevel() {
+          if (this.imageTutorialComplete) return 4;
+          if (this.activeTutorial === 'image') return this.tutorialStep;
+          return 0;
+        },
+
+        get headingEditable() { return this.headingSetupLevel >= 3; },
+        get imageEditable() { return this.imageSetupLevel >= 3; },
+
         switchSite(name) {
           if (name === this.currentSite) return;
           this.currentSite = name;
+          this.activeTutorial = 'heading';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
+          this.headingTutorialComplete = false;
+          this.imageTutorialComplete = false;
+          this.showNextTutorialPrompt = false;
           this.hasChanges = false;
           this.lastEditedProp = null;
+          this.showImagePicker = false;
+          this.imagePickerUrl = '';
+          this.imagePickerMode = 'url';
           clearTimeout(this.flashTimeout);
           clearTimeout(this.advanceTimeout);
+          clearTimeout(this.nextPromptTimeout);
           const d = this.sites[name].defaults;
           this.headingMain = d.headingMain;
           this.headingHighlight = d.headingHighlight;
           this.description = d.description;
+          const img = this.sites[name].imageDefaults;
+          this.heroImageSrc = img.src;
+          this.heroImageAlt = img.alt;
+          this.heroImagePreviewSrc = img.previewSrc;
         },
 
-        tooltipSteps: [
+        headingTooltipSteps: [
           { text: 'This Astro page has hard-coded content. Let\u2019s make the heading editable with Source Editable Regions.', button: 'Start' },
           { text: 'This attribute tells CloudCannon that this element\u2019s content can be edited directly in the source.', button: 'Next' },
           { text: 'This tells CloudCannon which source file the content lives in.', button: 'Next' },
@@ -213,9 +331,22 @@
           { text: 'Your heading is set up! Try editing it on the right \u2014 the source updates in real time.', button: 'Try it' },
         ],
 
+        imageTooltipSteps: [
+          { text: 'This page also has a hero image. Let\u2019s make it editable too.', button: 'Start' },
+          { text: 'This marks the image element as editable in the source.', button: 'Next' },
+          { text: 'This tells CloudCannon which file the image belongs to.', button: 'Next' },
+          { text: 'This key uniquely identifies the image region.', button: 'Next' },
+          { text: 'Your image is set up! Click it on the right to pick a new one.', button: 'Try it' },
+        ],
+
+        get currentTooltipSteps() {
+          if (this.activeTutorial === 'image') return this.imageTooltipSteps;
+          return this.headingTooltipSteps;
+        },
+
         regionLines(region, indent) {
-          const s = this.tutorialStep;
-          const adv = this.lastAdvancedStep;
+          const s = this.headingSetupLevel;
+          const adv = this.activeTutorial === 'heading' ? this.lastAdvancedStep : null;
           const val = this[region.prop];
           const pad = ' '.repeat(indent);
           const attrPad = ' '.repeat(indent + 2);
@@ -257,6 +388,41 @@
           return lines;
         },
 
+        imageRegionLines(indent) {
+          const s = this.imageSetupLevel;
+          const adv = this.activeTutorial === 'image' ? this.lastAdvancedStep : null;
+          const pad = ' '.repeat(indent);
+          const attrPad = ' '.repeat(indent + 2);
+          const lines = [];
+
+          if (s === 0) {
+            lines.push({ text: pad + '<img src="' + this.heroImageSrc + '" alt="' + this.heroImageAlt + '" />', isImage: true });
+            return lines;
+          }
+
+          lines.push({ text: pad + '<img', isImage: true });
+          lines.push({ text: attrPad + 'src="' + this.heroImageSrc + '"', prop: 'heroImageSrc', isImage: true });
+          lines.push({ text: attrPad + 'alt="' + this.heroImageAlt + '"', isImage: true });
+
+          if (s === 1) {
+            lines.push({ text: attrPad + 'data-editable="source" />', isNew: adv === 1, isImage: true });
+          } else {
+            lines.push({ text: attrPad + 'data-editable="source"', isImage: true });
+          }
+
+          if (s >= 2 && s === 2) {
+            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '" />', isNew: adv === 2, isImage: true });
+          } else if (s >= 2) {
+            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '"', isImage: true });
+          }
+
+          if (s >= 3) {
+            lines.push({ text: attrPad + 'data-key="' + this.site.imageKey + '" />', isNew: adv === 3, isImage: true });
+          }
+
+          return lines;
+        },
+
         get sourceLines() {
           return this.currentSite === 'sendit' ? this.senditSourceLines : this.jetstreamSourceLines;
         },
@@ -282,7 +448,11 @@
             { text: '    </h1>' },
             { text: '    <p>A new Astro template by CloudCannon...</p>' },
             { text: '    <a href="/get-started" class="button">Deploy Jetstream</a>' },
-            { text: '    <img src="/dashboard.svg" alt="Dashboard" />' },
+          );
+
+          lines.push(...this.imageRegionLines(4));
+
+          lines.push(
             { text: '  </section>' },
             { text: '' },
             { text: '  <!-- ... Rest of page here -->' },
@@ -312,7 +482,11 @@
           lines.push(
             { text: '    <p>With Sendit, you can quickly create...</p>' },
             { text: '    <a href="/signup" class="button">Try This Free</a>' },
-            { text: '    <img src="/hero-image.avif" alt="Dashboard" />' },
+          );
+
+          lines.push(...this.imageRegionLines(4));
+
+          lines.push(
             { text: '  </section>' },
             { text: '' },
             { text: '  <!-- ... Rest of page here -->' },
@@ -326,6 +500,7 @@
         nextStep() {
           if (this.tutorialStep > 4) return;
           this.tutorialStep++;
+
           if (this.tutorialStep >= 1 && this.tutorialStep <= 3) {
             this.lastAdvancedStep = this.tutorialStep;
             clearTimeout(this.advanceTimeout);
@@ -333,11 +508,54 @@
               this.lastAdvancedStep = null;
             }, 1500);
           }
+
+          if (this.tutorialStep > 4) {
+            if (this.activeTutorial === 'heading') {
+              this.headingTutorialComplete = true;
+              this.activeTutorial = null;
+              this.nextPromptTimeout = setTimeout(() => {
+                this.showNextTutorialPrompt = true;
+              }, 3000);
+            } else if (this.activeTutorial === 'image') {
+              this.imageTutorialComplete = true;
+              this.activeTutorial = null;
+            }
+          }
+        },
+
+        startImageTutorial() {
+          this.showNextTutorialPrompt = false;
+          clearTimeout(this.nextPromptTimeout);
+          this.activeTutorial = 'image';
+          this.tutorialStep = 0;
+          this.lastAdvancedStep = null;
         },
 
         tooltipTop() {
           const lineH = 24;
           const tabH = 32;
+
+          if (this.activeTutorial === 'image') {
+            if (this.currentSite === 'sendit') {
+              switch (this.tutorialStep) {
+                case 0: return tabH + 14 * lineH;
+                case 1: return tabH + 17 * lineH;
+                case 2: return tabH + 18 * lineH;
+                case 3: return tabH + 19 * lineH;
+                case 4: return tabH + 14 * lineH;
+                default: return 0;
+              }
+            }
+            switch (this.tutorialStep) {
+              case 0: return tabH + 23 * lineH;
+              case 1: return tabH + 26 * lineH;
+              case 2: return tabH + 27 * lineH;
+              case 3: return tabH + 28 * lineH;
+              case 4: return tabH + 23 * lineH;
+              default: return 0;
+            }
+          }
+
           if (this.currentSite === 'sendit') {
             switch (this.tutorialStep) {
               case 0: return tabH + 5 * lineH;
@@ -356,6 +574,25 @@
             case 4: return tabH + 6 * lineH;
             default: return 0;
           }
+        },
+
+        applyImageUrl() {
+          if (!this.imagePickerUrl.trim()) return;
+          this.heroImageSrc = this.imagePickerUrl.trim();
+          this.heroImagePreviewSrc = this.imagePickerUrl.trim();
+          this.showImagePicker = false;
+          this.imagePickerUrl = '';
+          this.onEdit('heroImageSrc');
+        },
+
+        handleImageUpload(event) {
+          const file = event.target.files?.[0];
+          if (!file) return;
+          this.heroImagePreviewSrc = URL.createObjectURL(file);
+          this.heroImageSrc = '/uploads/' + file.name;
+          this.showImagePicker = false;
+          this.imagePickerUrl = '';
+          this.onEdit('heroImageSrc');
         },
 
         onEdit(prop) {
@@ -387,6 +624,18 @@
       outline-style: solid;
     }
 
+    .editable-region-image {
+      outline: 2px solid transparent;
+      outline-offset: 4px;
+      transition: outline-color 0.15s ease;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .editable-region-image:hover {
+      outline-color: #FCBD01;
+    }
+
     .tutorial-tooltip {
       position: absolute;
       z-index: 20;
@@ -409,6 +658,49 @@
       border-top: 8px solid transparent;
       border-bottom: 8px solid transparent;
       border-right: 8px solid #fff;
+    }
+
+    .next-tutorial-prompt {
+      position: absolute;
+      z-index: 25;
+      right: 16px;
+      bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #034AD8;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(3, 74, 216, 0.35);
+      animation: prompt-bounce 2s ease infinite;
+      transition: background 0.15s ease;
+    }
+
+    .next-tutorial-prompt:hover {
+      background: #0240b8;
+    }
+
+    @keyframes prompt-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .image-picker {
+      position: absolute;
+      z-index: 30;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 240px;
+      padding: 14px 16px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
     }
   </style>
 

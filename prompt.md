@@ -16,9 +16,11 @@ We have two demo components simulating CloudCannon's editor:
 
 The source demo shows a side-by-side view: source code (left) + visual editor (right). Users edit text in the visual preview, and the source code updates reactively. This teaches how CloudCannon's source editables work for pages without frontmatter.
 
-See `HANDOFF.md` for detailed implementation status and the next task (Stage 3: tutorial walkthrough).
+The demo uses a multi-tutorial system: separate tutorial "tracks" that users progress through sequentially. Currently there are two tracks -- heading editing and image editing -- with plans to add more. Each track has 5 steps (0-4) and its own tooltip content. State is driven by `activeTutorial` ('heading' | 'image' | null), `tutorialStep` (0-4 within the active track), and per-track completion flags. Between tutorials, a bouncing prompt icon appears after a short delay.
 
 # Learnings
 - The Cursor browser MCP tool can't reliably test responsive breakpoints -- its viewport stays narrow regardless of resize commands. Verify `md:flex` responsive layouts in a real browser.
 - The 11ty file watcher doesn't detect changes in `component-library/` files. Touch `src/pages/index.md` or restart the server to trigger a rebuild after editing bookshop components.
 - CloudCannon source editable attributes: `data-editable="source"`, `data-path="/path/to/file"`, `data-key="unique-id"`. The older `class="editable"` method was deprecated Oct 2025.
+- Multi-tutorial architecture: `headingSetupLevel` / `imageSetupLevel` computed getters drive `regionLines` / `imageRegionLines` independently. Sidebar dims lines not relevant to the active tutorial. The image picker tracks both a source code path (`heroImageSrc`) and a preview src (`heroImagePreviewSrc`) since default preview images use real asset paths while source code shows simplified paths.
+- Tooltip positioning is hardcoded per-site per-tutorial based on line counts. When adding new tutorials or regions that change line counts in the source code, recalculate `tooltipTop()` offsets.

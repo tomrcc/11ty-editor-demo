@@ -26,13 +26,13 @@
     <div class="jt-hero-content">
       <h1>
         <span
-          :class="tutorialStep >= 3 && 'editable-region'"
-          :contenteditable="tutorialStep >= 3"
+          :class="headingEditable && 'editable-region'"
+          :contenteditable="headingEditable"
           x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
           @input="headingMain = $el.textContent; onEdit('headingMain')"></span><br />
         <span class="jt-highlight"
-          :class="tutorialStep >= 3 && 'editable-region'"
-          :contenteditable="tutorialStep >= 3"
+          :class="headingEditable && 'editable-region'"
+          :contenteditable="headingEditable"
           x-effect="let t = headingHighlight; if (document.activeElement !== $el) $el.textContent = t"
           @input="headingHighlight = $el.textContent; onEdit('headingHighlight')"></span>
       </h1>
@@ -44,7 +44,11 @@
       </div>
     </div>
     <div class="jt-hero-image">
-      <img src="/demo-sites/jetstream/images/hero-1.svg" alt="Dashboard overview" />
+      <img
+        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/jetstream/images/hero-1.svg'"
+        :class="imageEditable && 'editable-region-image'"
+        @click="imageEditable && (showImagePicker = !showImagePicker)"
+        alt="Dashboard overview" />
     </div>
   </section>
 
@@ -134,7 +138,7 @@
 
   <!-- Tutorial overlay -->
   <div
-    x-show="tutorialStep <= 4"
+    x-show="activeTutorial !== null && tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
@@ -172,8 +176,8 @@
     </div>
     <div class="sd-hero-content">
       <h1
-        :class="tutorialStep >= 3 && 'editable-region'"
-        :contenteditable="tutorialStep >= 3"
+        :class="headingEditable && 'editable-region'"
+        :contenteditable="headingEditable"
         x-effect="let t = headingMain; if (document.activeElement !== $el) $el.textContent = t"
         @input="headingMain = $el.textContent; onEdit('headingMain')"></h1>
       <p class="sd-hero-subtext"
@@ -181,7 +185,11 @@
       <a href="#" class="sd-btn sd-btn-primary">Try This Free</a>
     </div>
     <div class="sd-hero-image">
-      <img src="/demo-sites/sendit/images/hero-image.avif" alt="Reports dashboard" />
+      <img
+        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/sendit/images/hero-image.avif'"
+        :class="imageEditable && 'editable-region-image'"
+        @click="imageEditable && (showImagePicker = !showImagePicker)"
+        alt="Reports dashboard" />
     </div>
   </section>
 
@@ -272,7 +280,7 @@
 
   <!-- Tutorial overlay -->
   <div
-    x-show="tutorialStep <= 4"
+    x-show="activeTutorial !== null && tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
