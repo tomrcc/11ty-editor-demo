@@ -132,6 +132,10 @@
         <div class="flex gap-1 p-0.5 mb-3 rounded-md" style="background: #f1f5f9;">
           <button
             class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
+            :class="imagePickerMode === 'gallery' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+            @click="imagePickerMode = 'gallery'">Gallery</button>
+          <button
+            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
             :class="imagePickerMode === 'url' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
             @click="imagePickerMode = 'url'">URL</button>
           <button
@@ -139,6 +143,18 @@
             :class="imagePickerMode === 'upload' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
             @click="imagePickerMode = 'upload'">Upload</button>
         </div>
+        <template x-if="imagePickerMode === 'gallery'">
+          <div class="image-picker-grid">
+            <template x-for="preset in site.presetImages" :key="preset.previewSrc">
+              <button
+                class="image-picker-thumb"
+                :class="heroImagePreviewSrc === preset.previewSrc && 'selected'"
+                @click="applyPresetImage(preset)">
+                <img :src="preset.previewSrc" alt="" />
+              </button>
+            </template>
+          </div>
+        </template>
         <template x-if="imagePickerMode === 'url'">
           <div>
             <input
@@ -270,7 +286,7 @@
         heroImagePreviewSrc: '/demo-sites/jetstream/images/hero-1.svg',
         showImagePicker: false,
         imagePickerUrl: '',
-        imagePickerMode: 'url',
+        imagePickerMode: 'gallery',
 
         sites: {
           jetstream: {
@@ -287,6 +303,13 @@
             sourcePath: '/index.astro',
             sidebarFilename: 'index.astro',
             imageDefaults: { src: '/dashboard.svg', alt: 'Dashboard', previewSrc: '/demo-sites/jetstream/images/hero-1.svg' },
+            presetImages: [
+              { src: '/dashboard.svg', previewSrc: '/demo-sites/jetstream/images/hero-1.svg' },
+              { src: '/hero-2.svg', previewSrc: '/demo-sites/jetstream/images/hero-2.svg' },
+              { src: '/hero-3.svg', previewSrc: '/demo-sites/jetstream/images/hero-3.svg' },
+              { src: '/hero-4.svg', previewSrc: '/demo-sites/jetstream/images/hero-4.svg' },
+              { src: '/hero-5.svg', previewSrc: '/demo-sites/jetstream/images/hero-5.svg' },
+            ],
             imageKey: 'hero-image',
             blogDefaults: {
               blogTitle: 'Start building with Jetstream today',
@@ -310,6 +333,13 @@
             sourcePath: '/index.astro',
             sidebarFilename: 'index.astro',
             imageDefaults: { src: '/hero-image.avif', alt: 'Dashboard', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
+            presetImages: [
+              { src: '/hero-image.avif', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
+              { src: '/hero-2.svg', previewSrc: '/demo-sites/sendit/images/hero-2.svg' },
+              { src: '/hero-3.svg', previewSrc: '/demo-sites/sendit/images/hero-3.svg' },
+              { src: '/hero-4.svg', previewSrc: '/demo-sites/sendit/images/hero-4.svg' },
+              { src: '/hero-5.svg', previewSrc: '/demo-sites/sendit/images/hero-5.svg' },
+            ],
             imageKey: 'hero-image',
             blogDefaults: {
               blogTitle: 'What are the best email clients?',
@@ -370,7 +400,7 @@
           this.lastEditedProp = null;
           this.showImagePicker = false;
           this.imagePickerUrl = '';
-          this.imagePickerMode = 'url';
+          this.imagePickerMode = 'gallery';
           clearTimeout(this.flashTimeout);
           clearTimeout(this.advanceTimeout);
           const d = this.sites[name].defaults;
@@ -798,6 +828,13 @@
           this.codeScrollTop = targetScroll;
         },
 
+        applyPresetImage(preset) {
+          this.heroImageSrc = preset.src;
+          this.heroImagePreviewSrc = preset.previewSrc;
+          this.showImagePicker = false;
+          this.onEdit('heroImageSrc');
+        },
+
         applyImageUrl() {
           if (!this.imagePickerUrl.trim()) return;
           this.heroImageSrc = this.imagePickerUrl.trim();
@@ -1018,11 +1055,44 @@
       right: 24px;
       top: 50%;
       transform: translateY(-50%);
-      width: 240px;
+      width: 280px;
       padding: 14px 16px;
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .image-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .image-picker-thumb {
+      aspect-ratio: 4 / 3;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+      background: #f1f5f9;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .image-picker-thumb:hover {
+      border-color: #cbd5e1;
+    }
+
+    .image-picker-thumb.selected {
+      border-color: #034AD8;
+      box-shadow: 0 0 0 1px #034AD8;
+    }
+
+    .image-picker-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .save-modal-card {

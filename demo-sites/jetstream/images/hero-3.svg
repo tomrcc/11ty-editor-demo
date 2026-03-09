@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="16" fill="url(#bg3)"/>
+  <!-- Top bar -->
+  <rect x="24" y="24" width="752" height="40" rx="8" fill="#1e3a5f" opacity=".5"/>
+  <circle cx="48" cy="44" r="6" fill="#8b5cf6"/>
+  <rect x="68" y="38" width="70" height="12" rx="4" fill="#334155"/>
+  <rect x="150" y="38" width="55" height="12" rx="4" fill="#334155"/>
+  <!-- Left panel: donut chart -->
+  <rect x="24" y="80" width="370" height="200" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <text x="44" y="108" font-family="sans-serif" font-size="13" fill="#94a3b8">User Analytics</text>
+  <circle cx="200" cy="190" r="60" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="160 220" transform="rotate(-90 200 190)"/>
+  <circle cx="200" cy="190" r="60" fill="none" stroke="#8b5cf6" stroke-width="14" stroke-dasharray="100 280" stroke-dashoffset="-160" transform="rotate(-90 200 190)"/>
+  <circle cx="200" cy="190" r="60" fill="none" stroke="#34d399" stroke-width="14" stroke-dasharray="60 320" stroke-dashoffset="-260" transform="rotate(-90 200 190)"/>
+  <text x="184" y="196" font-family="sans-serif" font-size="18" font-weight="bold" fill="#e2e8f0">84%</text>
+  <!-- Right panel: line chart -->
+  <rect x="410" y="80" width="366" height="200" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <text x="430" y="108" font-family="sans-serif" font-size="13" fill="#94a3b8">Traffic Trend</text>
+  <polyline points="440,250 480,230 520,240 560,200 600,210 640,170 680,160 720,145 750,150" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="440,260 480,255 520,250 560,235 600,240 640,220 680,215 720,210 750,205" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+  <!-- Stat row -->
+  <rect x="24" y="296" width="180" height="80" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <rect x="44" y="316" width="70" height="8" rx="3" fill="#475569"/>
+  <rect x="44" y="336" width="44" height="18" rx="4" fill="#3b82f6"/>
+  <rect x="220" y="296" width="174" height="80" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <rect x="240" y="316" width="70" height="8" rx="3" fill="#475569"/>
+  <rect x="240" y="336" width="44" height="18" rx="4" fill="#8b5cf6"/>
+  <rect x="410" y="296" width="180" height="80" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <rect x="430" y="316" width="70" height="8" rx="3" fill="#475569"/>
+  <rect x="430" y="336" width="44" height="18" rx="4" fill="#34d399"/>
+  <rect x="606" y="296" width="170" height="80" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <rect x="626" y="316" width="70" height="8" rx="3" fill="#475569"/>
+  <rect x="626" y="336" width="44" height="18" rx="4" fill="#f472b6"/>
+  <!-- Table -->
+  <rect x="24" y="392" width="752" height="104" rx="10" fill="#1e3a5f" opacity=".35"/>
+  <rect x="44" y="412" width="100" height="10" rx="4" fill="#475569"/>
+  <rect x="200" y="412" width="80" height="10" rx="4" fill="#475569"/>
+  <rect x="340" y="412" width="80" height="10" rx="4" fill="#475569"/>
+  <rect x="500" y="412" width="80" height="10" rx="4" fill="#475569"/>
+  <line x1="44" y1="432" x2="752" y2="432" stroke="#334155" stroke-width="1"/>
+  <rect x="44" y="444" width="120" height="8" rx="3" fill="#334155"/>
+  <rect x="200" y="444" width="60" height="8" rx="3" fill="#334155"/>
+  <rect x="340" y="444" width="80" height="8" rx="3" fill="#334155"/>
+  <rect x="500" y="444" width="60" height="16" rx="6" fill="#3b82f6" opacity=".4"/>
+  <rect x="44" y="468" width="110" height="8" rx="3" fill="#334155"/>
+  <rect x="200" y="468" width="70" height="8" rx="3" fill="#334155"/>
+  <rect x="340" y="468" width="90" height="8" rx="3" fill="#334155"/>
+  <rect x="500" y="468" width="60" height="16" rx="6" fill="#34d399" opacity=".4"/>
+</svg>
