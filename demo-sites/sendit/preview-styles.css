@@ -359,3 +359,112 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 0.5rem 0;
 }
+
+/* ── Blog post ── */
+.sd-blog-hero {
+  position: relative;
+  text-align: center;
+  padding: 1.5rem 1rem 1rem;
+  background: var(--sd-color-primary-light);
+  overflow: hidden;
+}
+
+.sd-blog-hero-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sd-blog-hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--sd-color-primary);
+}
+
+.sd-blog-hero-shape-1 {
+  width: 60px;
+  height: 60px;
+  top: -15px;
+  right: -10px;
+  opacity: 0.1;
+}
+
+.sd-blog-hero-shape-2 {
+  width: 90px;
+  height: 90px;
+  bottom: -30px;
+  left: -20px;
+  opacity: 0.06;
+}
+
+.sd-blog-hero > *:not(.sd-blog-hero-shapes) {
+  position: relative;
+  z-index: 1;
+}
+
+.sd-blog-title {
+  font-family: var(--sd-font-headings);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sd-color-text-strong);
+  margin-bottom: 0.5rem;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sd-blog-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 0.5rem;
+  color: var(--sd-color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.sd-blog-meta-divider {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--sd-color-text-muted);
+  opacity: 0.5;
+}
+
+.sd-blog-image {
+  border-radius: var(--sd-radius-md);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.sd-blog-image img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  background: var(--sd-color-primary-light);
+}
+
+.sd-blog-body {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 0 1rem 1.25rem;
+  font-size: 0.55rem;
+  line-height: 1.7;
+  color: var(--sd-color-text);
+}
+
+.sd-blog-body h3 {
+  font-family: var(--sd-font-headings);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--sd-color-text-strong);
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.sd-blog-body p + p {
+  margin-top: 0.4rem;
+}

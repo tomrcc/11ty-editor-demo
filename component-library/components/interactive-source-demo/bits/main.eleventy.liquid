@@ -1,5 +1,5 @@
-<!-- Jetstream preview -->
-<template x-if="currentSite === 'jetstream'">
+<!-- Jetstream homepage preview -->
+<template x-if="currentSite === 'jetstream' && !showDataView">
 <div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white jt-preview">
   <!-- Nav -->
   <nav class="jt-nav">
@@ -147,8 +147,8 @@
 </div>
 </template>
 
-<!-- Sendit preview -->
-<template x-if="currentSite === 'sendit'">
+<!-- Sendit homepage preview -->
+<template x-if="currentSite === 'sendit' && !showDataView">
 <div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white sd-preview">
   <!-- Nav -->
   <nav class="sd-nav">
@@ -281,6 +281,176 @@
   <!-- Tutorial overlay -->
   <div
     x-show="activeTutorial !== null && tutorialStep <= 4"
+    x-transition:leave="transition ease-out duration-300"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="absolute inset-0 z-10 pointer-events-none"
+    style="background: rgba(255, 255, 255, 0.6);"></div>
+</div>
+</template>
+
+<!-- Jetstream blog post preview -->
+<template x-if="currentSite === 'jetstream' && showDataView">
+<div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white jt-preview">
+  <nav class="jt-nav">
+    <div class="jt-nav-inner">
+      <a href="/" class="jt-nav-logo">
+        <img src="/demo-sites/jetstream/images/jetstream-logo.svg" alt="Jetstream" />
+      </a>
+      <ul class="jt-nav-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <div class="jt-nav-end">
+        <a href="#" class="jt-btn jt-btn-primary">Get started &rarr;</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="jt-blog-hero">
+    <h1 class="jt-blog-title"
+      :class="titleEditable && 'editable-region'"
+      :contenteditable="titleEditable"
+      x-effect="let t = blogTitle; if (document.activeElement !== $el) $el.textContent = t"
+      @input="blogTitle = $el.textContent; onEdit('blogTitle')"></h1>
+    <div class="jt-blog-meta">
+      <span x-text="site.blogDate"></span>
+      <span class="jt-blog-meta-divider"></span>
+      <span x-text="site.blogAuthor"></span>
+      <span class="jt-blog-meta-divider"></span>
+      <span>3 min read</span>
+    </div>
+    <div class="jt-blog-image">
+      <img src="/demo-sites/jetstream/images/hero-1.svg" alt="Featured image" />
+    </div>
+  </section>
+
+  <div class="jt-blog-body"
+    :class="bodyEditable && 'editable-region'"
+    :contenteditable="bodyEditable"
+    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerText = b"
+    @input="blogBody = $el.innerText; onEdit('blogBody')"></div>
+
+  <footer class="jt-footer">
+    <div class="jt-footer-top">
+      <div class="jt-footer-logo">
+        <img src="/demo-sites/jetstream/images/jetstream-logo.svg" alt="Jetstream" />
+      </div>
+      <ul class="jt-footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <hr class="jt-footer-divider" />
+    <div class="jt-footer-bottom">
+      <span class="jt-footer-legal">&copy; 2026 All rights reserved.</span>
+      <div class="jt-footer-socials">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </div>
+    </div>
+  </footer>
+
+  <div
+    x-show="activeTutorial === 'data' && tutorialStep <= 4"
+    x-transition:leave="transition ease-out duration-300"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="absolute inset-0 z-10 pointer-events-none"
+    style="background: rgba(255, 255, 255, 0.6);"></div>
+</div>
+</template>
+
+<!-- Sendit blog post preview -->
+<template x-if="currentSite === 'sendit' && showDataView">
+<div class="relative z-10 h-full flex-1 min-w-0 overflow-y-auto bg-white sd-preview">
+  <nav class="sd-nav">
+    <a href="/" class="sd-nav-logo">
+      <img src="/demo-sites/sendit/images/logo.svg" alt="Sendit" />
+    </a>
+    <ul class="sd-nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="sd-nav-end">
+      <a href="#" class="sd-btn sd-btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="sd-blog-hero">
+    <div class="sd-blog-hero-shapes">
+      <div class="sd-blog-hero-shape sd-blog-hero-shape-1"></div>
+      <div class="sd-blog-hero-shape sd-blog-hero-shape-2"></div>
+    </div>
+    <h1 class="sd-blog-title"
+      :class="titleEditable && 'editable-region'"
+      :contenteditable="titleEditable"
+      x-effect="let t = blogTitle; if (document.activeElement !== $el) $el.textContent = t"
+      @input="blogTitle = $el.textContent; onEdit('blogTitle')"></h1>
+    <div class="sd-blog-meta">
+      <span x-text="site.blogDate"></span>
+      <span class="sd-blog-meta-divider"></span>
+      <span x-text="site.blogAuthor"></span>
+      <span class="sd-blog-meta-divider"></span>
+      <span>3 min read</span>
+    </div>
+    <div class="sd-blog-image">
+      <img src="/demo-sites/sendit/images/hero-image.avif" alt="Featured image" />
+    </div>
+  </section>
+
+  <div class="sd-blog-body"
+    :class="bodyEditable && 'editable-region'"
+    :contenteditable="bodyEditable"
+    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerText = b"
+    @input="blogBody = $el.innerText; onEdit('blogBody')"></div>
+
+  <footer class="sd-footer">
+    <div class="sd-footer-top">
+      <div class="sd-footer-brand">
+        <img src="/demo-sites/sendit/images/footer-logo.svg" alt="Sendit" />
+        <p class="sd-footer-copyright">&copy; 2026 MyCompany. All rights reserved.</p>
+      </div>
+      <div class="sd-footer-columns">
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Main Pages</div>
+          <ul>
+            <li>Home</li>
+            <li>Features</li>
+            <li>Pricing</li>
+          </ul>
+        </div>
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Community</div>
+          <ul>
+            <li>Blog</li>
+            <li>Changelog</li>
+          </ul>
+        </div>
+        <div class="sd-footer-col">
+          <div class="sd-footer-col-title">Company</div>
+          <ul>
+            <li>About</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <hr class="sd-footer-divider" />
+  </footer>
+
+  <div
+    x-show="activeTutorial === 'data' && tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"

@@ -1,11 +1,12 @@
-<div class="flex flex-col h-full" style="background: #1e1e2e;">
+<!-- Single-file mode (heading/image tutorials) -->
+<div x-show="!showDataView" class="flex flex-col h-full" style="background: #1e1e2e;">
   <div class="flex items-center gap-2 px-3 py-1.5 border-b" style="border-color: #313244;">
     <svg class="w-4 h-4" style="color: #a6adc8;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
     </svg>
     <span class="text-xs font-mono" style="color: #cdd6f4;" x-text="sidebarFilename"></span>
   </div>
-  <div class="flex-1 overflow-auto">
+  <div class="flex-1 overflow-auto" x-ref="codeScroll">
     <table class="w-full border-collapse font-mono text-[13px]">
       <template x-for="(line, i) in sourceLines" :key="i">
         <tr class="leading-6"
@@ -25,5 +26,67 @@
         </tr>
       </template>
     </table>
+  </div>
+</div>
+
+<!-- Split-file mode (data tutorial) -->
+<div x-show="showDataView" class="flex flex-col h-full gap-3 p-2">
+  <!-- Top panel: Page template -->
+  <div class="flex flex-col flex-1 min-h-0 overflow-hidden rounded" style="background: #1e1e2e; border: 1px solid #313244;">
+    <div class="flex items-center gap-2 px-3 py-1.5 border-b shrink-0" style="border-color: #313244;">
+      <svg class="w-4 h-4" style="color: #a6adc8;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+      </svg>
+      <span class="text-xs font-mono" style="color: #cdd6f4;" x-text="site.blogSidebarTopFilename"></span>
+    </div>
+    <div class="flex-1 overflow-auto" x-ref="dataCodeScrollTop" @scroll="codeScrollTop = $el.scrollTop">
+      <table class="w-full border-collapse font-mono text-[13px]">
+        <template x-for="(line, i) in dataPageSourceLines" :key="'top-'+i">
+          <tr class="leading-6"
+              style="transition: background-color 700ms, opacity 300ms;"
+              :style="{
+                backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
+                opacity: activeTutorial === 'data' && tutorialStep <= 2 && !line.isData ? 0.3
+                       : activeTutorial === 'data' && tutorialStep === 3 && !line.isBody ? 0.3
+                       : 1,
+              }">
+            <td class="text-right select-none pr-4 pl-3 align-top"
+                style="color: #6c7086; width: 1%; white-space: nowrap;"
+                x-text="i + 1"></td>
+            <td class="pr-4 align-top"
+                style="color: #cdd6f4; white-space: pre;"
+                x-text="line.text || ' '"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
+  </div>
+  <!-- Bottom panel: Markdown file -->
+  <div class="flex flex-col flex-1 min-h-0 overflow-hidden rounded" style="background: #1e1e2e; border: 1px solid #313244;">
+    <div class="flex items-center gap-2 px-3 py-1.5 border-b shrink-0" style="border-color: #313244;">
+      <svg class="w-4 h-4" style="color: #a6adc8;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+      <span class="text-xs font-mono" style="color: #cdd6f4;" x-text="site.blogSidebarBottomFilename"></span>
+    </div>
+    <div class="flex-1 overflow-auto" x-ref="dataCodeScrollBottom">
+      <table class="w-full border-collapse font-mono text-[13px]">
+        <template x-for="(line, i) in dataMarkdownLines" :key="'bot-'+i">
+          <tr class="leading-6"
+              style="transition: background-color 700ms, opacity 300ms;"
+              :style="{
+                backgroundColor: (line.prop && line.prop === lastEditedProp) || (line.highlightAt && activeTutorial === 'data' && tutorialStep === 2) ? 'rgba(252, 189, 1, 0.12)' : '',
+              }">
+            <td class="text-right select-none pr-4 pl-3 align-top"
+                style="color: #6c7086; width: 1%; white-space: nowrap;"
+                x-text="i + 1"></td>
+            <td class="pr-4 align-top"
+                style="white-space: pre;"
+                :style="{ color: line.isFrontmatter ? '#a6e3a1' : '#cdd6f4' }"
+                x-text="line.text || ' '"></td>
+          </tr>
+        </template>
+      </table>
+    </div>
   </div>
 </div>

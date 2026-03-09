@@ -60,8 +60,8 @@
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               </div>
               <div class="leading-tight">
-                <div class="text-sm font-semibold">Home</div>
-                <div class="text-xs text-gray-400">/</div>
+                <div class="text-sm font-semibold" x-text="showDataView ? 'Blog Post' : 'Home'"></div>
+                <div class="text-xs text-gray-400" x-text="showDataView ? '/blog/' + site.blogSidebarBottomFilename.replace('.md', '') : '/'"></div>
               </div>
             </div>
           </div>
@@ -108,12 +108,19 @@
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 scale-90"
         x-transition:enter-end="opacity-100 scale-100"
-        @click="startImageTutorial()"
+        @click="startNextTutorial()"
         class="next-tutorial-prompt">
-        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        <span>Next: Edit an image</span>
+        <template x-if="nextPromptTarget === 'image'">
+          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </template>
+        <template x-if="nextPromptTarget === 'data'">
+          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </template>
+        <span x-text="nextPromptTarget === 'data' ? 'Next: Edit structured data' : 'Next: Edit an image'"></span>
         <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
         </svg>
@@ -244,8 +251,14 @@
         advanceTimeout: null,
         headingTutorialComplete: false,
         imageTutorialComplete: false,
+        dataTutorialComplete: false,
         showNextTutorialPrompt: false,
         nextPromptTimeout: null,
+        nextPromptTarget: null,
+        codeScrollTop: 0,
+
+        blogTitle: 'Start building with Jetstream today',
+        blogBody: 'Deploy your first project in under five minutes. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and sub-50ms response times worldwide, your users get the performance they deserve.',
 
         headingMain: 'Introducing',
         headingHighlight: 'Jetstream',
@@ -274,6 +287,14 @@
             sidebarFilename: 'index.astro',
             imageDefaults: { src: '/dashboard.svg', alt: 'Dashboard', previewSrc: '/demo-sites/jetstream/images/hero-1.svg' },
             imageKey: 'hero-image',
+            blogDefaults: {
+              blogTitle: 'Start building with Jetstream today',
+              blogBody: 'Deploy your first project in under five minutes. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and sub-50ms response times worldwide, your users get the performance they deserve.',
+            },
+            blogSidebarTopFilename: 'pages/blog/[...slug].astro',
+            blogSidebarBottomFilename: 'getting-started.md',
+            blogDate: 'March 15, 2026',
+            blogAuthor: 'Alex Chen',
           },
           sendit: {
             label: 'Sendit',
@@ -289,6 +310,14 @@
             sidebarFilename: 'index.astro',
             imageDefaults: { src: '/hero-image.avif', alt: 'Dashboard', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
             imageKey: 'hero-image',
+            blogDefaults: {
+              blogTitle: 'What are the best email clients?',
+              blogBody: 'When you send an email campaign, you expect it to reach your readers, right? But what if the emails go straight to your subscribers\u2019 spam folders instead of their inboxes? To make sure your emails reach their recipients successfully, follow these email delivery tips.',
+            },
+            blogSidebarTopFilename: 'pages/blog/[...slug].astro',
+            blogSidebarBottomFilename: 'best-email-clients.md',
+            blogDate: 'March 7, 2022',
+            blogAuthor: 'Wendy Parkes',
           },
         },
 
@@ -312,6 +341,21 @@
         get headingEditable() { return this.headingSetupLevel >= 3; },
         get imageEditable() { return this.imageSetupLevel >= 3; },
 
+        get dataSetupLevel() {
+          if (this.dataTutorialComplete) return 4;
+          if (this.activeTutorial === 'data') return this.tutorialStep;
+          return 0;
+        },
+
+        get titleEditable() { return this.dataSetupLevel >= 2; },
+        get bodyEditable() { return this.dataSetupLevel >= 3; },
+
+        get showDataView() {
+          if (this.activeTutorial === 'data') return true;
+          if (this.dataTutorialComplete && this.activeTutorial === null) return true;
+          return false;
+        },
+
         switchSite(name) {
           if (name === this.currentSite) return;
           this.currentSite = name;
@@ -320,7 +364,9 @@
           this.lastAdvancedStep = null;
           this.headingTutorialComplete = false;
           this.imageTutorialComplete = false;
+          this.dataTutorialComplete = false;
           this.showNextTutorialPrompt = false;
+          this.nextPromptTarget = null;
           this.hasChanges = false;
           this.lastEditedProp = null;
           this.showImagePicker = false;
@@ -337,6 +383,14 @@
           this.heroImageSrc = img.src;
           this.heroImageAlt = img.alt;
           this.heroImagePreviewSrc = img.previewSrc;
+          const blog = this.sites[name].blogDefaults;
+          this.blogTitle = blog.blogTitle;
+          this.blogBody = blog.blogBody;
+          this.codeScrollTop = 0;
+          this.$nextTick(() => {
+            const el = this.$refs.codeScroll;
+            if (el) el.scrollTo({ top: 0 });
+          });
         },
 
         headingTooltipSteps: [
@@ -355,7 +409,16 @@
           { text: 'Your image is set up! Click it on the right to pick a new one.', button: 'Try it' },
         ],
 
+        dataTooltipSteps: [
+          { text: 'This blog post renders structured data from markdown frontmatter. Let\u2019s make the title editable with Data Editables.', button: 'Start' },
+          { text: 'This tells CloudCannon that this element shows editable text from structured data.', button: 'Next' },
+          { text: 'This maps the element to the title field in the markdown frontmatter below.', button: 'Next' },
+          { text: 'The @content prop makes the markdown body content editable in the visual editor.', button: 'Next' },
+          { text: 'Your blog post is set up! Try editing the title and content on the right.', button: 'Try it' },
+        ],
+
         get currentTooltipSteps() {
+          if (this.activeTutorial === 'data') return this.dataTooltipSteps;
           if (this.activeTutorial === 'image') return this.imageTooltipSteps;
           return this.headingTooltipSteps;
         },
@@ -513,8 +576,117 @@
           return lines;
         },
 
+        get dataPageSourceLines() {
+          const s = this.dataSetupLevel;
+          const adv = this.activeTutorial === 'data' ? this.lastAdvancedStep : null;
+          const lines = [];
+
+          lines.push(
+            { text: '---' },
+            { text: 'import Layout from "../layouts/Layout.astro"' },
+            { text: 'import { getEntry } from "astro:content"' },
+            { text: '' },
+            { text: 'const post = await getEntry("blog", Astro.params.slug)' },
+            { text: 'const { Content } = await post.render()' },
+            { text: 'const { title, date, author } = post.data' },
+            { text: '---' },
+            { text: '' },
+            { text: '<Layout>' },
+            { text: '  <article>' },
+          );
+
+          if (s === 0) {
+            lines.push({ text: '    <h1>{title}</h1>', isData: true });
+          } else {
+            lines.push({ text: '    <h1', isData: true });
+            if (s === 1) {
+              lines.push({ text: '      data-editable="text">', isNew: adv === 1, isData: true });
+            } else {
+              lines.push({ text: '      data-editable="text"', isData: true });
+              lines.push({ text: '      data-prop="title">', isNew: adv === 2, isData: true, prop: 'blogTitle' });
+            }
+            lines.push(
+              { text: '      {title}', isData: true },
+              { text: '    </h1>', isData: true },
+            );
+          }
+
+          lines.push(
+            { text: '    <p class="meta">{date} · {author}</p>' },
+            { text: '    <img src={featured_image} alt="..." />' },
+            { text: '    <div class="max-w-4xl mx-auto prose lg:prose-xl">' },
+          );
+
+          if (s >= 3) {
+            lines.push(
+              { text: '      <editable-text data-prop="@content">', isNew: adv === 3, isBody: true },
+              { text: '        <Content />', isBody: true },
+              { text: '      </editable-text>', isNew: adv === 3, isBody: true },
+            );
+          } else {
+            lines.push({ text: '      <Content />', isBody: true });
+          }
+
+          lines.push(
+            { text: '    </div>' },
+            { text: '  </article>' },
+            { text: '</Layout>' },
+          );
+
+          return lines;
+        },
+
+        get dataMarkdownLines() {
+          const site = this.site;
+          const s = this.dataSetupLevel;
+          const lines = [];
+
+          lines.push(
+            { text: '---', isFrontmatter: true },
+            { text: 'title: ' + this.blogTitle, isFrontmatter: true, prop: 'blogTitle', highlightAt: s >= 2 },
+            { text: 'date: ' + site.blogDate, isFrontmatter: true },
+            { text: 'author: ' + site.blogAuthor, isFrontmatter: true },
+            { text: 'featured_image:', isFrontmatter: true },
+            { text: '  image: /images/blog/featured-image.jpg', isFrontmatter: true },
+            { text: '  image_alt: Featured image', isFrontmatter: true },
+            { text: 'draft: false', isFrontmatter: true },
+            { text: '---', isFrontmatter: true },
+            { text: '' },
+          );
+
+          const bodyLines = this.blogBody.split(/(?<=\.)\s+/);
+          for (const line of bodyLines) {
+            lines.push({ text: line, isMarkdownBody: true });
+          }
+
+          return lines;
+        },
+
         nextStep() {
           if (this.tutorialStep > 4) return;
+
+          if (this.tutorialStep === 4) {
+            if (this.activeTutorial === 'heading') {
+              this.headingTutorialComplete = true;
+              this.activeTutorial = null;
+              this.nextPromptTarget = 'image';
+              this.nextPromptTimeout = setTimeout(() => {
+                this.showNextTutorialPrompt = true;
+              }, 3000);
+            } else if (this.activeTutorial === 'image') {
+              this.imageTutorialComplete = true;
+              this.activeTutorial = null;
+              this.nextPromptTarget = 'data';
+              this.nextPromptTimeout = setTimeout(() => {
+                this.showNextTutorialPrompt = true;
+              }, 3000);
+            } else if (this.activeTutorial === 'data') {
+              this.dataTutorialComplete = true;
+              this.activeTutorial = null;
+            }
+            return;
+          }
+
           this.tutorialStep++;
 
           if (this.tutorialStep >= 1 && this.tutorialStep <= 3) {
@@ -525,31 +697,57 @@
             }, 1500);
           }
 
-          if (this.tutorialStep > 4) {
-            if (this.activeTutorial === 'heading') {
-              this.headingTutorialComplete = true;
-              this.activeTutorial = null;
-              this.nextPromptTimeout = setTimeout(() => {
-                this.showNextTutorialPrompt = true;
-              }, 3000);
-            } else if (this.activeTutorial === 'image') {
-              this.imageTutorialComplete = true;
-              this.activeTutorial = null;
-            }
-          }
+          this.$nextTick(() => this.scrollToActiveLine());
         },
 
         startImageTutorial() {
           this.showNextTutorialPrompt = false;
+          this.nextPromptTarget = null;
           clearTimeout(this.nextPromptTimeout);
           this.activeTutorial = 'image';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
+          this.$nextTick(() => this.scrollToActiveLine());
         },
 
-        tooltipTop() {
+        startDataTutorial() {
+          this.showNextTutorialPrompt = false;
+          this.nextPromptTarget = null;
+          clearTimeout(this.nextPromptTimeout);
+          this.activeTutorial = 'data';
+          this.tutorialStep = 0;
+          this.lastAdvancedStep = null;
+          this.codeScrollTop = 0;
+          this.$nextTick(() => {
+            const el = this.$refs.dataCodeScrollTop;
+            if (el) el.scrollTo({ top: 0 });
+            this.scrollToActiveLine();
+          });
+        },
+
+        startNextTutorial() {
+          if (this.nextPromptTarget === 'image') {
+            this.startImageTutorial();
+          } else if (this.nextPromptTarget === 'data') {
+            this.startDataTutorial();
+          }
+        },
+
+        rawTooltipTop() {
           const lineH = 24;
           const tabH = 32;
+
+          if (this.activeTutorial === 'data') {
+            const dataTabH = 36;
+            switch (this.tutorialStep) {
+              case 0: return dataTabH + 11 * lineH;
+              case 1: return dataTabH + 12 * lineH;
+              case 2: return dataTabH + 13 * lineH;
+              case 3: return dataTabH + 19 * lineH;
+              case 4: return dataTabH + 11 * lineH;
+              default: return 0;
+            }
+          }
 
           if (this.activeTutorial === 'image') {
             if (this.currentSite === 'sendit') {
@@ -592,6 +790,26 @@
           }
         },
 
+        tooltipTop() {
+          const raw = this.rawTooltipTop();
+          const visual = raw - this.codeScrollTop;
+          return Math.max(60, Math.min(visual, 540));
+        },
+
+        scrollToActiveLine() {
+          const el = this.activeTutorial === 'data'
+            ? this.$refs.dataCodeScrollTop
+            : this.$refs.codeScroll;
+          if (!el) return;
+          const rawTop = this.rawTooltipTop();
+          const offsetH = this.activeTutorial === 'data' ? 36 : 32;
+          const lineY = rawTop - offsetH;
+          const viewH = el.clientHeight;
+          const targetScroll = Math.max(0, lineY - viewH * 0.4);
+          el.scrollTo({ top: targetScroll, behavior: 'smooth' });
+          this.codeScrollTop = targetScroll;
+        },
+
         applyImageUrl() {
           if (!this.imagePickerUrl.trim()) return;
           this.heroImageSrc = this.imagePickerUrl.trim();
@@ -621,7 +839,7 @@
         },
 
         get allTutorialsComplete() {
-          return this.headingTutorialComplete && this.imageTutorialComplete;
+          return this.headingTutorialComplete && this.imageTutorialComplete && this.dataTutorialComplete;
         },
 
         get remainingTutorials() {
@@ -632,6 +850,7 @@
           return [
             { id: 'heading', label: 'Text editing', complete: this.headingTutorialComplete },
             { id: 'image', label: 'Image editing', complete: this.imageTutorialComplete },
+            { id: 'data', label: 'Structured data', complete: this.dataTutorialComplete },
           ];
         },
 
@@ -644,6 +863,10 @@
           }
           if (!this.imageTutorialComplete) {
             this.startImageTutorial();
+            return;
+          }
+          if (!this.dataTutorialComplete) {
+            this.startDataTutorial();
             return;
           }
         },
