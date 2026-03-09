@@ -71,10 +71,18 @@
               class="text-xs"
               :class="hasChanges ? 'text-amber-600 font-semibold' : 'text-gray-400'"
               x-text="hasChanges ? 'Unsaved changes' : 'No pending changes'"></span>
-            <button
-              class="px-3 py-1 text-xs font-semibold rounded transition-colors"
-              :class="hasChanges ? 'bg-[#034AD8] text-white hover:bg-[#0240b8]' : 'bg-[#e8e8e8] text-gray-400'"
-              @click="showSaveModal = true">Save</button>
+            <div class="relative">
+              <button
+                class="save-btn text-xs font-semibold rounded-md transition-all"
+                :class="hasChanges ? 'save-btn-active' : 'save-btn-inactive'"
+                @click="showSaveModal = true">Save</button>
+              <span
+                x-show="hasChanges"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-0"
+                x-transition:enter-end="opacity-100 scale-100"
+                class="save-btn-badge">1</span>
+            </div>
           </div>
         </div>
         {% bookshop "interactive-source-demo/bits/main" %}
@@ -101,30 +109,6 @@
             x-text="currentTooltipSteps[tutorialStep]?.button"></button>
         </div>
       </div>
-
-      <!-- Next Tutorial Prompt -->
-      <button
-        x-show="showNextTutorialPrompt"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 scale-90"
-        x-transition:enter-end="opacity-100 scale-100"
-        @click="startNextTutorial()"
-        class="next-tutorial-prompt">
-        <template x-if="nextPromptTarget === 'image'">
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </template>
-        <template x-if="nextPromptTarget === 'data'">
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-        </template>
-        <span x-text="nextPromptTarget === 'data' ? 'Next: Edit structured data' : 'Next: Edit an image'"></span>
-        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
 
       <!-- Image Picker -->
       <div
@@ -227,9 +211,27 @@
           </div>
 
           <div x-show="!allTutorialsComplete" class="save-modal-divider"></div>
-          <div x-show="!allTutorialsComplete" class="save-modal-notice">
-            <span x-text="'You have ' + remainingTutorials + ' tutorial' + (remainingTutorials === 1 ? '' : 's') + ' left.'"></span>
-            <button @click="resumeIncomplete()" class="save-modal-notice-link">Continue &rarr;</button>
+          <div x-show="!allTutorialsComplete" class="save-modal-tracks">
+            <template x-for="track in tutorialTracks" :key="track.id">
+              <button
+                class="save-modal-track-row"
+                :class="track.complete ? 'is-complete' : ''"
+                :disabled="track.complete"
+                @click="!track.complete && startTutorialFromModal(track)">
+                <span class="save-modal-track-icon">
+                  <template x-if="track.complete">
+                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </template>
+                </span>
+                <span class="save-modal-track-label" x-text="track.label"></span>
+                <span class="save-modal-track-count" x-text="track.stepsCompleted + '/' + track.totalSteps"></span>
+                <svg x-show="!track.complete" class="w-3 h-3 ml-auto opacity-40" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -252,9 +254,6 @@
         headingTutorialComplete: false,
         imageTutorialComplete: false,
         dataTutorialComplete: false,
-        showNextTutorialPrompt: false,
-        nextPromptTimeout: null,
-        nextPromptTarget: null,
         codeScrollTop: 0,
 
         blogTitle: 'Start building with Jetstream today',
@@ -365,8 +364,6 @@
           this.headingTutorialComplete = false;
           this.imageTutorialComplete = false;
           this.dataTutorialComplete = false;
-          this.showNextTutorialPrompt = false;
-          this.nextPromptTarget = null;
           this.hasChanges = false;
           this.lastEditedProp = null;
           this.showImagePicker = false;
@@ -374,7 +371,6 @@
           this.imagePickerMode = 'url';
           clearTimeout(this.flashTimeout);
           clearTimeout(this.advanceTimeout);
-          clearTimeout(this.nextPromptTimeout);
           const d = this.sites[name].defaults;
           this.headingMain = d.headingMain;
           this.headingHighlight = d.headingHighlight;
@@ -677,22 +673,12 @@
           if (this.tutorialStep === 4) {
             if (this.activeTutorial === 'heading') {
               this.headingTutorialComplete = true;
-              this.activeTutorial = null;
-              this.nextPromptTarget = 'image';
-              this.nextPromptTimeout = setTimeout(() => {
-                this.showNextTutorialPrompt = true;
-              }, 3000);
             } else if (this.activeTutorial === 'image') {
               this.imageTutorialComplete = true;
-              this.activeTutorial = null;
-              this.nextPromptTarget = 'data';
-              this.nextPromptTimeout = setTimeout(() => {
-                this.showNextTutorialPrompt = true;
-              }, 3000);
             } else if (this.activeTutorial === 'data') {
               this.dataTutorialComplete = true;
-              this.activeTutorial = null;
             }
+            this.activeTutorial = null;
             return;
           }
 
@@ -710,9 +696,6 @@
         },
 
         startImageTutorial() {
-          this.showNextTutorialPrompt = false;
-          this.nextPromptTarget = null;
-          clearTimeout(this.nextPromptTimeout);
           this.activeTutorial = 'image';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
@@ -720,9 +703,6 @@
         },
 
         startDataTutorial() {
-          this.showNextTutorialPrompt = false;
-          this.nextPromptTarget = null;
-          clearTimeout(this.nextPromptTimeout);
           this.activeTutorial = 'data';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
@@ -732,14 +712,6 @@
             if (el) el.scrollTo({ top: 0 });
             this.scrollToActiveLine();
           });
-        },
-
-        startNextTutorial() {
-          if (this.nextPromptTarget === 'image') {
-            this.startImageTutorial();
-          } else if (this.nextPromptTarget === 'data') {
-            this.startDataTutorial();
-          }
         },
 
         rawTooltipTop() {
@@ -851,32 +823,42 @@
           return this.headingTutorialComplete && this.imageTutorialComplete && this.dataTutorialComplete;
         },
 
-        get remainingTutorials() {
-          return this.tutorialTracks.filter(t => !t.complete).length;
-        },
-
         get tutorialTracks() {
           return [
-            { id: 'heading', label: 'Text editing', complete: this.headingTutorialComplete },
-            { id: 'image', label: 'Image editing', complete: this.imageTutorialComplete },
-            { id: 'data', label: 'Structured data', complete: this.dataTutorialComplete },
+            {
+              id: 'heading',
+              label: 'Configure text editing',
+              complete: this.headingTutorialComplete,
+              stepsCompleted: this.headingTutorialComplete ? 5 : (this.activeTutorial === 'heading' ? this.tutorialStep : 0),
+              totalSteps: 5,
+            },
+            {
+              id: 'image',
+              label: 'Configure image editing',
+              complete: this.imageTutorialComplete,
+              stepsCompleted: this.imageTutorialComplete ? 5 : (this.activeTutorial === 'image' ? this.tutorialStep : 0),
+              totalSteps: 5,
+            },
+            {
+              id: 'data',
+              label: 'Configure structured data',
+              complete: this.dataTutorialComplete,
+              stepsCompleted: this.dataTutorialComplete ? 5 : (this.activeTutorial === 'data' ? this.tutorialStep : 0),
+              totalSteps: 5,
+            },
           ];
         },
 
-        resumeIncomplete() {
+        startTutorialFromModal(track) {
           this.showSaveModal = false;
-          if (!this.headingTutorialComplete) {
+          if (track.id === this.activeTutorial) return;
+          if (track.id === 'heading') {
             this.activeTutorial = 'heading';
             this.tutorialStep = 0;
-            return;
-          }
-          if (!this.imageTutorialComplete) {
+          } else if (track.id === 'image') {
             this.startImageTutorial();
-            return;
-          }
-          if (!this.dataTutorialComplete) {
+          } else if (track.id === 'data') {
             this.startDataTutorial();
-            return;
           }
         },
       }));
@@ -942,6 +924,51 @@
       background: #e8e8e8;
     }
 
+    .save-btn {
+      padding: 5px 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .save-btn-active {
+      background: #E8734A;
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(232, 115, 74, 0.3);
+      animation: save-glow 2s ease-in-out infinite;
+    }
+
+    .save-btn-active:hover {
+      background: #d4623c;
+    }
+
+    .save-btn-inactive {
+      background: #f3f4f6;
+      color: #9ca3af;
+      border: 1px solid #e5e7eb;
+    }
+
+    .save-btn-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #dc2626;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    @keyframes save-glow {
+      0%, 100% { box-shadow: 0 1px 4px rgba(232, 115, 74, 0.3); }
+      50% { box-shadow: 0 0 0 5px rgba(232, 115, 74, 0); }
+    }
+
     .tutorial-tooltip {
       position: absolute;
       z-index: 20;
@@ -964,36 +991,6 @@
       border-top: 8px solid transparent;
       border-bottom: 8px solid transparent;
       border-right: 8px solid #fff;
-    }
-
-    .next-tutorial-prompt {
-      position: absolute;
-      z-index: 25;
-      right: 16px;
-      bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: #034AD8;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(3, 74, 216, 0.35);
-      animation: prompt-bounce 2s ease infinite;
-      transition: background 0.15s ease;
-    }
-
-    .next-tutorial-prompt:hover {
-      background: #0240b8;
-    }
-
-    @keyframes prompt-bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
     }
 
     .image-picker {
@@ -1038,25 +1035,69 @@
       margin: 20px 0 16px;
     }
 
-    .save-modal-notice {
-      text-align: center;
+    .save-modal-tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .save-modal-track-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 8px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
       font-size: 13px;
       color: #6b7280;
-    }
-
-    .save-modal-notice-link {
-      background: none;
-      border: none;
-      color: #034AD8;
-      font-size: 13px;
-      font-weight: 600;
       cursor: pointer;
-      padding: 0;
-      margin-left: 4px;
+      transition: background 0.15s ease;
+      text-align: left;
     }
 
-    .save-modal-notice-link:hover {
-      text-decoration: underline;
+    .save-modal-track-row:not(.is-complete):hover {
+      background: #f3f4f6;
+    }
+
+    .save-modal-track-row.is-complete {
+      cursor: default;
+      color: #16a34a;
+    }
+
+    .save-modal-track-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px solid #d1d5db;
+    }
+
+    .save-modal-track-row.is-complete .save-modal-track-icon {
+      background: #d1fae5;
+      border-color: #16a34a;
+      color: #16a34a;
+    }
+
+    .save-modal-track-label {
+      flex: 1;
+    }
+
+    .save-modal-track-count {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: #f3f4f6;
+    }
+
+    .save-modal-track-row.is-complete .save-modal-track-count {
+      background: #d1fae5;
+      color: #16a34a;
     }
   </style>
 
