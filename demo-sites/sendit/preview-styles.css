@@ -468,3 +468,11 @@
 .sd-blog-body p + p {
   margin-top: 0.4rem;
 }
+
+.sd-blog-body strong {
+  font-weight: 700;
+}
+
+.sd-blog-body em {
+  font-style: italic;
+}

@@ -543,6 +543,14 @@
   margin-top: 0.5rem;
 }
 
+.jt-blog-body strong {
+  font-weight: 700;
+}
+
+.jt-blog-body em {
+  font-style: italic;
+}
+
 /* ── Animations ── */
 @keyframes jt-rotate-angle {
   from { --jt-angle: 0deg; }

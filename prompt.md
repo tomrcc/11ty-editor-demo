@@ -1,7 +1,8 @@
 # General instructions
 
 - Push back on things, don't be a sycophant
-- Keep comments minimal. When replacing old logic/comments, don't muddy comments up with how things used to be.
+- Keep comments minimal.
+- Never write comments that reference your own actions, prior iterations, or changes you made. Write comments as if you are the original author and the code has always been this way.
 - Don't use square brackets in logs
 - Avoid factory, and generator functions
 - Ask questions during the planning phase if needed

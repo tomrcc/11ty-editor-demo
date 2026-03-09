@@ -258,7 +258,7 @@
         codeScrollTop: 0,
 
         blogTitle: 'Start building with Jetstream today',
-        blogBody: 'Deploy your first project in under five minutes. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and sub-50ms response times worldwide, your users get the performance they deserve.',
+        blogBody: 'Deploy your first project in <strong>under five minutes</strong>. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and <em>sub-50ms response times</em> worldwide, your users get the performance they deserve.',
 
         headingMain: 'Introducing',
         headingHighlight: 'Jetstream',
@@ -289,7 +289,7 @@
             imageKey: 'hero-image',
             blogDefaults: {
               blogTitle: 'Start building with Jetstream today',
-              blogBody: 'Deploy your first project in under five minutes. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and sub-50ms response times worldwide, your users get the performance they deserve.',
+              blogBody: 'Deploy your first project in <strong>under five minutes</strong>. Jetstream gives your team the infrastructure to ship faster, scale further, and sleep better at night. With edge-optimized delivery and <em>sub-50ms response times</em> worldwide, your users get the performance they deserve.',
             },
             blogSidebarTopFilename: 'pages/blog/[...slug].astro',
             blogSidebarBottomFilename: 'getting-started.md',
@@ -312,7 +312,7 @@
             imageKey: 'hero-image',
             blogDefaults: {
               blogTitle: 'What are the best email clients?',
-              blogBody: 'When you send an email campaign, you expect it to reach your readers, right? But what if the emails go straight to your subscribers\u2019 spam folders instead of their inboxes? To make sure your emails reach their recipients successfully, follow these email delivery tips.',
+              blogBody: 'When you send an email campaign, you expect it to reach your readers, right? But what if the emails go straight to your subscribers\u2019 <strong>spam folders</strong> instead of their inboxes? To make sure your emails reach their recipients successfully, follow these <em>email delivery tips</em>.',
             },
             blogSidebarTopFilename: 'pages/blog/[...slug].astro',
             blogSidebarBottomFilename: 'best-email-clients.md',
@@ -636,6 +636,14 @@
           return lines;
         },
 
+        htmlToMarkdown(html) {
+          return html
+            .replace(/<\/?(strong|b)>/gi, '**')
+            .replace(/<\/?(em|i)>/gi, '*')
+            .replace(/<br\s*\/?>/gi, ' ')
+            .replace(/<[^>]+>/g, '');
+        },
+
         get dataMarkdownLines() {
           const site = this.site;
           const s = this.dataSetupLevel;
@@ -654,7 +662,8 @@
             { text: '' },
           );
 
-          const bodyLines = this.blogBody.split(/(?<=\.)\s+/);
+          const md = this.htmlToMarkdown(this.blogBody);
+          const bodyLines = md.split(/(?<=\.)\s+/);
           for (const line of bodyLines) {
             lines.push({ text: line, isMarkdownBody: true });
           }
@@ -875,6 +884,8 @@
   </script>
 
   <style>
+    [x-cloak] { display: none !important; }
+
     .editable-region {
       outline: 2px solid transparent;
       outline-offset: 4px;
@@ -901,6 +912,34 @@
 
     .editable-region-image:hover {
       outline-color: #FCBD01;
+    }
+
+    .blog-body-toolbar {
+      display: flex;
+      gap: 2px;
+      max-width: 380px;
+      margin: 0 auto;
+      padding: 4px 1rem;
+      border-bottom: 1px solid #e2e2e2;
+    }
+
+    .blog-body-toolbar button {
+      width: 24px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.55rem;
+      color: #444;
+      line-height: 1;
+    }
+
+    .blog-body-toolbar button:hover {
+      background: #e8e8e8;
     }
 
     .tutorial-tooltip {

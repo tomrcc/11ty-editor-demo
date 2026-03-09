@@ -328,11 +328,15 @@
     </div>
   </section>
 
+  <div class="blog-body-toolbar" x-show="bodyEditable" x-cloak>
+    <button @mousedown.prevent="document.execCommand('bold')"><strong>B</strong></button>
+    <button @mousedown.prevent="document.execCommand('italic')"><em>I</em></button>
+  </div>
   <div class="jt-blog-body"
     :class="bodyEditable && 'editable-region'"
     :contenteditable="bodyEditable"
-    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerText = b"
-    @input="blogBody = $el.innerText; onEdit('blogBody')"></div>
+    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerHTML = b"
+    @input="blogBody = $el.innerHTML; onEdit('blogBody')"></div>
 
   <footer class="jt-footer">
     <div class="jt-footer-top">
@@ -409,11 +413,15 @@
     </div>
   </section>
 
+  <div class="blog-body-toolbar" x-show="bodyEditable" x-cloak>
+    <button @mousedown.prevent="document.execCommand('bold')"><strong>B</strong></button>
+    <button @mousedown.prevent="document.execCommand('italic')"><em>I</em></button>
+  </div>
   <div class="sd-blog-body"
     :class="bodyEditable && 'editable-region'"
     :contenteditable="bodyEditable"
-    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerText = b"
-    @input="blogBody = $el.innerText; onEdit('blogBody')"></div>
+    x-effect="let b = blogBody; if (document.activeElement !== $el) $el.innerHTML = b"
+    @input="blogBody = $el.innerHTML; onEdit('blogBody')"></div>
 
   <footer class="sd-footer">
     <div class="sd-footer-top">
