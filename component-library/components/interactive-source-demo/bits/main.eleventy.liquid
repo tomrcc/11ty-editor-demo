@@ -44,11 +44,7 @@
       </div>
     </div>
     <div class="jt-hero-image">
-      <img
-        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/jetstream/images/hero-1.svg'"
-        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
-        @click="imageEditable && (showImagePicker = !showImagePicker)"
-        alt="Dashboard overview" />
+      <img src="/demo-sites/jetstream/images/hero-1.svg" alt="Dashboard overview" />
     </div>
   </section>
 
@@ -185,11 +181,7 @@
       <a href="#" class="sd-btn sd-btn-primary">Try This Free</a>
     </div>
     <div class="sd-hero-image">
-      <img
-        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/sendit/images/hero-image.avif'"
-        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
-        @click="imageEditable && (showImagePicker = !showImagePicker)"
-        alt="Reports dashboard" />
+      <img src="/demo-sites/sendit/images/hero-image.avif" alt="Reports dashboard" />
     </div>
   </section>
 
@@ -324,7 +316,11 @@
       <span>3 min read</span>
     </div>
     <div class="jt-blog-image">
-      <img src="/demo-sites/jetstream/images/hero-1.svg" alt="Featured image" />
+      <img
+        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/jetstream/images/hero-1.svg'"
+        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
+        @click="imageEditable && (showImagePicker = !showImagePicker)"
+        :alt="imageEditable ? heroImageAlt : 'Featured image'" />
     </div>
   </section>
 
@@ -362,7 +358,7 @@
   </footer>
 
   <div
-    x-show="activeTutorial === 'data' && tutorialStep <= 4"
+    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
@@ -409,7 +405,11 @@
       <span>3 min read</span>
     </div>
     <div class="sd-blog-image">
-      <img src="/demo-sites/sendit/images/hero-image.avif" alt="Featured image" />
+      <img
+        :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/sendit/images/hero-image.avif'"
+        :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
+        @click="imageEditable && (showImagePicker = !showImagePicker)"
+        :alt="imageEditable ? heroImageAlt : 'Featured image'" />
     </div>
   </section>
 
@@ -458,7 +458,7 @@
   </footer>
 
   <div
-    x-show="activeTutorial === 'data' && tutorialStep <= 4"
+    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= 4"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"

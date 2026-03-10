@@ -120,30 +120,80 @@
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
         class="image-picker"
-        @click.outside="showImagePicker = false">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-sm font-semibold text-gray-800">Choose image</span>
+        @click.outside="showImagePicker = false; showImageSourceMenu = false; showGallery = false">
+
+        <div class="image-picker-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="4" cy="3" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="4" cy="13" r="1.5"/>
+              <circle cx="10" cy="3" r="1.5"/><circle cx="10" cy="8" r="1.5"/><circle cx="10" cy="13" r="1.5"/>
+            </svg>
+            <span class="text-sm font-bold text-gray-900">Image</span>
+          </div>
           <button @click="showImagePicker = false" class="p-0.5 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100">
             <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <div class="flex gap-1 p-0.5 mb-3 rounded-md" style="background: #f1f5f9;">
-          <button
-            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
-            :class="imagePickerMode === 'gallery' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-            @click="imagePickerMode = 'gallery'">Gallery</button>
-          <button
-            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
-            :class="imagePickerMode === 'url' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-            @click="imagePickerMode = 'url'">URL</button>
-          <button
-            class="flex-1 px-2 py-1 text-xs font-medium rounded transition-colors"
-            :class="imagePickerMode === 'upload' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-            @click="imagePickerMode = 'upload'">Upload</button>
+
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-gray-900 mb-0.5">Image Path</label>
+          <p class="text-xs text-gray-500 mb-2">The path to the source file of the image to be optimized.</p>
+          <div class="image-picker-path-row">
+            <input
+              type="text"
+              x-model="heroImageSrc"
+              placeholder="/assets/images/example.jpg"
+              @keydown.enter="applyPathInput()"
+              @blur="applyPathInput()"
+              class="image-picker-path-input" />
+            <button
+              @click="heroImageSrc = ''; heroImagePreviewSrc = ''; onEdit('heroImageSrc')"
+              class="image-picker-path-btn" title="Clear">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414-6.414a2 2 0 011.414-.586H19a2 2 0 012 2v10a2 2 0 01-2 2h-8.172a2 2 0 01-1.414-.586L3 12z" />
+              </svg>
+            </button>
+            <div class="relative">
+              <button
+                @click="showImageSourceMenu = !showImageSourceMenu"
+                class="image-picker-path-btn image-picker-add-btn" title="Add image">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+              <div
+                x-show="showImageSourceMenu"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                @click.outside="showImageSourceMenu = false"
+                class="image-picker-source-menu">
+                <label class="image-picker-source-option">
+                  <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  <span>Upload a new image</span>
+                  <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event)" />
+                </label>
+                <button
+                  @click="showGallery = !showGallery; showImageSourceMenu = false"
+                  class="image-picker-source-option">
+                  <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                  <span>Select existing image</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <template x-if="imagePickerMode === 'gallery'">
+
+        <div x-show="showGallery" x-transition class="mb-4">
           <div class="image-picker-grid">
             <template x-for="preset in site.presetImages" :key="preset.previewSrc">
               <button
@@ -154,33 +204,21 @@
               </button>
             </template>
           </div>
-        </template>
-        <template x-if="imagePickerMode === 'url'">
-          <div>
-            <input
-              type="text"
-              x-model="imagePickerUrl"
-              placeholder="https://placebear.com/200/300"
-              @keydown.enter="applyImageUrl()"
-              class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-            <button
-              @click="applyImageUrl()"
-              :disabled="!imagePickerUrl.trim()"
-              class="w-full px-3 py-1.5 mt-2 text-xs font-semibold text-white rounded-md transition-colors disabled:opacity-40"
-              style="background-color: #034AD8;">Apply</button>
-          </div>
-        </template>
-        <template x-if="imagePickerMode === 'upload'">
-          <div>
-            <label class="flex flex-col items-center justify-center gap-1.5 px-3 py-4 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
-              <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-              </svg>
-              <span class="text-xs text-gray-500">Choose a file</span>
-              <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event)" />
-            </label>
-          </div>
-        </template>
+        </div>
+
+        <div class="image-picker-preview" x-show="heroImagePreviewSrc" x-transition>
+          <img :src="heroImagePreviewSrc" alt="" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-gray-900 mb-1">Image Alt Text</label>
+          <textarea
+            x-model="heroImageAlt"
+            @input="onEdit('heroImageAlt')"
+            rows="3"
+            class="image-picker-alt-input"
+            placeholder="Describe the image..."></textarea>
+        </div>
       </div>
 
       <!-- Save Modal -->
@@ -286,8 +324,8 @@
         heroImageAlt: 'Dashboard',
         heroImagePreviewSrc: '/demo-sites/jetstream/images/hero-1.svg',
         showImagePicker: false,
-        imagePickerUrl: '',
-        imagePickerMode: 'gallery',
+        showImageSourceMenu: false,
+        showGallery: false,
 
         sites: {
           jetstream: {
@@ -383,8 +421,8 @@
         get bodyEditable() { return this.dataSetupLevel >= 3; },
 
         get showDataView() {
-          if (this.activeTutorial === 'data') return true;
-          if (this.dataTutorialComplete && this.activeTutorial === null && this.lastCompletedTutorial === 'data') return true;
+          if (this.activeTutorial === 'data' || this.activeTutorial === 'image') return true;
+          if (this.activeTutorial === null && (this.lastCompletedTutorial === 'data' || this.lastCompletedTutorial === 'image')) return true;
           return false;
         },
 
@@ -401,8 +439,8 @@
           this.hasChanges = false;
           this.lastEditedProp = null;
           this.showImagePicker = false;
-          this.imagePickerUrl = '';
-          this.imagePickerMode = 'gallery';
+          this.showImageSourceMenu = false;
+          this.showGallery = false;
           clearTimeout(this.flashTimeout);
           clearTimeout(this.advanceTimeout);
           const d = this.sites[name].defaults;
@@ -432,10 +470,10 @@
         ],
 
         imageTooltipSteps: [
-          { text: 'This page also has a hero image. Let\u2019s make it editable too.', button: 'Start' },
-          { text: 'This marks the image element as editable in the source.', button: 'Next' },
-          { text: 'This tells CloudCannon which file the image belongs to.', button: 'Next' },
-          { text: 'This key uniquely identifies the image region.', button: 'Next' },
+          { text: 'This blog post has a featured image. Let\u2019s make it editable with Image Editables.', button: 'Start' },
+          { text: 'This tells CloudCannon that this element is an editable image region.', button: 'Next' },
+          { text: 'This maps the image source to the featured_image field in the markdown frontmatter below.', button: 'Next' },
+          { text: 'This maps the alt text to the featured_image_alt field in the frontmatter.', button: 'Next' },
           { text: 'Your image is set up! Click it on the right to pick a new one.', button: 'Try it' },
         ],
 
@@ -497,41 +535,6 @@
           return lines;
         },
 
-        imageRegionLines(indent) {
-          const s = this.imageSetupLevel;
-          const adv = this.activeTutorial === 'image' ? this.lastAdvancedStep : null;
-          const pad = ' '.repeat(indent);
-          const attrPad = ' '.repeat(indent + 2);
-          const lines = [];
-
-          if (s === 0) {
-            lines.push({ text: pad + '<img src="' + this.heroImageSrc + '" alt="' + this.heroImageAlt + '" />', isImage: true });
-            return lines;
-          }
-
-          lines.push({ text: pad + '<img', isImage: true });
-          lines.push({ text: attrPad + 'src="' + this.heroImageSrc + '"', prop: 'heroImageSrc', isImage: true });
-          lines.push({ text: attrPad + 'alt="' + this.heroImageAlt + '"', isImage: true });
-
-          if (s === 1) {
-            lines.push({ text: attrPad + 'data-editable="source" />', isNew: adv === 1, isImage: true });
-          } else {
-            lines.push({ text: attrPad + 'data-editable="source"', isImage: true });
-          }
-
-          if (s >= 2 && s === 2) {
-            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '" />', isNew: adv === 2, isImage: true });
-          } else if (s >= 2) {
-            lines.push({ text: attrPad + 'data-path="' + this.sourcePath + '"', isImage: true });
-          }
-
-          if (s >= 3) {
-            lines.push({ text: attrPad + 'data-key="' + this.site.imageKey + '" />', isNew: adv === 3, isImage: true });
-          }
-
-          return lines;
-        },
-
         get sourceLines() {
           return this.currentSite === 'sendit' ? this.senditSourceLines : this.jetstreamSourceLines;
         },
@@ -557,9 +560,8 @@
             { text: '    </h1>' },
             { text: '    <p>A new Astro template by CloudCannon...</p>' },
             { text: '    <a href="/get-started" class="button">Deploy Jetstream</a>' },
+            { text: '    <img src="/dashboard.svg" alt="Dashboard" />' },
           );
-
-          lines.push(...this.imageRegionLines(4));
 
           lines.push(
             { text: '  </section>' },
@@ -591,9 +593,8 @@
           lines.push(
             { text: '    <p>With Sendit, you can quickly create...</p>' },
             { text: '    <a href="/signup" class="button">Try This Free</a>' },
+            { text: '    <img src="/hero-image.avif" alt="Reports dashboard" />' },
           );
-
-          lines.push(...this.imageRegionLines(4));
 
           lines.push(
             { text: '  </section>' },
@@ -608,7 +609,9 @@
 
         get dataPageSourceLines() {
           const s = this.dataSetupLevel;
+          const imgS = this.imageSetupLevel;
           const adv = this.activeTutorial === 'data' ? this.lastAdvancedStep : null;
+          const imgAdv = this.activeTutorial === 'image' ? this.lastAdvancedStep : null;
           const lines = [];
 
           lines.push(
@@ -618,7 +621,7 @@
             { text: '' },
             { text: 'const post = await getEntry("blog", Astro.params.slug)' },
             { text: 'const { Content } = await post.render()' },
-            { text: 'const { title, date, author } = post.data' },
+            { text: 'const { title, date, author, featured_image, featured_image_alt } = post.data' },
             { text: '---' },
             { text: '' },
             { text: '<Layout>' },
@@ -641,11 +644,30 @@
             );
           }
 
-          lines.push(
-            { text: '    <p class="meta">{date} · {author}</p>' },
-            { text: '    <img src={featured_image} alt="..." />' },
-            { text: '    <div class="max-w-4xl mx-auto prose lg:prose-xl">' },
-          );
+          lines.push({ text: '    <p class="meta">{date} · {author}</p>' });
+
+          if (imgS === 0) {
+            lines.push({ text: '    <img src={featured_image} alt={featured_image_alt} />', isImage: true });
+          } else {
+            lines.push({ text: '    <img', isImage: true });
+            lines.push({ text: '      src={featured_image}', isImage: true, prop: 'heroImageSrc' });
+            lines.push({ text: '      alt={featured_image_alt}', isImage: true, prop: 'heroImageAlt' });
+            if (imgS === 1) {
+              lines.push({ text: '      data-editable="image" />', isNew: imgAdv === 1, isImage: true });
+            } else {
+              lines.push({ text: '      data-editable="image"', isImage: true });
+            }
+            if (imgS >= 2 && imgS === 2) {
+              lines.push({ text: '      data-prop-src="featured_image" />', isNew: imgAdv === 2, isImage: true });
+            } else if (imgS >= 2) {
+              lines.push({ text: '      data-prop-src="featured_image"', isImage: true });
+            }
+            if (imgS >= 3) {
+              lines.push({ text: '      data-prop-alt="featured_image_alt" />', isNew: imgAdv === 3, isImage: true });
+            }
+          }
+
+          lines.push({ text: '    <div class="max-w-4xl mx-auto prose lg:prose-xl">' });
 
           if (s >= 3) {
             lines.push(
@@ -677,6 +699,7 @@
         get dataMarkdownLines() {
           const site = this.site;
           const s = this.dataSetupLevel;
+          const imgS = this.imageSetupLevel;
           const lines = [];
 
           lines.push(
@@ -684,9 +707,8 @@
             { text: 'title: ' + this.blogTitle, isFrontmatter: true, prop: 'blogTitle', highlightAt: s >= 2 },
             { text: 'date: ' + site.blogDate, isFrontmatter: true },
             { text: 'author: ' + site.blogAuthor, isFrontmatter: true },
-            { text: 'featured_image:', isFrontmatter: true },
-            { text: '  image: /images/blog/featured-image.jpg', isFrontmatter: true },
-            { text: '  image_alt: Featured image', isFrontmatter: true },
+            { text: 'featured_image: ' + this.heroImageSrc, isFrontmatter: true, prop: 'heroImageSrc', imageHighlightAt: imgS >= 2 },
+            { text: 'featured_image_alt: ' + this.heroImageAlt, isFrontmatter: true, prop: 'heroImageAlt', imageHighlightAt: imgS >= 3 },
             { text: 'draft: false', isFrontmatter: true },
             { text: '---', isFrontmatter: true },
             { text: '' },
@@ -739,7 +761,12 @@
           this.activeTutorial = 'image';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
-          this.$nextTick(() => this.scrollToActiveLine(true));
+          this.codeScrollTop = 0;
+          this.$nextTick(() => {
+            const el = this.$refs.dataCodeScrollTop;
+            if (el) el.scrollTo({ top: 0 });
+            this.scrollToActiveLine(true);
+          });
         },
 
         startDataTutorial() {
@@ -760,33 +787,29 @@
 
           if (this.activeTutorial === 'data') {
             const dataTabH = 36;
+            const imgS = this.imageSetupLevel;
+            const imgLines = imgS === 0 ? 1 : imgS <= 1 ? 4 : imgS <= 2 ? 5 : 6;
             switch (this.tutorialStep) {
               case 0: return dataTabH + 11 * lineH;
               case 1: return dataTabH + 12 * lineH;
               case 2: return dataTabH + 13 * lineH;
-              case 3: return dataTabH + 19 * lineH;
+              case 3: return dataTabH + (18 + imgLines) * lineH;
               case 4: return dataTabH + 11 * lineH;
               default: return 0;
             }
           }
 
           if (this.activeTutorial === 'image') {
-            if (this.currentSite === 'sendit') {
-              switch (this.tutorialStep) {
-                case 0: return tabH + 14 * lineH;
-                case 1: return tabH + 17 * lineH;
-                case 2: return tabH + 18 * lineH;
-                case 3: return tabH + 19 * lineH;
-                case 4: return tabH + 14 * lineH;
-                default: return 0;
-              }
-            }
+            const dataTabH = 36;
+            const ds = this.dataSetupLevel;
+            const h1Lines = ds === 0 ? 1 : ds <= 1 ? 4 : 5;
+            const imgLine = 11 + h1Lines + 1;
             switch (this.tutorialStep) {
-              case 0: return tabH + 23 * lineH;
-              case 1: return tabH + 26 * lineH;
-              case 2: return tabH + 27 * lineH;
-              case 3: return tabH + 28 * lineH;
-              case 4: return tabH + 23 * lineH;
+              case 0: return dataTabH + imgLine * lineH;
+              case 1: return dataTabH + (imgLine + 3) * lineH;
+              case 2: return dataTabH + (imgLine + 4) * lineH;
+              case 3: return dataTabH + (imgLine + 5) * lineH;
+              case 4: return dataTabH + imgLine * lineH;
               default: return 0;
             }
           }
@@ -818,12 +841,13 @@
         },
 
         scrollToActiveLine(force) {
-          const el = this.activeTutorial === 'data'
+          const useSplitView = this.activeTutorial === 'data' || this.activeTutorial === 'image';
+          const el = useSplitView
             ? this.$refs.dataCodeScrollTop
             : this.$refs.codeScroll;
           if (!el) return;
           const rawTop = this.rawTooltipTop();
-          const offsetH = this.activeTutorial === 'data' ? 36 : 32;
+          const offsetH = useSplitView ? 36 : 32;
           const lineY = rawTop - offsetH;
           const viewH = el.clientHeight;
           const currentScroll = el.scrollTop;
@@ -843,16 +867,20 @@
         applyPresetImage(preset) {
           this.heroImageSrc = preset.src;
           this.heroImagePreviewSrc = preset.previewSrc;
-          this.showImagePicker = false;
+          this.showGallery = false;
+          this.showImageSourceMenu = false;
           this.onEdit('heroImageSrc');
         },
 
-        applyImageUrl() {
-          if (!this.imagePickerUrl.trim()) return;
-          this.heroImageSrc = this.imagePickerUrl.trim();
-          this.heroImagePreviewSrc = this.imagePickerUrl.trim();
-          this.showImagePicker = false;
-          this.imagePickerUrl = '';
+        applyPathInput() {
+          const val = this.heroImageSrc.trim();
+          if (!val) return;
+          if (val.startsWith('http://') || val.startsWith('https://')) {
+            this.heroImagePreviewSrc = val;
+          } else {
+            const match = this.site.presetImages.find(p => p.src === val);
+            if (match) this.heroImagePreviewSrc = match.previewSrc;
+          }
           this.onEdit('heroImageSrc');
         },
 
@@ -861,8 +889,7 @@
           if (!file) return;
           this.heroImagePreviewSrc = URL.createObjectURL(file);
           this.heroImageSrc = '/uploads/' + file.name;
-          this.showImagePicker = false;
-          this.imagePickerUrl = '';
+          this.showImageSourceMenu = false;
           this.onEdit('heroImageSrc');
         },
 
@@ -891,17 +918,17 @@
               totalSteps: 5,
             },
             {
-              id: 'image',
-              label: 'Configure image editing',
-              complete: this.imageTutorialComplete,
-              stepsCompleted: this.imageTutorialComplete ? 5 : (this.activeTutorial === 'image' ? this.tutorialStep : 0),
-              totalSteps: 5,
-            },
-            {
               id: 'data',
               label: 'Configure structured data',
               complete: this.dataTutorialComplete,
               stepsCompleted: this.dataTutorialComplete ? 5 : (this.activeTutorial === 'data' ? this.tutorialStep : 0),
+              totalSteps: 5,
+            },
+            {
+              id: 'image',
+              label: 'Configure image editing',
+              complete: this.imageTutorialComplete,
+              stepsCompleted: this.imageTutorialComplete ? 5 : (this.activeTutorial === 'image' ? this.tutorialStep : 0),
               totalSteps: 5,
             },
           ];
@@ -1067,11 +1094,126 @@
       right: 24px;
       top: 50%;
       transform: translateY(-50%);
-      width: 280px;
-      padding: 14px 16px;
+      width: 340px;
+      padding: 16px 18px;
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .image-picker-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .image-picker-path-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .image-picker-path-input {
+      flex: 1;
+      min-width: 0;
+      padding: 6px 10px;
+      font-size: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .image-picker-path-input:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .image-picker-path-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      color: #6b7280;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .image-picker-path-btn:hover {
+      background: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    .image-picker-source-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 4px;
+      width: 220px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      z-index: 40;
+      overflow: hidden;
+    }
+
+    .image-picker-source-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #374151;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+      text-align: left;
+    }
+
+    .image-picker-source-option:hover {
+      background: #f3f4f6;
+    }
+
+    .image-picker-preview {
+      margin-bottom: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .image-picker-preview img {
+      display: block;
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+    }
+
+    .image-picker-alt-input {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .image-picker-alt-input:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
 
     .image-picker-grid {

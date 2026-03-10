@@ -1,4 +1,4 @@
-<!-- Single-file mode (heading/image tutorials) -->
+<!-- Single-file mode (heading tutorial) -->
 <div x-show="!showDataView" class="flex flex-col h-full" style="background: #1e1e2e;">
   <div class="flex items-center gap-2 px-3 py-1.5 border-b" style="border-color: #313244;">
     <svg class="w-4 h-4" style="color: #a6adc8;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,9 +13,7 @@
             style="transition: background-color 1700ms, opacity 300ms;"
             :style="{
               backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
-              opacity: activeTutorial === 'heading' && !line.isHeading ? 0.3
-                     : activeTutorial === 'image' && !(line.isImage || line.isHeading) ? 0.3
-                     : 1,
+              opacity: activeTutorial === 'heading' && !line.isHeading ? 0.3 : 1,
             }">
           <td class="text-right select-none pr-4 pl-3 align-top"
               style="color: #6c7086; width: 1%; white-space: nowrap;"
@@ -29,7 +27,7 @@
   </div>
 </div>
 
-<!-- Split-file mode (data tutorial) -->
+<!-- Split-file mode (data/image tutorials) -->
 <div x-show="showDataView" class="flex flex-col h-full gap-3 p-2">
   <!-- Top panel: Page template -->
   <div class="flex flex-col flex-1 min-h-0 overflow-hidden rounded" style="background: #1e1e2e; border: 1px solid #313244;">
@@ -48,6 +46,7 @@
                 backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
                 opacity: activeTutorial === 'data' && tutorialStep <= 2 && !line.isData ? 0.3
                        : activeTutorial === 'data' && tutorialStep === 3 && !line.isBody ? 0.3
+                       : activeTutorial === 'image' && !line.isImage ? 0.3
                        : 1,
               }">
             <td class="text-right select-none pr-4 pl-3 align-top"
@@ -75,7 +74,7 @@
           <tr class="leading-6"
               style="transition: background-color 1700ms, opacity 300ms;"
               :style="{
-                backgroundColor: (line.prop && line.prop === lastEditedProp) || (line.highlightAt && activeTutorial === 'data' && tutorialStep === 2) ? 'rgba(252, 189, 1, 0.12)' : '',
+                backgroundColor: (line.prop && line.prop === lastEditedProp) || (line.highlightAt && activeTutorial === 'data' && tutorialStep === 2) || (line.imageHighlightAt && activeTutorial === 'image') ? 'rgba(252, 189, 1, 0.12)' : '',
               }">
             <td class="text-right select-none pr-4 pl-3 align-top"
                 style="color: #6c7086; width: 1%; white-space: nowrap;"
