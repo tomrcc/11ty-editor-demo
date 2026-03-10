@@ -98,7 +98,7 @@
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
         class="tutorial-tooltip"
-        :style="'top: ' + tooltipTop() + 'px'">
+        :style="activeTutorial !== null && tutorialStep <= 4 ? 'top: ' + tooltipTop() + 'px' : ''">
         <div class="text-sm leading-snug text-gray-700" x-text="currentTooltipSteps[tutorialStep]?.text"></div>
         <div class="flex items-center justify-between mt-3">
           <span class="text-xs text-gray-400" x-text="(tutorialStep + 1) + ' / 5'"></span>
@@ -739,7 +739,7 @@
           this.activeTutorial = 'image';
           this.tutorialStep = 0;
           this.lastAdvancedStep = null;
-          this.$nextTick(() => this.scrollToActiveLine());
+          this.$nextTick(() => this.scrollToActiveLine(true));
         },
 
         startDataTutorial() {
@@ -750,7 +750,7 @@
           this.$nextTick(() => {
             const el = this.$refs.dataCodeScrollTop;
             if (el) el.scrollTo({ top: 0 });
-            this.scrollToActiveLine();
+            this.scrollToActiveLine(true);
           });
         },
 
@@ -817,7 +817,7 @@
           return Math.max(60, Math.min(visual, 540));
         },
 
-        scrollToActiveLine() {
+        scrollToActiveLine(force) {
           const el = this.activeTutorial === 'data'
             ? this.$refs.dataCodeScrollTop
             : this.$refs.codeScroll;
@@ -826,9 +826,18 @@
           const offsetH = this.activeTutorial === 'data' ? 36 : 32;
           const lineY = rawTop - offsetH;
           const viewH = el.clientHeight;
-          const targetScroll = Math.max(0, lineY - viewH * 0.4);
-          el.scrollTo({ top: targetScroll, behavior: 'smooth' });
-          this.codeScrollTop = targetScroll;
+          const currentScroll = el.scrollTop;
+          const padding = 100;
+          const isVisible = lineY >= currentScroll + padding
+                         && lineY <= currentScroll + viewH - padding;
+
+          if (force || !isVisible) {
+            const targetScroll = Math.max(0, lineY - viewH * 0.4);
+            el.scrollTo({ top: targetScroll, behavior: 'smooth' });
+            this.codeScrollTop = targetScroll;
+          } else {
+            this.codeScrollTop = currentScroll;
+          }
         },
 
         applyPresetImage(preset) {
@@ -865,7 +874,7 @@
           clearTimeout(this.flashTimeout);
           this.flashTimeout = setTimeout(() => {
             this.lastEditedProp = null;
-          }, 3000);
+          }, 1500);
         },
 
         get allTutorialsComplete() {
@@ -946,7 +955,7 @@
     }
 
     .editable-region-highlight {
-      animation: region-pulse 0.4s ease-in-out 6;
+      animation: region-pulse 0.4s ease-in-out 3;
       outline-color: #FCBD01;
     }
 

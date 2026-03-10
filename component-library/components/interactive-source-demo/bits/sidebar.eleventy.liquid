@@ -6,7 +6,7 @@
     </svg>
     <span class="text-xs font-mono" style="color: #cdd6f4;" x-text="sidebarFilename"></span>
   </div>
-  <div class="flex-1 overflow-auto" x-ref="codeScroll">
+  <div class="flex-1 overflow-auto" x-ref="codeScroll" @scroll="codeScrollTop = $el.scrollTop">
     <table class="w-full border-collapse font-mono text-[13px]">
       <template x-for="(line, i) in sourceLines" :key="i">
         <tr class="leading-6"
