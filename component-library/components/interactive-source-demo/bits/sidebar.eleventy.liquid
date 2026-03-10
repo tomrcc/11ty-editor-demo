@@ -45,7 +45,7 @@
               :style="{
                 backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
                 opacity: activeTutorial === 'data' && tutorialStep <= 2 && !line.isData ? 0.3
-                       : activeTutorial === 'data' && tutorialStep === 3 && !line.isBody ? 0.3
+                       : activeTutorial === 'data' && (tutorialStep === 3 || tutorialStep === 4) && !line.isBody ? 0.3
                        : activeTutorial === 'image' && !line.isImage ? 0.3
                        : 1,
               }">

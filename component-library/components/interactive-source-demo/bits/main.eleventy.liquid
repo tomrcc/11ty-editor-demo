@@ -134,7 +134,7 @@
 
   <!-- Tutorial overlay -->
   <div
-    x-show="activeTutorial !== null && tutorialStep <= 4"
+    x-show="activeTutorial !== null && tutorialStep <= maxTutorialStep"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
@@ -272,7 +272,7 @@
 
   <!-- Tutorial overlay -->
   <div
-    x-show="activeTutorial !== null && tutorialStep <= 4"
+    x-show="activeTutorial !== null && tutorialStep <= maxTutorialStep"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
@@ -358,7 +358,7 @@
   </footer>
 
   <div
-    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= 4"
+    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= maxTutorialStep"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
@@ -458,7 +458,7 @@
   </footer>
 
   <div
-    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= 4"
+    x-show="(activeTutorial === 'data' || activeTutorial === 'image') && tutorialStep <= maxTutorialStep"
     x-transition:leave="transition ease-out duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
