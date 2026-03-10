@@ -272,6 +272,7 @@
         dataTutorialComplete: false,
         highlightTarget: null,
         highlightTimeout: null,
+        lastCompletedTutorial: null,
         codeScrollTop: 0,
 
         blogTitle: 'Start building with Jetstream today',
@@ -383,7 +384,7 @@
 
         get showDataView() {
           if (this.activeTutorial === 'data') return true;
-          if (this.dataTutorialComplete && this.activeTutorial === null) return true;
+          if (this.dataTutorialComplete && this.activeTutorial === null && this.lastCompletedTutorial === 'data') return true;
           return false;
         },
 
@@ -396,6 +397,7 @@
           this.headingTutorialComplete = false;
           this.imageTutorialComplete = false;
           this.dataTutorialComplete = false;
+          this.lastCompletedTutorial = null;
           this.hasChanges = false;
           this.lastEditedProp = null;
           this.showImagePicker = false;
@@ -703,6 +705,7 @@
           if (this.tutorialStep > 4) return;
 
           if (this.tutorialStep === 4) {
+            this.lastCompletedTutorial = this.activeTutorial;
             if (this.activeTutorial === 'heading') {
               this.headingTutorialComplete = true;
               this.highlightTarget = 'heading';
