@@ -177,7 +177,7 @@
       <span class="jt-blog-meta-divider"></span>
       <span>3 min read</span>
     </div>
-    <div class="jt-blog-image">
+    <div class="jt-blog-image" :style="imageEditable && 'overflow: visible'">
       <img
         :src="imageEditable ? heroImagePreviewSrc : '/demo-sites/jetstream/images/hero-1.svg'"
         :class="[imageEditable && 'editable-region-image', highlightTarget === 'image' && 'editable-region-highlight']"
