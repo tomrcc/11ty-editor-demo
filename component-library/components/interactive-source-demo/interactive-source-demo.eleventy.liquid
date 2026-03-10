@@ -718,7 +718,7 @@
             }
             this.activeTutorial = null;
             clearTimeout(this.highlightTimeout);
-            this.highlightTimeout = setTimeout(() => { this.highlightTarget = null; }, 2000);
+            this.highlightTimeout = setTimeout(() => { this.highlightTarget = null; }, 4000);
             return;
           }
 
@@ -729,7 +729,7 @@
             clearTimeout(this.advanceTimeout);
             this.advanceTimeout = setTimeout(() => {
               this.lastAdvancedStep = null;
-            }, 1500);
+            }, 3000);
           }
 
           this.$nextTick(() => this.scrollToActiveLine());
@@ -865,7 +865,7 @@
           clearTimeout(this.flashTimeout);
           this.flashTimeout = setTimeout(() => {
             this.lastEditedProp = null;
-          }, 1500);
+          }, 3000);
         },
 
         get allTutorialsComplete() {
@@ -946,7 +946,7 @@
     }
 
     .editable-region-highlight {
-      animation: region-pulse 0.4s ease-in-out 3;
+      animation: region-pulse 0.4s ease-in-out 6;
       outline-color: #FCBD01;
     }
 

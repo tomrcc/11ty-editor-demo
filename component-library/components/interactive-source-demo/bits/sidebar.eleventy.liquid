@@ -10,7 +10,7 @@
     <table class="w-full border-collapse font-mono text-[13px]">
       <template x-for="(line, i) in sourceLines" :key="i">
         <tr class="leading-6"
-            style="transition: background-color 700ms, opacity 300ms;"
+            style="transition: background-color 1700ms, opacity 300ms;"
             :style="{
               backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
               opacity: activeTutorial === 'heading' && !line.isHeading ? 0.3
@@ -43,7 +43,7 @@
       <table class="w-full border-collapse font-mono text-[13px]">
         <template x-for="(line, i) in dataPageSourceLines" :key="'top-'+i">
           <tr class="leading-6"
-              style="transition: background-color 700ms, opacity 300ms;"
+              style="transition: background-color 1700ms, opacity 300ms;"
               :style="{
                 backgroundColor: (line.prop && line.prop === lastEditedProp) || line.isNew ? 'rgba(252, 189, 1, 0.12)' : '',
                 opacity: activeTutorial === 'data' && tutorialStep <= 2 && !line.isData ? 0.3
@@ -73,7 +73,7 @@
       <table class="w-full border-collapse font-mono text-[13px]">
         <template x-for="(line, i) in dataMarkdownLines" :key="'bot-'+i">
           <tr class="leading-6"
-              style="transition: background-color 700ms, opacity 300ms;"
+              style="transition: background-color 1700ms, opacity 300ms;"
               :style="{
                 backgroundColor: (line.prop && line.prop === lastEditedProp) || (line.highlightAt && activeTutorial === 'data' && tutorialStep === 2) ? 'rgba(252, 189, 1, 0.12)' : '',
               }">
