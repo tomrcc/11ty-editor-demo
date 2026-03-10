@@ -1,19 +1,6 @@
 <section>
   <link rel="stylesheet" href="/demo-sites/jetstream/preview-styles.css" />
-  <link rel="stylesheet" href="/demo-sites/sendit/preview-styles.css" />
   <div x-data="sourceEditorManager()" class="hidden max-w-screen-lg mx-auto md:block">
-
-    <!-- Site Picker -->
-    <div class="flex items-center gap-2 mb-3">
-      <button
-        class="px-3 py-1.5 text-xs font-semibold rounded-full transition-colors"
-        :class="currentSite === 'jetstream' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-        @click="switchSite('jetstream')">Jetstream</button>
-      <button
-        class="px-3 py-1.5 text-xs font-semibold rounded-full transition-colors"
-        :class="currentSite === 'sendit' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-        @click="switchSite('sendit')">Sendit</button>
-    </div>
 
     <div
       id="source-demo-window"
@@ -334,7 +321,7 @@
                   d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p class="mt-4 mb-1 text-gray-700 text-balance">Together, we just added visual editing to a static site.</p>
+            <p class="mt-4 mb-1 text-gray-700 text-balance">Together, we just added visual editing to a website.</p>
             <p class="mb-6 font-semibold text-gray-900">Imagine what you could do with yours.</p>
             <a
               href="https://cloudcannon.com/free-trial/"
@@ -462,36 +449,6 @@
             blogSidebarBottomFilename: 'getting-started.md',
             blogDate: 'March 15, 2026',
             blogAuthor: 'Alex Chen',
-          },
-          sendit: {
-            label: 'Sendit',
-            defaults: {
-              headingMain: 'Beautiful web campaigns',
-              headingHighlight: '',
-              description: 'With Sendit, you can quickly create beautiful rich emails that capture a reader\u2019s attention, engage them, and convert them into customers.',
-            },
-            regions: [
-              { key: 'hero-title', prop: 'headingMain', tag: 'h1' },
-            ],
-            sourcePath: '/index.astro',
-            sidebarFilename: 'index.astro',
-            imageDefaults: { src: '/hero-image.avif', alt: 'Dashboard', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
-            presetImages: [
-              { src: '/hero-image.avif', previewSrc: '/demo-sites/sendit/images/hero-image.avif' },
-              { src: '/hero-2.svg', previewSrc: '/demo-sites/sendit/images/hero-2.svg' },
-              { src: '/hero-3.svg', previewSrc: '/demo-sites/sendit/images/hero-3.svg' },
-              { src: '/hero-4.svg', previewSrc: '/demo-sites/sendit/images/hero-4.svg' },
-              { src: '/hero-5.svg', previewSrc: '/demo-sites/sendit/images/hero-5.svg' },
-            ],
-            imageKey: 'hero-image',
-            blogDefaults: {
-              blogTitle: 'What are the best email clients?',
-              blogBody: 'When you send an email campaign, you expect it to reach your readers, right? But what if the emails go straight to your subscribers\u2019 <strong>spam folders</strong> instead of their inboxes? To make sure your emails reach their recipients successfully, follow these <em>email delivery tips</em>.',
-            },
-            blogSidebarTopFilename: 'pages/blog/[...slug].astro',
-            blogSidebarBottomFilename: 'best-email-clients.md',
-            blogDate: 'March 7, 2022',
-            blogAuthor: 'Wendy Parkes',
           },
         },
 
@@ -648,7 +605,7 @@
         },
 
         get sourceLines() {
-          return this.currentSite === 'sendit' ? this.senditSourceLines : this.jetstreamSourceLines;
+          return this.jetstreamSourceLines;
         },
 
         get jetstreamSourceLines() {
@@ -673,39 +630,6 @@
             { text: '    <p>A new Astro template by CloudCannon...</p>' },
             { text: '    <a href="/get-started" class="button">Deploy Jetstream</a>' },
             { text: '    <img src="/dashboard.svg" alt="Dashboard" />' },
-          );
-
-          lines.push(
-            { text: '  </section>' },
-            { text: '' },
-            { text: '  <!-- ... Rest of page here -->' },
-            { text: '' },
-            { text: '</Layout>' },
-          );
-
-          return lines;
-        },
-
-        get senditSourceLines() {
-          const lines = [];
-
-          lines.push(
-            { text: '---' },
-            { text: 'import Layout from "../layouts/Layout.astro"' },
-            { text: '---' },
-            { text: '' },
-            { text: '<Layout title="Home">' },
-            { text: '  <section class="hero">' },
-          );
-
-          for (const region of this.regions) {
-            lines.push(...this.regionLines(region, 4));
-          }
-
-          lines.push(
-            { text: '    <p>With Sendit, you can quickly create...</p>' },
-            { text: '    <a href="/signup" class="button">Try This Free</a>' },
-            { text: '    <img src="/hero-image.avif" alt="Reports dashboard" />' },
           );
 
           lines.push(
@@ -927,16 +851,6 @@
             }
           }
 
-          if (this.currentSite === 'sendit') {
-            switch (this.tutorialStep) {
-              case 0: return tabH + 5 * lineH;
-              case 1: return tabH + 6 * lineH;
-              case 2: return tabH + 7 * lineH;
-              case 3: return tabH + 8 * lineH;
-              case 4: return tabH + 5 * lineH;
-              default: return 0;
-            }
-          }
           switch (this.tutorialStep) {
             case 0: return tabH + 6 * lineH;
             case 1: return tabH + 8 * lineH;
